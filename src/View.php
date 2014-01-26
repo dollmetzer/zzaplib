@@ -82,16 +82,20 @@ class View {
 
     /**
      * Render the template
+     * 
+     * If $this->template is not empty, use this file (PATH_APP.$this->template).
+     * Normally use the following template file:
+     * PATH_APP/modules/MODULE_NAME/views/SESSION_THEME/CONTROLLER_NAME/ACTION_NAME.php
      */
     public function render() {
 
         $content = & $this->content;
         $lang = & $this->app->lang;
         if (!empty($this->template)) {
-            $filename = PATH_APP.'views/'.$this->template;
+            $filename = PATH_APP.$this->template;
         } else {
-            $filename = PATH_APP;
-            $filename .= 'views/'.$this->app->session->theme.'/'.$this->app->controllerName.'/';
+            $filename = PATH_APP.'modules/'.$this->app->moduleName;
+            $filename .= '/views/'.$this->app->session->theme.'/'.$this->app->controllerName.'/';
             $filename .= $this->app->actionName . '.php';
         }
         include $filename;

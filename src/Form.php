@@ -30,24 +30,32 @@
  * @package zzaplib
  */
 class Form {
-    
+
     /**
      * @var Application $app The application object
      */
     protected $app;
-    
+
+    /**
+     * @var string $name Name of the form 
+     */
     public $name;
-    
+
+    /**
+     * @var string $title Title of the form
+     */
     public $title;
-    
+
+    /**
+     * @var boolean $hasErrors Indicates, if an error occured during the processing 
+     */
     public $hasErrors;
 
     /**
      * @var array $fields Fields of the form
      */
     public $fields;
-    
-    
+
     /**
      * Basic setting for the form
      *
@@ -59,47 +67,59 @@ class Form {
         $this->title = '';
         $this->hasErrors = false;
     }
-    
-    
+
+    /**
+     * Process the form
+     * 
+     * - set default values
+     * - if form was submitted, read and validate all fields
+     * 
+     * @return boolean Success
+     */
     public function process() {
-        
+
         // set default values
         $success = true;
         $this->hasErrors = false;
-        foreach($this->fields as $name=>$field) {
-            if(!in_array($field['type'], array('static', 'divider', 'submit'))) {
-                if(!isset($field['value'])) {
+        foreach ($this->fields as $name => $field) {
+            if (!in_array($field['type'], array('static', 'divider', 'submit'))) {
+                if (!isset($field['value'])) {
                     $this->fields[$name]['value'] = '';
                 }
             }
         }
-        
+
         // without input - return without processing
-        if(empty($_POST)) {
+        if (empty($_POST)) {
             return false;
         }
-        
+
         // read an validate all fields (except special types)
-        foreach($this->fields as $name=>$field) {
-            if(!in_array($field['type'], array('static', 'divider', 'submit'))) {
+        foreach ($this->fields as $name => $field) {
+            if (!in_array($field['type'], array('static', 'divider', 'submit'))) {
                 // fetch
                 $value = $_POST[$name];
                 // preprocessing
-                $this->fields[$name]['value'] = $value;            
+                $this->fields[$name]['value'] = $value;
                 // validating
                 $this->validate($name);
             }
         }
-        
+
         // process didn't succeeded
-        if($this->hasErrors !== false) return false;
-        
+        if ($this->hasErrors !== false)
+            return false;
+
         // processed succeeded
         return true;
     }
-    
-    
+
+    /**
+     * Returns all data for the rendering of the form template 
+     * @return array
+     */
     public function getViewdata() {
+
         return array(
             'name' => $this->name,
             'title' => $this->title,
@@ -107,79 +127,85 @@ class Form {
             'fields' => $this->fields
         );
     }
-    
-    
-    
+
+    /**
+     * Returns an array with name-value pairs of all fields
+     * 
+     * @return array
+     */
     public function getValues() {
-        
+
         $result = array();
-        foreach($this->fields as $name=>$field) {
+        foreach ($this->fields as $name => $field) {
             $result[$name] = $field['value'];
         }
         return $result;
-        
     }
-    
-    
+
+    /**
+     * Validate a form fields
+     * If an error occurred, the field gets an error entry and the globas $hasError flag is set true
+     * 
+     * @param string $_name Name of the field
+     * @return type
+     */
     public function validate($_name) {
-        
+
         // required
-        if(!empty($this->fields[$_name]['required'])) {
-            if(empty($this->fields[$_name]['value'])) {
+        if (!empty($this->fields[$_name]['required'])) {
+            if (empty($this->fields[$_name]['value'])) {
                 $this->fields[$_name]['error'] = $this->app->lang('form_error_required');
                 $this->hasErrors = true;
                 return;
             }
         }
-        
+
         // minlength
-        if(!empty($this->fields[$_name]['minlength'])) {
-            if(strlen($this->fields[$_name]['value']) < $this->fields[$_name]['minlength']) {
+        if (!empty($this->fields[$_name]['minlength'])) {
+            if (strlen($this->fields[$_name]['value']) < $this->fields[$_name]['minlength']) {
                 $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_minlength'), $this->fields[$_name]['minlength']);
                 $this->hasErrors = true;
-                return;                
+                return;
             }
-        }       
+        }
         // maxlength
-        if(!empty($this->fields[$_name]['maxlength'])) {
-            if(strlen($this->fields[$_name]['value']) > $this->fields[$_name]['maxlength']) {
+        if (!empty($this->fields[$_name]['maxlength'])) {
+            if (strlen($this->fields[$_name]['value']) > $this->fields[$_name]['maxlength']) {
                 $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_maxlength'), $this->fields[$_name]['maxlength']);
                 $this->hasErrors = true;
-                return;                
-            }            
+                return;
+            }
         }
-        
+
         // min
-        if(!empty($this->fields[$_name]['min'])) {
-            if($this->fields[$_name]['value'] < $this->fields[$_name]['min']) {
+        if (!empty($this->fields[$_name]['min'])) {
+            if ($this->fields[$_name]['value'] < $this->fields[$_name]['min']) {
                 $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_min'), $this->fields[$_name]['min']);
                 $this->hasErrors = true;
-                return;                
+                return;
             }
         }
         // max
-        if(!empty($this->fields[$_name]['max'])) {
-            if($this->fields[$_name]['value'] > $this->fields[$_name]['max']) {
+        if (!empty($this->fields[$_name]['max'])) {
+            if ($this->fields[$_name]['value'] > $this->fields[$_name]['max']) {
 
                 $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_max'), $this->fields[$_name]['max']);
                 $this->hasErrors = true;
-                return;                
-            }            
+                return;
+            }
         }
 
         // type
-        if($this->fields[$_name]['type'] == 'integer') {
-            $value = (int)$this->fields[$_name]['value']; 
-            if( (string)$value != $this->fields[$_name]['value'] ) {
+        if ($this->fields[$_name]['type'] == 'integer') {
+            $value = (int) $this->fields[$_name]['value'];
+            if ((string) $value != $this->fields[$_name]['value']) {
                 $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_integer'), $this->fields[$_name]['maxlength']);
                 $this->hasErrors = true;
-                return;                
+                return;
             }
         }
-        
-        
     }
-    
+
 }
 
 ?>

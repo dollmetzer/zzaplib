@@ -28,3 +28,8 @@ Insert the following into your project composer.json:
   }
 
 Then run php composer.phar install
+
+
+create a new application
+------------------------
+...to be written.

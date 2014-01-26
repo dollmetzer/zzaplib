@@ -47,7 +47,6 @@ class Session {
      */
     protected $data;
 
-	
     /**
      * Constructor
      * 
@@ -57,10 +56,7 @@ class Session {
 
         $this->app = $_app;
         $this->init();
-		
     }
-
-
 
     /**
      * Initialize a session.
@@ -71,7 +67,7 @@ class Session {
      */
     public function init() {
 
-		session_start();
+        session_start();
 
         $hits = $this->hits;
         if (empty($hits)) {
@@ -81,15 +77,12 @@ class Session {
             $this->user_handle = 'guest';
             $this->user_lastlogin = 0;
             $this->user_language = $this->app->config['languages'][0];
-			$this->theme = $this->app->config['themes'][0];
+            $this->theme = $this->app->config['themes'][0];
         } else {
             $hits++;
             $this->hits = $hits;
         }
-		
     }
-
-
 
     /**
      * Set a session variable
@@ -100,10 +93,8 @@ class Session {
      * @param mixed  $value
      */
     public function __set($name, $value) {
-		$_SESSION[$name] = $value;
+        $_SESSION[$name] = $value;
     }
-
-
 
     /**
      * Returns a session variable
@@ -114,14 +105,12 @@ class Session {
      * @return mixed
      */
     public function __get($name) {
-		if (isset($_SESSION[$name])) {
+        if (isset($_SESSION[$name])) {
             return $_SESSION[$name];
         } else {
-			return null;
+            return null;
         }
     }
-
-
 
     /**
      * Return Session data as an array
@@ -129,10 +118,8 @@ class Session {
      * @return array
      */
     public function getAsArray() {
-		return $_SESSION;
+        return $_SESSION;
     }
-
-
 
 }
 

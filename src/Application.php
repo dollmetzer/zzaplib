@@ -28,8 +28,8 @@
  * @package zzaplib
  */
 class Application {
-	
-	/**
+
+    /**
      * @var Session Holds the instance of the session 
      */
     public $session;
@@ -50,6 +50,11 @@ class Application {
     public $lang;
 
     /**
+     * @var string Name of the module 
+     */
+    public $moduleName;
+
+    /**
      * @var string The name of the controller 
      */
     public $controllerName;
@@ -60,31 +65,37 @@ class Application {
     public $actionName;
 
     /**
+     * @var string $params Holds the URL parameters after controller/action/...
+     */
+    public $params;
+
+    /**
      * @var Controller Holds the instance of the Controller 
      */
     public $controller;
 
     /**
-     * @var string $params Holds the URL parameters after controller/action/...
+     * @var PDO $dbh Database handle
      */
-    public $params;
+    public $dbh;
 
-	/**
-	 * @var PDO $dbh Database handle
-	 */
-	public $dbh;
-	
-	
-	public function __construct($config) {
-		$this->config = $config;
-		$this->dbh = NULL;
-	}
-	
-	
-	
-	public function run() {
-		
-		// start session
+    /**
+     * Construct the application
+     * 
+     * @param array $config Configuration array
+     */
+    public function __construct($config) {
+
+        $this->config = $config;
+        $this->dbh = NULL;
+    }
+
+    /**
+     * Run the application
+     */
+    public function run() {
+
+        // start session
         $this->session = new Session($this);
 
         // start view
@@ -93,13 +104,12 @@ class Application {
         // split query path into module, controller, action and params
         $this->processQueryPath();
 
-        // load core language file
+        // load core language file for core module
         $this->lang = array();
-        $this->loadLanguage('core');
-        
+        $this->loadLanguage('core', 'core');
+
         // start controller
-        $this->checkControllerName();
-        $controllerFile = PATH_APP . 'controllers/' . $this->controllerName . 'Controller.php';
+        $controllerFile = PATH_APP . 'modules/' . $this->moduleName . '/controllers/' . $this->controllerName . 'Controller.php';
 
         try {
             include $controllerFile;
@@ -107,15 +117,14 @@ class Application {
             $controller = new $controllerName($this);
             $actionName = (string) $this->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
-                error_log('Application::run() - method ' . $actionName . ' not found');
-				$this->forward($this->buildURL(''), $this->lang['error_illegal_parameter']);
+                error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
+                $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter']);
             }
             $controller->$actionName();
             $this->view->render();
 
-			$this->session->flasherror = '';
-			$this->session->flashmessage = '';
-
+            $this->session->flasherror = '';
+            $this->session->flashmessage = '';
         } catch (Exception $e) {
 
             $message = 'Application error in ';
@@ -123,34 +132,33 @@ class Application {
             $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
             error_log($message);
-			$this->forward($this->buildURL(''), $this->lang['error_application']);
+            $this->forward($this->buildURL(''), $this->lang['error_application']);
         }
+    }
 
-	}
-	
-	
-	
-	public function forward($_url='', $_message='', $_messageType='') {
-		
-		if(!empty($_message)) {
-			if($_messageType == 'error') {
-				$this->session->flasherror = $_message;
-			} else {
-				$this->session->flashmessage = $_message;
-			}
-		}
-		if(empty($_url)) {
-			$_url = $this->buildURL('');
-		}
-		header('Location: ' . $_url);
+    /**
+     * Forward to another page
+     * 
+     * @param string $_url         Target URL 
+     * @param string $_message     (optional) flash message to be displayed on next page
+     * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
+     */
+    public function forward($_url = '', $_message = '', $_messageType = '') {
+
+        if (!empty($_message)) {
+            if ($_messageType == 'error') {
+                $this->session->flasherror = $_message;
+            } else {
+                $this->session->flashmessage = $_message;
+            }
+        }
+        if (empty($_url)) {
+            $_url = $this->buildURL('');
+        }
+        header('Location: ' . $_url);
         exit;
-		
-	}
-	
-	
-	
-    
-    
+    }
+
     /**
      * Return a language snippet in the current language
      * 
@@ -167,9 +175,7 @@ class Application {
 
         return $text;
     }
-	
-	
-	
+
     /**
      * Build a complete URL from a query string
      * 
@@ -177,9 +183,9 @@ class Application {
      * @param array  $_attributes Additional Attributes. Array of key=>value pairs
      * @return string
      */
-    public function buildURL($_path, $_attributes=array()) {
+    public function buildURL($_path, $_attributes = array()) {
 
-        if(empty($_SERVER['SERVER_NAME'])) {
+        if (empty($_SERVER['SERVER_NAME'])) {
             return '';
         }
         $url = 'http://';
@@ -188,20 +194,17 @@ class Application {
         if (!empty($_path))
             $url .= '?q=' . $_path;
 
-        if(!empty($_attributes)) {
+        if (!empty($_attributes)) {
             $addition = array();
-            foreach($_attributes as $key=>$val) {
-                $addition[] = $key.'='.urlencode($val);
+            foreach ($_attributes as $key => $val) {
+                $addition[] = $key . '=' . urlencode($val);
             }
-            $url .= '&'.join('&', $addition);
+            $url .= '&' . join('&', $addition);
         }
-        
+
         return $url;
-        
     }
-	
-	
-	
+
     /**
      * Build a complete URL from a query string
      * 
@@ -210,50 +213,73 @@ class Application {
      */
     public function buildMediaURL($_path) {
 
-        $url = 'http://'.URL_MEDIA.$_path;
+        $url = 'http://' . URL_MEDIA . $_path;
         return $url;
-        
     }
-	
-	
 
     /**
-     * Check, if controllerName is valid.
-     * If not, controllerName is reset to 'index'
+     * Get a list of installed modules. If modules are set in the configuration,
+     * get the list from the configuration. Every module entry must be an array.
+     * 
+     * 'modules' => array (
+     *     'core' => array(
+     *         'index',
+     *         'account'
+     *     )
+     *  )
+     * 
+     * @return array
      */
-    protected function checkControllerName() {
+    protected function getModuleList() {
 
-        // get list of allowed controllers
-        if (empty($this->config['controllers'])) {
-            $controllerList = array();
-            $controllerDir = PATH_APP;
-            if (!empty($this->moduleName)) {
-                $controllerDir .= $this->moduleName . '/';
+        if (empty($this->config['modules'])) {
+            $list = array();
+            if (file_exists(PATH_APP . 'modules/')) {
+                $dir = opendir(PATH_APP . 'modules/');
+                while ($file = readdir($dir)) {
+                    if (!preg_match('/^\./', $file)) {
+                        echo $file . "<br />\n";
+                        if (is_dir(PATH_APP . 'modules/' . $file)) {
+                            $list[] = $file;
+                        }
+                    }
+                }
+                closedir($dir);
             }
-            $controllerDir .= 'controllers/';
+        } else {
+            $list = array_keys($this->config['modules']);
+        }
+
+        return $list;
+    }
+
+    /**
+     * Get a list of available controllers for the module $this->moduleName
+     * If modules are set in the configuration, get the list from the
+     * configuration. Without configuration entry, get the list from the filesystem.
+     * 
+     * @return array
+     */
+    protected function getControllerList() {
+
+        if (empty($this->config['modules'][$this->moduleName])) {
+
+            $list = $this->config['modules'][$this->moduleName];
+        } else {
+
+            $list = array();
+            $controllerDir = PATH_APP . 'modules/' . $this->moduleName . '/controllers/';
             $dir = opendir($controllerDir);
             while ($file = readdir($dir)) {
                 if (preg_match('/Controller.php$/', $file)) {
-                    $controllerList[] = preg_replace('/Controller.php$/', '', $file);
+                    $list[] = preg_replace('/Controller.php$/', '', $file);
                 }
             }
             closedir($dir);
-        } else {
-            $controllerList = $this->config['controllers'];
         }
-
-        if (!in_array($this->controllerName, $controllerList)) {
-            $this->controllerName = 'index';
-			if(!in_array('index', $controllerList)) {
-				$this->controllerName = $controllerList[0];
-			}
-			
-            $this->actionName = 'index';
-        }
+        return $list;
     }
 
-	
-	
     /**
      * Try to load language snippets and store them in $this->lang
      * The desired language is stored in $_SESSION['user_language'].
@@ -261,15 +287,15 @@ class Application {
      * E.g. 'de_account.ini' holds the snippets for the account controller in german.
      * 
      * @param string $_snippet Name of the snippet - mostly the controller name
-     * @param string $_plugin  Name of the plugin. If given, ini file is searched in the plugin/data folder
+     * @param string $_module  Name of the module, if language file shouldn't be for current module
      * @return boolean success
      */
-    public function loadLanguage($_snippet, $_plugin = '') {
+    public function loadLanguage($_snippet, $_module = '') {
 
-        if (empty($_plugin)) {
-            $filename = PATH_APP . 'data/' . $this->session->user_language . '_' . $_snippet . '.ini';
+        if ($_module == '') {
+            $filename = PATH_APP . 'modules/' . $this->moduleName . '/data/' . $this->session->user_language . '_' . $_snippet . '.ini';
         } else {
-            $filename = PATH_APP . 'plugins/' . $_plugin . '/data/' . $this->session->user_language . '_' . $_snippet . '.ini';
+            $filename = PATH_APP . 'modules/' . $_module . '/data/' . $this->session->user_language . '_' . $_snippet . '.ini';
         }
 
         if (file_exists($filename)) {
@@ -282,47 +308,59 @@ class Application {
         return false;
     }
 
-
-
-	/**
+    /**
      * Get Query parameters from the get parameter 'q', like
      * 
      * <pre>http://SERVER/?q=module/controller/action/param1/param2/...</pre>
      * 
-     * If the first parameter is a module name, extract it from the query and set $this->moduleName
+     * If the first parameter is a module name (registered in $this->config['modules']), extract it from the query and set $this->moduleName
      * If the then first parameter is a controller name, extract ist from the query and set $this->controllerName
      * If the then first parameter is an action name, extract it from the query and set $this->actionName 
      * The now remaining parameters are going to $this->params
      */
     protected function processQueryPath() {
 
-		if (empty($_GET['q']))
+        // set default values
+        $this->moduleName = 'core';
+        $this->controllerName = 'index';
+        $this->actionName = 'index';
+        $this->params = array();
+
+        // escape, if querypath is empty
+        if (empty($_GET['q']))
             return;
 
+        // clean query path
         $queryRaw = explode('/', $_GET['q']);
         $query = array();
         for ($i = 0; $i < sizeof($queryRaw); $i++) {
             if ($queryRaw[$i] != '')
                 array_push($query, $queryRaw[$i]);
         }
-		
-        // controller name remaining?
-        $this->controllerName = 'index';
+
+        // test if first entry is a module name
         if (sizeof($query) > 0) {
-            $this->controllerName = array_shift($query);
+            if (in_array($query[0], $this->getModuleList())) {
+                $this->moduleName = array_shift($query);
+            }
+        }
+
+        // test if first entry is a controller name
+        if (sizeof($query) > 0) {
+            if (in_array($query[0], $this->getControllerList())) {
+                $this->controllerName = array_shift($query);
+            }
         }
 
         // action name remaining?
-        $this->actionName = 'index';
         if (sizeof($query) > 0) {
             $this->actionName = array_shift($query);
         }
 
         // still any additional parameter remaining?
         $this->params = $query;
-		
     }
 
-	
 }
+
 ?>

@@ -28,7 +28,8 @@
  * @package zzaplib
  */
 class Controller {
-	    /**
+
+    /**
      * @var Application $app Holds the instance of the application 
      */
     public $app;
@@ -50,11 +51,11 @@ class Controller {
             $this->init();
     }
 
-
-
     /**
      * Returns a text snippet in the current language.
-     * If no snippet is found, the placeholder with leading and trailing tripple hash and underscore is returned
+     * 
+     * If no snippet is found, the placeholder with leading and trailing tripple
+     * hash and underscore is returned.
      * 
      * @param string  $_snippet A placeholder like ERROR_FORM_TOO_LONG 
      * @return string           The String in the current language
@@ -64,8 +65,6 @@ class Controller {
         return $this->app->lang($_snippet);
     }
 
-
-
     /**
      * Build a complete URL from a query string
      * 
@@ -73,32 +72,45 @@ class Controller {
      * @param array  $_attributes Additional Attributes. Array of key=>value pairs
      * @return string
      */
-    public function buildURL($_path, $_attributes=array()) {
+    public function buildURL($_path, $_attributes = array()) {
 
         return $this->app->buildURL($_path, $_attributes);
-		
     }
-	
-	
-	
-	public function buildMediaURL($_path) {
-		
-		return $this->app->buildMediaURL($_path);
-		
-	}
 
-	
-	
-	public function forward($_url='', $_message='', $_messageType='') {
-		$this->app->forward($_url, $_message, $_messageType);
-	}
-	
-	
-	public function isLoggedIn() {
-		$userid = $this->app->session->user_id;
-		if(empty($userid)) return false;
-		return true;
-	}
-	
+    /**
+     * Build a complete URL from a query string
+     * 
+     * @param string $_path       Path to the picture on the media server
+     * @return string
+     */
+    public function buildMediaURL($_path) {
+
+        return $this->app->buildMediaURL($_path);
+    }
+
+    /**
+     * Forward to another page
+     * 
+     * @param string $_url         Target URL 
+     * @param string $_message     (optional) flash message to be displayed on next page
+     * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
+     */
+    public function forward($_url = '', $_message = '', $_messageType = '') {
+        $this->app->forward($_url, $_message, $_messageType);
+    }
+
+    /**
+     * Checks, if the user is logged in
+     * 
+     * @return boolean
+     */
+    public function isLoggedIn() {
+        $userid = $this->app->session->user_id;
+        if (empty($userid))
+            return false;
+        return true;
+    }
+
 }
+
 ?>
