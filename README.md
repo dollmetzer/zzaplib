@@ -16,20 +16,20 @@ Installation using composer
 ---------------------------
 Insert the following into your project composer.json:
 
-  "require": {
-      "dollmetzer/zzaplib": "dev-master"
-  },
-  "repositories": [
-      {
-          "type": "vcs",
-          "url": "git://github.com/dollmetzer/zzaplib",
-          "reference": "master"
-      },
-  }
+    "require": {
+        "dollmetzer/zzaplib": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git://github.com/dollmetzer/zzaplib",
+            "reference": "master"
+        },
+    }
 
 Then run php composer.phar install
 
 
-create a new application
+Create a new application
 ------------------------
 ...to be written.
