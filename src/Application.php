@@ -88,6 +88,10 @@ class Application {
 
         $this->config = $config;
         $this->dbh = NULL;
+
+        // register autoloader for models, no class not found exception, not prepend
+        spl_autoload_register(array($this, 'autoloadModels'), false, false);
+
     }
 
     /**
@@ -361,6 +365,35 @@ class Application {
         $this->params = $query;
     }
 
+    /**
+     * Model class Autoloader
+     * 
+     * Model classes should be named like modulename_thingModel with the
+     * filename PATH_APP/modules/modulename/models/modulename_thingModel.php
+     *     
+     * @param type $_className Name of the class to load 
+     */
+    public function autoloadModels($_className) {
+		
+        if(preg_match('/[a-zA-Z].Model$/', $_className)) {
+            
+            $temp = explode('_', $_className);
+            if(sizeof($temp) > 1) {
+                $filename = PATH_APP.'modules/'.$temp[sizeof($temp)-2].'/models/'.$_className.'.php';
+            } else {
+                $filename = PATH_APP.'modules/core/models/'.$_className.'.php';
+            }
+ 
+            if (file_exists($filename)) {
+                require_once $filename;
+            } else {
+                error_log('Application::autoload - file not found: ' . $filename);
+            }
+            
+        }
+        
+    }
+    
 }
 
 ?>
