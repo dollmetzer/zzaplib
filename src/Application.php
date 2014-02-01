@@ -124,7 +124,11 @@ class Application {
                 error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
                 $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter']);
             }
-            $controller->$actionName();
+            if($controller->isAllowed($this->actionName)) {
+                $controller->$actionName();            
+            } else {
+                $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');
+            }
             $this->view->render();
 
             $this->session->flasherror = '';

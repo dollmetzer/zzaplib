@@ -113,6 +113,20 @@ class View {
 		$this->css[] = $_filename;
 	}
 	
+    /**
+     * checks, if the current user is in a certain group
+     * 
+     * @param string $_groupName
+     * @return boolean
+     */
+    public function userInGroup($_groupName) {
+        
+        $userGroups = $this->app->session->groups;
+        if(in_array($_groupName, $userGroups)) {
+            return true;
+        }
+        return false;
+    }
 	
 	
     /**

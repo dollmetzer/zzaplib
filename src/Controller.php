@@ -35,6 +35,11 @@ class Controller {
     public $app;
 
     /**
+     * @var array $accessGroups List of action names with lists of allowed groups
+     */
+    protected $accessGroups;
+
+    /**
      * The constructor tries to execute init(), if it exists.
      * 
      * If permissions are set, they're checked. If no execution right is found,
@@ -100,8 +105,34 @@ class Controller {
     }
 
     /**
+     * Check, if call of a certain action is allowed
+     * 
+     * Checks, if the current user is in the group for the controller action.
+     * If no entry is found, access is granted.
+     * If an entry is found and the user is group member, access is granted.
+     * If an entry is found and the user is not group meber, access is denied.
+     *  
+     * @param string $_actionName
+     * @return boolean
+     */
+    public function isAllowed($_actionName) {
+
+        // allowed, if no entry is found
+        if (empty($this->accessGroups[$_actionName])) {
+            return true;
+        }
+        // allowed, if user is group member
+        $userGroups = $this->app->session->groups;
+        if (!empty(array_intersect($userGroups, $this->accessGroups[$_actionName]))) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Checks, if the user is logged in
      * 
+     * @deprecated
      * @return boolean
      */
     public function isLoggedIn() {

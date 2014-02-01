@@ -78,6 +78,7 @@ class Session {
             $this->user_lastlogin = 0;
             $this->user_language = $this->app->config['languages'][0];
             $this->theme = $this->app->config['themes'][0];
+            $this->groups = array(1=>'guest');
         } else {
             $hits++;
             $this->hits = $hits;
