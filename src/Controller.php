@@ -128,18 +128,20 @@ class Controller {
         }
         return false;
     }
-
+    
     /**
-     * Checks, if the user is logged in
+     * checks, if user is in a group
      * 
-     * @deprecated
+     * @param string $_groupName
      * @return boolean
      */
-    public function isLoggedIn() {
-        $userid = $this->app->session->user_id;
-        if (empty($userid))
-            return false;
-        return true;
+    public function inGroup($_groupName) {
+        
+        $userGroups = $this->app->session->groups;
+        if(in_array($_groupName, array_values($userGroups))) {
+            return true;
+        }
+        return false;
     }
 
 }
