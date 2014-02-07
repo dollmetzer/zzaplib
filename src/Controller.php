@@ -123,7 +123,8 @@ class Controller {
         }
         // allowed, if user is group member
         $userGroups = $this->app->session->groups;
-        if (!empty(array_intersect($userGroups, $this->accessGroups[$_actionName]))) {
+        $intersection = array_intersect($userGroups, $this->accessGroups[$_actionName]);
+        if (!empty($intersection)) {
             return true;
         }
         return false;

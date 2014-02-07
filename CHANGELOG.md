@@ -1,6 +1,7 @@
 CHANGELOG
 =========
 
+2014-02-07 Solved minor incompatibility with function array_intersect between PHP 5.3 and PHP 5.4
 2014-02-04 Added API
 2014-02-01 Added group based access control
 2014-02-01 Added user groups in session
