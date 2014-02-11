@@ -50,17 +50,16 @@ class View {
      * @var Application $app The application object
      */
     protected $app;
-	
-	/**
-	 * @var array $js Additional Javascript files to include in the page 
-	 */
-	protected $js;
-	
-	/**
-	 * @var array $css Additional Stylesheet files to include in the page
-	 */
-	protected $css;
-	
+
+    /**
+     * @var array $js Additional Javascript files to include in the page 
+     */
+    protected $js;
+
+    /**
+     * @var array $css Additional Stylesheet files to include in the page
+     */
+    protected $css;
 
     /**
      * Basic setting for the view
@@ -73,12 +72,9 @@ class View {
         $this->content = array();
         $this->template = '';
         $this->lang = array();
-		$this->js = array();
-		$this->css = array();
-		
+        $this->js = array();
+        $this->css = array();
     }
-
-
 
     /**
      * Render the template
@@ -92,27 +88,33 @@ class View {
         $content = & $this->content;
         $lang = & $this->app->lang;
         if (!empty($this->template)) {
-            $filename = PATH_APP.$this->template;
+            $filename = PATH_APP . $this->template;
         } else {
-            $filename = PATH_APP.'modules/'.$this->app->moduleName;
-            $filename .= '/views/'.$this->app->session->theme.'/'.$this->app->controllerName.'/';
+            $filename = PATH_APP . 'modules/' . $this->app->moduleName;
+            $filename .= '/views/' . $this->app->session->theme . '/' . $this->app->controllerName . '/';
             $filename .= $this->app->actionName . '.php';
         }
         include $filename;
     }
 
+    /**
+     * Add a javascript file to the page
+     * 
+     * @param string $_filename
+     */
+    public function addJS($_filename) {
+        $this->js[] = $_filename;
+    }
 
+    /**
+     * Add a CSS File to the page
+     * 
+     * @param string $_filename
+     */
+    public function addCSS($_filename) {
+        $this->css[] = $_filename;
+    }
 
-	public function addJS($_filename) {
-		$this->js[] = $_filename;
-	}
-	
-
-
-	public function addCSS($_filename) {
-		$this->css[] = $_filename;
-	}
-	
     /**
      * checks, if the current user is in a certain group
      * 
@@ -120,49 +122,50 @@ class View {
      * @return boolean
      */
     public function userInGroup($_groupName) {
-        
+
         $userGroups = $this->app->session->groups;
-        if(in_array($_groupName, $userGroups)) {
+        if (in_array($_groupName, $userGroups)) {
             return true;
         }
         return false;
     }
-	
-	
+
     /**
-     * Build a URL withe a query path considering server settings
+     * Build a URL with a query path considering server settings
      * 
      * @param string $_path Path part of the URL
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
+     * @return string|null
      */
     public function buildURL($_path, $_output = true) {
 
         $url = $this->app->buildURL($_path);
-        
+
         if ($_output === true) {
             echo $url;
             return;
         }
         return $url;
-        
     }
 
-	
+    /**
+     * Build a URL for media assets (e.g. on a external CDN)
+     * 
+     * @param string $_path Path part of the URL
+     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
+     * @return string|null
+     */
+    public function buildMediaURL($_path, $_output = true) {
 
-	public function buildMediaURL($_path, $_output = true) {
-		
-		$url = $this->app->buildMediaURL($_path);
-		
+        $url = $this->app->buildMediaURL($_path);
+
         if ($_output === true) {
             echo $url;
             return;
         }
         return $url;
+    }
 
-	}
-	
-	
-	
     /**
      * Returns a text snippet in the current language.
      * If no snippet is found, the placeholder with leading and trailing tripple hash and underscore is returned
@@ -180,10 +183,7 @@ class View {
             return;
         }
         return $text;
-        
     }
-
-
 
     /**
      * Returns a formatted date from a database datetime
@@ -203,8 +203,6 @@ class View {
         return $text;
     }
 
-
-
     /**
      * Returns a formatted date and time stamp from a database datetime
      * 
@@ -223,8 +221,6 @@ class View {
         return $text;
     }
 
-
-
     /**
      * Returns a formatted date and time stamp from a database datetime
      * 
@@ -242,8 +238,6 @@ class View {
         }
         return $text;
     }
-
-
 
 }
 
