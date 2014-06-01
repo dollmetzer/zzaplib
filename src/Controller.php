@@ -133,14 +133,20 @@ class Controller {
     /**
      * checks, if user is in a group
      * 
-     * @param string $_groupName
+     * @param string/integer $_group
      * @return boolean
      */
-    public function inGroup($_groupName) {
-        
+    public function inGroup($_group) {
+
         $userGroups = $this->app->session->groups;
-        if(in_array($_groupName, array_values($userGroups))) {
-            return true;
+        if (is_int($_group)) {
+            if (in_array($_group, array_keys($userGroups))) {
+                return true;
+            }
+        } else {
+            if (in_array($_group, array_values($userGroups))) {
+                return true;
+            }
         }
         return false;
     }

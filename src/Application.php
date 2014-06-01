@@ -88,7 +88,7 @@ class Application extends Base {
             $actionName = (string) $this->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
                 error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
-                $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter']);
+                $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter'], 'error');
             }
             if($controller->isAllowed($this->actionName)) {
                 $controller->$actionName();            

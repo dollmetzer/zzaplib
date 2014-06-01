@@ -30,6 +30,12 @@
 class DBModel {
 
     /**
+     * @var Application $app Holds the instance of the application 
+     */
+    public $app;
+
+    
+    /**
      * Connects to DB. Use an already existing connection or open a new one
      * 
      * @param Application $_app

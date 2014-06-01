@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2014-06-01 Controller::inGroup now working with group ID or group name
+2014-03-24 Debug: Application::run message type for error_illegal_parameter is now error 
 2014-02-17 Added getCountryCodes for ISO codes
 2014-02-11 Application class now an extension of Base class
 2014-02-11 Some cosmetic changes in View class
