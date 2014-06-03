@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Description of Controller
  *
@@ -27,7 +29,8 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Controller {
+class Controller
+{
 
     /**
      * @var Application $app Holds the instance of the application 
@@ -47,7 +50,8 @@ class Controller {
      *
      * @param Application $_app The application object
      */
-    public function __construct($_app) {
+    public function __construct($_app)
+    {
 
         $this->app = $_app;
         $this->app->loadLanguage($this->app->controllerName);
@@ -65,7 +69,8 @@ class Controller {
      * @param string  $_snippet A placeholder like ERROR_FORM_TOO_LONG 
      * @return string           The String in the current language
      */
-    public function lang($_snippet) {
+    public function lang($_snippet)
+    {
 
         return $this->app->lang($_snippet);
     }
@@ -77,7 +82,8 @@ class Controller {
      * @param array  $_attributes Additional Attributes. Array of key=>value pairs
      * @return string
      */
-    public function buildURL($_path, $_attributes = array()) {
+    public function buildURL($_path, $_attributes = array())
+    {
 
         return $this->app->buildURL($_path, $_attributes);
     }
@@ -88,7 +94,8 @@ class Controller {
      * @param string $_path       Path to the picture on the media server
      * @return string
      */
-    public function buildMediaURL($_path) {
+    public function buildMediaURL($_path)
+    {
 
         return $this->app->buildMediaURL($_path);
     }
@@ -100,7 +107,8 @@ class Controller {
      * @param string $_message     (optional) flash message to be displayed on next page
      * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
      */
-    public function forward($_url = '', $_message = '', $_messageType = '') {
+    public function forward($_url = '', $_message = '', $_messageType = '')
+    {
         $this->app->forward($_url, $_message, $_messageType);
     }
 
@@ -115,7 +123,8 @@ class Controller {
      * @param string $_actionName
      * @return boolean
      */
-    public function isAllowed($_actionName) {
+    public function isAllowed($_actionName)
+    {
 
         // allowed, if no entry is found
         if (empty($this->accessGroups[$_actionName])) {
@@ -129,14 +138,15 @@ class Controller {
         }
         return false;
     }
-    
+
     /**
      * checks, if user is in a group
      * 
      * @param string/integer $_group
      * @return boolean
      */
-    public function inGroup($_group) {
+    public function inGroup($_group)
+    {
 
         $userGroups = $this->app->session->groups;
         if (is_int($_group)) {

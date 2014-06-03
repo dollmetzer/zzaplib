@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Session wrapper class
  * 
@@ -30,7 +32,8 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Session {
+class Session
+{
 
     /**
      * @var Application $app The application object (singleton)
@@ -52,7 +55,8 @@ class Session {
      * 
      * @param Application $_app The application object
      */
-    public function __construct($_app) {
+    public function __construct($_app)
+    {
 
         $this->app = $_app;
         $this->init();
@@ -65,7 +69,8 @@ class Session {
      * If a mobile channel is in the config, try to detect mobile clients
      * If a mobile client is detectec, try to performs a mobile quicklogin.
      */
-    public function init() {
+    public function init()
+    {
 
         session_start();
 
@@ -78,7 +83,7 @@ class Session {
             $this->user_lastlogin = 0;
             $this->user_language = $this->app->config['languages'][0];
             $this->theme = $this->app->config['themes'][0];
-            $this->groups = array(1=>'guest');
+            $this->groups = array(1 => 'guest');
         } else {
             $hits++;
             $this->hits = $hits;
@@ -93,7 +98,8 @@ class Session {
      * @param string $name
      * @param mixed  $value
      */
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $_SESSION[$name] = $value;
     }
 
@@ -105,7 +111,8 @@ class Session {
      * @param string $name
      * @return mixed
      */
-    public function __get($name) {
+    public function __get($name)
+    {
         if (isset($_SESSION[$name])) {
             return $_SESSION[$name];
         } else {
@@ -118,7 +125,8 @@ class Session {
      * 
      * @return array
      */
-    public function getAsArray() {
+    public function getAsArray()
+    {
         return $_SESSION;
     }
 

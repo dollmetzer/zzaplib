@@ -6,12 +6,15 @@
  * and open the template in the editor.
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Description of Base
  *
  * @author dirk
  */
-class Base {
+class Base
+{
 
     /**
      * @var array The configuration of the application 
@@ -49,33 +52,6 @@ class Base {
     public $dbh;
 
     /**
-     * Model class Autoloader
-     * 
-     * Model classes should be named like modulename_thingModel with the
-     * filename PATH_APP/modules/modulename/models/modulename_thingModel.php
-     *     
-     * @param type $_className Name of the class to load 
-     */
-    public function autoloadModels($_className) {
-
-        if (preg_match('/[a-zA-Z].Model$/', $_className)) {
-
-            $temp = explode('_', $_className);
-            if (sizeof($temp) > 1) {
-                $filename = PATH_APP . 'modules/' . $temp[sizeof($temp) - 2] . '/models/' . $_className . '.php';
-            } else {
-                $filename = PATH_APP . 'modules/core/models/' . $_className . '.php';
-            }
-
-            if (file_exists($filename)) {
-                require_once $filename;
-            } else {
-                error_log('Application::autoload - file not found: ' . $filename);
-            }
-        }
-    }
-
-    /**
      * Get a list of installed modules. If modules are set in the configuration,
      * get the list from the configuration. Every module entry must be an array.
      * 
@@ -88,7 +64,8 @@ class Base {
      * 
      * @return array
      */
-    protected function getModuleList() {
+    protected function getModuleList()
+    {
 
         if (empty($this->config['modules'])) {
             $list = array();
@@ -118,7 +95,8 @@ class Base {
      * 
      * @return array
      */
-    protected function getControllerList() {
+    protected function getControllerList()
+    {
 
         if (empty($this->config['modules'][$this->moduleName])) {
 
@@ -143,7 +121,8 @@ class Base {
      * 
      * @return array
      */
-    public function getCountryCodes() {
+    public function getCountryCodes()
+    {
 
         return array(
             "AF" => "Afghanistan",

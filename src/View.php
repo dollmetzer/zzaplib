@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * View class
  * 
@@ -29,7 +31,8 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class View {
+class View
+{
 
     /**
      * @var array $content Page content elements
@@ -66,7 +69,8 @@ class View {
      *
      * @param Application $_app The application object
      */
-    public function __construct($_app) {
+    public function __construct($_app)
+    {
 
         $this->app = $_app;
         $this->content = array();
@@ -83,7 +87,8 @@ class View {
      * Normally use the following template file:
      * PATH_APP/modules/MODULE_NAME/views/SESSION_THEME/CONTROLLER_NAME/ACTION_NAME.php
      */
-    public function render() {
+    public function render()
+    {
 
         $content = & $this->content;
         $lang = & $this->app->lang;
@@ -102,7 +107,8 @@ class View {
      * 
      * @param string $_filename
      */
-    public function addJS($_filename) {
+    public function addJS($_filename)
+    {
         $this->js[] = $_filename;
     }
 
@@ -111,7 +117,8 @@ class View {
      * 
      * @param string $_filename
      */
-    public function addCSS($_filename) {
+    public function addCSS($_filename)
+    {
         $this->css[] = $_filename;
     }
 
@@ -121,7 +128,8 @@ class View {
      * @param string $_groupName
      * @return boolean
      */
-    public function userInGroup($_groupName) {
+    public function userInGroup($_groupName)
+    {
 
         $userGroups = $this->app->session->groups;
         if (in_array($_groupName, $userGroups)) {
@@ -137,7 +145,8 @@ class View {
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
      * @return string|null
      */
-    public function buildURL($_path, $_output = true) {
+    public function buildURL($_path, $_output = true)
+    {
 
         $url = $this->app->buildURL($_path);
 
@@ -155,7 +164,8 @@ class View {
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
      * @return string|null
      */
-    public function buildMediaURL($_path, $_output = true) {
+    public function buildMediaURL($_path, $_output = true)
+    {
 
         $url = $this->app->buildMediaURL($_path);
 
@@ -174,7 +184,8 @@ class View {
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
      * @return string           The String in the current language
      */
-    public function lang($_snippet, $_output = true) {
+    public function lang($_snippet, $_output = true)
+    {
 
         $text = $this->app->lang($_snippet);
 
@@ -192,7 +203,8 @@ class View {
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
      * @return string           formatted date. In this case '19.12.2010' (german format)
      */
-    public function toDate($_datetime, $_output = true) {
+    public function toDate($_datetime, $_output = true)
+    {
 
         $text = strftime($this->lang('format_date', false), strtotime($_datetime));
 
@@ -210,7 +222,8 @@ class View {
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
      * @return string           formatted date. In this case '19.12.2010 06:03:59' (german format)
      */
-    public function toDatetime($_datetime, $_output = true) {
+    public function toDatetime($_datetime, $_output = true)
+    {
 
         $text = strftime($this->lang('format_datetime', false), strtotime($_datetime));
 
@@ -228,7 +241,8 @@ class View {
      * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
      * @return string           formatted date. In this case '19.12.2010 06:03' (german format)
      */
-    public function toDatetimeShort($_datetime, $_output = true) {
+    public function toDatetimeShort($_datetime, $_output = true)
+    {
 
         $text = strftime($this->lang('format_datetime_short', false), strtotime($_datetime));
 

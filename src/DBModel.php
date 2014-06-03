@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Description of DBModel
  *
@@ -27,21 +29,22 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class DBModel {
+class DBModel
+{
 
     /**
      * @var Application $app Holds the instance of the application 
      */
     public $app;
 
-    
     /**
      * Connects to DB. Use an already existing connection or open a new one
      * 
      * @param Application $_app
      * @param boolean $_master Use Master DB (default = slave) 
      */
-    public function __construct($_app, $_master = false) {
+    public function __construct($_app, $_master = false)
+    {
 
         $this->app = $_app;
         if ($this->app->dbh === NULL) {
@@ -56,15 +59,15 @@ class DBModel {
             }
 
             $options = array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
             );
 
             try {
-                $this->app->dbh = new PDO($dsn, $user, $pass, $options);
+                $this->app->dbh = new \PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {
                 die('DB Error: ' . $e->getMessage() . "<br />\n");
             }
-            $this->app->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->app->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
     }
 

@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Description of Application
  *
@@ -27,7 +29,8 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Application extends Base {
+class Application extends \dollmetzer\zzaplib\Base
+{
 
     /**
      * @var Session Holds the instance of the session 
@@ -44,32 +47,29 @@ class Application extends Base {
      */
     public $lang;
 
-    
     /**
      * Construct the application
      * 
      * @param array $config Configuration array
      */
-    public function __construct($config) {
+    public function __construct($config)
+    {
 
         $this->config = $config;
         $this->dbh = NULL;
-
-        // register autoloader for models, no class not found exception, not prepend
-        spl_autoload_register(array($this, 'autoloadModels'), false, false);
-
     }
 
     /**
      * Run the application
      */
-    public function run() {
+    public function run()
+    {
 
         // start session
-        $this->session = new Session($this);
+        $this->session = new \dollmetzer\zzaplib\Session($this);
 
         // start view
-        $this->view = new View($this);
+        $this->view = new \dollmetzer\zzaplib\View($this);
 
         // split query path into module, controller, action and params
         $this->processQueryPath();
@@ -79,19 +79,19 @@ class Application extends Base {
         $this->loadLanguage('core', 'core');
 
         // start controller
-        $controllerFile = PATH_APP . 'modules/' . $this->moduleName . '/controllers/' . $this->controllerName . 'Controller.php';
+        $controllerName = '\Application\modules\\' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller';
 
         try {
-            include $controllerFile;
-            $controllerName = $this->controllerName . 'Controller';
             $controller = new $controllerName($this);
+
             $actionName = (string) $this->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
                 error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
                 $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter'], 'error');
             }
-            if($controller->isAllowed($this->actionName)) {
-                $controller->$actionName();            
+
+            if ($controller->isAllowed($this->actionName)) {
+                $controller->$actionName();
             } else {
                 $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');
             }
@@ -117,7 +117,8 @@ class Application extends Base {
      * @param string $_message     (optional) flash message to be displayed on next page
      * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
      */
-    public function forward($_url = '', $_message = '', $_messageType = '') {
+    public function forward($_url = '', $_message = '', $_messageType = '')
+    {
 
         if (!empty($_message)) {
             if ($_messageType == 'error') {
@@ -139,7 +140,8 @@ class Application extends Base {
      * @param string $_snippet Name of the snippet
      * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
      */
-    public function lang($_snippet) {
+    public function lang($_snippet)
+    {
 
         if (empty($this->lang[$_snippet])) {
             $text = '###_' . $_snippet . '_###';
@@ -157,7 +159,8 @@ class Application extends Base {
      * @param array  $_attributes Additional Attributes. Array of key=>value pairs
      * @return string
      */
-    public function buildURL($_path, $_attributes = array()) {
+    public function buildURL($_path, $_attributes = array())
+    {
 
         if (empty($_SERVER['SERVER_NAME'])) {
             return '';
@@ -185,7 +188,8 @@ class Application extends Base {
      * @param string $_path       Path to the picture on the media server
      * @return string
      */
-    public function buildMediaURL($_path) {
+    public function buildMediaURL($_path)
+    {
 
         $url = 'http://' . URL_MEDIA . $_path;
         return $url;
@@ -201,7 +205,8 @@ class Application extends Base {
      * @param string $_module  Name of the module, if language file shouldn't be for current module
      * @return boolean success
      */
-    public function loadLanguage($_snippet, $_module = '') {
+    public function loadLanguage($_snippet, $_module = '')
+    {
 
         if ($_module == '') {
             $filename = PATH_APP . 'modules/' . $this->moduleName . '/data/' . $this->session->user_language . '_' . $_snippet . '.ini';
@@ -229,7 +234,8 @@ class Application extends Base {
      * If the then first parameter is an action name, extract it from the query and set $this->actionName 
      * The now remaining parameters are going to $this->params
      */
-    protected function processQueryPath() {
+    protected function processQueryPath()
+    {
 
         // set default values
         $this->moduleName = 'core';
@@ -272,7 +278,6 @@ class Application extends Base {
         $this->params = $query;
     }
 
-    
 }
 
 ?>

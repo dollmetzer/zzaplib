@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Description of Api
  *
@@ -27,18 +29,19 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Api extends Base {
-    
+class Api extends Base
+{
+
     public $HTTP_STATUS;
-    
     public $response;
-    
+
     /**
      * Construct the API
      * 
      * @param array $config Configuration array
      */
-    public function __construct($config) {
+    public function __construct($config)
+    {
 
         $this->config = $config;
         $this->dbh = NULL;
@@ -48,18 +51,15 @@ class Api extends Base {
 
         $this->HTTP_STATUS = array(
             // 1xx - Informations not implemented
-            
             // 2xx - Successful operations
-            200 => 'OK',        // success
-            201 => 'Created',   // ressource was created. "Location“-header-field may contain Address of the ressource 
-            202 => 'Accepted',  // request was queued and maybe later executed
-            
+            200 => 'OK', // success
+            201 => 'Created', // ressource was created. "Location“-header-field may contain Address of the ressource 
+            202 => 'Accepted', // request was queued and maybe later executed
             // 3xx - Redirections not implemented
-            
             // 4xx - Client errors
-            400 => 'Bad Request',       // syntax errors. 422 is semantic errors
-            401 => 'Unauthorized',      // no authentication sent
-            403 => 'Forbidden',         // 
+            400 => 'Bad Request', // syntax errors. 422 is semantic errors
+            401 => 'Unauthorized', // no authentication sent
+            403 => 'Forbidden', // 
             404 => 'Not Found',
             405 => 'Method Not Allowed',
             409 => 'Conflict',
@@ -69,39 +69,38 @@ class Api extends Base {
             423 => 'Locked',
             429 => 'Too Many Requests',
             451 => 'Unavailable For Legal Reasons',
-            
             // 5xx - Server errors
             500 => 'Internal Server Error',
             501 => 'Not Implemented',
             503 => 'Service Unavailable',
             507 => 'Insufficient Storage'
         );
-        
     }
 
     /**
      * Run the API
      */
-    public function run() {
-        
+    public function run()
+    {
+
         // default response
         $this->response = array(
             'statusCode' => 200,
             'statusMessage' => $this->HTTP_STATUS[200],
             'data' => array()
         );
-        
+
         // split query path into module, controller, action and params
         $this->processQueryPath();
 
         /*
-        echo '<pre>';
-        echo $this->moduleName."\n";
-        echo $this->controllerName."\n";
-        echo $this->actionName."\n";
-        print_r($this->params);
-        */
-        
+          echo '<pre>';
+          echo $this->moduleName."\n";
+          echo $this->controllerName."\n";
+          echo $this->actionName."\n";
+          print_r($this->params);
+         */
+
         // start controller
         $controllerFile = PATH_APP . 'modules/' . $this->moduleName . '/controllers/' . $this->controllerName . 'Controller.php';
 
@@ -114,17 +113,16 @@ class Api extends Base {
             if (method_exists($controller, $actionName) === false) {
                 error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
                 $this->response['statusCode'] = 405;
-                $this->response['statusMessage'] = $this->HTTP_STATUS[405];                
+                $this->response['statusMessage'] = $this->HTTP_STATUS[405];
             } else {
-                if($controller->isAllowed($this->actionName)) {
-                    $controller->$actionName();            
+                if ($controller->isAllowed($this->actionName)) {
+                    $controller->$actionName();
                 } else {
-                    error_log('Application::run() - access to '.$controllerName.'::'.$actionName.' is forbidden');
+                    error_log('Application::run() - access to ' . $controllerName . '::' . $actionName . ' is forbidden');
                     $this->response['statusCode'] = 403;
-                    $this->response['statusMessage'] = $this->HTTP_STATUS[403];                
-                }                
+                    $this->response['statusMessage'] = $this->HTTP_STATUS[403];
+                }
             }
-                
         } catch (Exception $e) {
 
             $message = 'Application error in ';
@@ -134,16 +132,13 @@ class Api extends Base {
             error_log($message);
             $this->response['statusCode'] = 500;
             $this->response['statusMessage'] = $this->HTTP_STATUS[500];
-            
         }
-    
-        header('Content-Type: application/json');
-        header('HTTP/1.0 '.$this->response['statusCode'].' '.$this->response['statusMessage']);
-        echo json_encode($this->response);
 
+        header('Content-Type: application/json');
+        header('HTTP/1.0 ' . $this->response['statusCode'] . ' ' . $this->response['statusMessage']);
+        echo json_encode($this->response);
     }
-    
-    
+
     /**
      * Get Query parameters from the get parameter 'q', like
      * 
@@ -154,7 +149,8 @@ class Api extends Base {
      * If the then first parameter is an action name, extract it from the query and set $this->actionName 
      * The now remaining parameters are going to $this->params
      */
-    protected function processQueryPath() {
+    protected function processQueryPath()
+    {
 
         // set default values
         $this->moduleName = 'core';
@@ -168,7 +164,7 @@ class Api extends Base {
 
         // action = method
         $this->actionName = strtolower($_SERVER['REQUEST_METHOD']);
-                
+
         // clean query path
         $queryRaw = explode('/', $_GET['q']);
         $query = array();
@@ -195,17 +191,16 @@ class Api extends Base {
         $this->params = $query;
     }
 
-    
     /**
      * Dummy method
      * 
      * @param string $_snippet
      * @param string $_module
      */
-    public function loadLanguage($_snippet, $_module = '') {
-        
+    public function loadLanguage($_snippet, $_module = '')
+    {
+
         // do nothing
-        
     }
-    
+
 }

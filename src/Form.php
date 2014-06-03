@@ -19,6 +19,8 @@
  * this program; if not, see <http://www.gnu.org/licenses/>. 
  */
 
+namespace dollmetzer\zzaplib;
+
 /**
  * Form class
  * 
@@ -29,7 +31,8 @@
  * @copyright 2006 - 2014 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Form {
+class Form
+{
 
     /**
      * @var Application $app The application object
@@ -61,7 +64,8 @@ class Form {
      *
      * @param Application $_app The application object
      */
-    public function __construct($_app) {
+    public function __construct($_app)
+    {
         $this->app = $_app;
         $this->name = '';
         $this->title = '';
@@ -76,7 +80,8 @@ class Form {
      * 
      * @return boolean Success
      */
-    public function process() {
+    public function process()
+    {
 
         // set default values
         $success = true;
@@ -118,7 +123,8 @@ class Form {
      * Returns all data for the rendering of the form template 
      * @return array
      */
-    public function getViewdata() {
+    public function getViewdata()
+    {
 
         return array(
             'name' => $this->name,
@@ -133,7 +139,8 @@ class Form {
      * 
      * @return array
      */
-    public function getValues() {
+    public function getValues()
+    {
 
         $result = array();
         foreach ($this->fields as $name => $field) {
@@ -149,7 +156,8 @@ class Form {
      * @param string $_name Name of the field
      * @return type
      */
-    public function validate($_name) {
+    public function validate($_name)
+    {
 
         // required
         if (!empty($this->fields[$_name]['required'])) {
