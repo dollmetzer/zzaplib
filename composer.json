@@ -12,8 +12,8 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "zzaplib": "src"
+        "psr-4": {
+            "dollmetzer\\zzaplib\\": "src/"
         }
     }
 }
