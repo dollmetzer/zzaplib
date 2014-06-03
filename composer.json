@@ -1,5 +1,5 @@
 {
-	"name": "dollmetzer/zzaplib",
+    "name": "dollmetzer/zzaplib",
     "description": "Lightweigt PHP application framework",
     "type": "library",
     "license": "GPLv3",
@@ -12,8 +12,8 @@
         }
     ],
     "autoload": {
-        "psr-0" : {
-            "" : "src"
+        "psr-0": {
+            "zzaplib": "src"
         }
     }
 }
