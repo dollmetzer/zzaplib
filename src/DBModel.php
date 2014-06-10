@@ -47,7 +47,8 @@ class DBModel
     {
 
         $this->app = $_app;
-        if ($this->app->dbh === NULL) {
+
+        if (empty($this->app->dbh)) {
             if ($_master === false) {
                 $dsn = $this->app->config['db']['slave']['dsn'];
                 $user = $this->app->config['db']['slave']['user'];
@@ -69,6 +70,88 @@ class DBModel
             }
             $this->app->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
+    }
+
+    /**
+     * create a new data set
+     * 
+     * @param array $_data
+     * @return integer
+     * @throws Exception
+     */
+    public function create($_data)
+    {
+
+        if (empty($this->tablename) || empty($_data) || !is_array($_data)) {
+            throw new Exception('insufficient data');
+        }
+        $names = join(', ', array_keys($_data));
+        $questionmarks = join(', ', array_fill(0, sizeof(array_keys($_data)), '?'));
+        $values = array_values($_data);
+        $sql = "INSERT INTO `" . $this->tablename . '` (' . $names . ') VALUES (' . $questionmarks . ')';
+        $stmt = $this->app->dbh->prepare($sql);
+        $stmt->execute($values);
+        return $this->app->dbh->lastInsertId();
+    }
+
+    /**
+     * read a data set
+     * 
+     * @param integer $_id
+     * @return array
+     * @throws Exception
+     */
+    public function read($_id)
+    {
+
+        if (empty($this->tablename) || empty($_id)) {
+            throw new Exception('insufficient data');
+        }
+        $sql = "SELECT * FROM `" . $this->tablename . "` WHERE id=" . (int) $_id;
+        $stmt = $this->app->dbh->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * update a data set
+     * 
+     * @param integer $_id
+     * @param array $_data
+     * @throws Exception
+     */
+    public function update($_id, $_data)
+    {
+
+        if (empty($this->tablename) || empty($_id) || empty($_data) || !is_array($_data)) {
+            throw new Exception('insufficient data');
+        }
+        $names = array();
+        foreach (array_keys($_data) as $key) {
+            $names[] = $key . '=?';
+        }
+        $values = array_values($_data);
+        $values[] = $_id;
+        $sql = "UPDATE `" . $this->tablename . "` SET " . join(', ', $names) . " WHERE id=?";
+        $stmt = $this->app->dbh->prepare($sql);
+        $stmt->execute($values);
+    }
+
+    /**
+     * Delete a data set
+     * 
+     * @param integer $_id
+     * @throws Exception
+     */
+    public function delete($_id)
+    {
+
+        if (empty($this->tablename) || empty($_id)) {
+            throw new Exception('insufficient data');
+        }
+        $sql = "DELETE FROM `" . $this->tablename . "` WHERE id=" . (int) $_id;
+        $stmt = $this->app->dbh->prepare($sql);
+        $stmt->execute();
     }
 
 }
