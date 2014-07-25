@@ -98,7 +98,7 @@ class Base
     protected function getControllerList()
     {
 
-        if (empty($this->config['modules'][$this->moduleName])) {
+        if (!empty($this->config['modules'][$this->moduleName])) {
 
             $list = $this->config['modules'][$this->moduleName];
         } else {

@@ -73,6 +73,17 @@ class Application extends \dollmetzer\zzaplib\Base
 
         // split query path into module, controller, action and params
         $this->processQueryPath();
+        
+        if(DEBUG_REQUEST) {
+            echo "\n<!-- REQUEST\n";
+            echo 'Module     : '.$this->moduleName."\n";
+            echo 'Controller : '.$this->controllerName."\n";
+            echo 'Action     : '.$this->actionName."\n";
+            echo "Parameters : \n";
+            var_dump($this->params);
+            echo "\n-->\n";
+        }
+
 
         // load core language file for core module
         $this->lang = array();
@@ -91,7 +102,9 @@ class Application extends \dollmetzer\zzaplib\Base
             }
 
             if ($controller->isAllowed($this->actionName)) {
+                $controller->preAction();
                 $controller->$actionName();
+                $controller->postAction();
             } else {
                 $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');
             }
@@ -165,11 +178,15 @@ class Application extends \dollmetzer\zzaplib\Base
         if (empty($_SERVER['SERVER_NAME'])) {
             return '';
         }
+        
         $url = 'http://';
         $url .= $_SERVER['SERVER_NAME'];
-        $url .= $_SERVER["PHP_SELF"];
-        if (!empty($_path))
-            $url .= '?q=' . $_path;
+        if(URL_REWRITE) {
+            $url .= '/'.$_path;
+        } else {
+            if (!empty($_path))
+                $url .= '/index.php?q=' . $_path;
+        }
 
         if (!empty($_attributes)) {
             $addition = array();
@@ -273,9 +290,10 @@ class Application extends \dollmetzer\zzaplib\Base
         if (sizeof($query) > 0) {
             $this->actionName = array_shift($query);
         }
-
+        
         // still any additional parameter remaining?
         $this->params = $query;
+        
     }
 
 }
