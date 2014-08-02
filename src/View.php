@@ -99,6 +99,9 @@ class View
             $filename .= '/views/' . $this->app->session->theme . '/' . $this->app->controllerName . '/';
             $filename .= $this->app->actionName . '.php';
         }
+        if(!file_exists($filename)) {
+            throw new \Exception("View: Template $filename not found.");
+        }
         include $filename;
     }
 

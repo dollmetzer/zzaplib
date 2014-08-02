@@ -73,7 +73,6 @@ class Base
                 $dir = opendir(PATH_APP . 'modules/');
                 while ($file = readdir($dir)) {
                     if (!preg_match('/^\./', $file)) {
-                        echo $file . "<br />\n";
                         if (is_dir(PATH_APP . 'modules/' . $file)) {
                             $list[] = $file;
                         }

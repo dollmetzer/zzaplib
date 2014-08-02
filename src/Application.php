@@ -97,12 +97,12 @@ class Application extends \dollmetzer\zzaplib\Base
 
             $actionName = (string) $this->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
-                error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
+                error_log('Application::run() - method ' . $actionName . ' not found in ' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller');
                 $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter'], 'error');
             }
 
+            $controller->preAction();
             if ($controller->isAllowed($this->actionName)) {
-                $controller->preAction();
                 $controller->$actionName();
                 $controller->postAction();
             } else {
@@ -112,14 +112,14 @@ class Application extends \dollmetzer\zzaplib\Base
 
             $this->session->flasherror = '';
             $this->session->flashmessage = '';
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
 
             $message = 'Application error in ';
             $message .= $e->getFile() . ' in Line ';
             $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
             error_log($message);
-            $this->forward($this->buildURL(''), $this->lang['error_application']);
+            $this->forward($this->buildURL(''), $this->lang['error_application'], 'error');
         }
     }
 
