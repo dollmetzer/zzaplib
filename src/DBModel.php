@@ -83,7 +83,7 @@ class DBModel
     {
 
         if (empty($this->tablename) || empty($_data) || !is_array($_data)) {
-            throw new Exception('insufficient data');
+            throw new \Exception('insufficient data');
         }
         $names = join(', ', array_keys($_data));
         $questionmarks = join(', ', array_fill(0, sizeof(array_keys($_data)), '?'));
@@ -105,7 +105,7 @@ class DBModel
     {
 
         if (empty($this->tablename) || empty($_id)) {
-            throw new Exception('insufficient data');
+            throw new \Exception('insufficient data');
         }
         $sql = "SELECT * FROM `" . $this->tablename . "` WHERE id=" . (int) $_id;
         $stmt = $this->app->dbh->prepare($sql);
@@ -124,7 +124,7 @@ class DBModel
     {
 
         if (empty($this->tablename) || empty($_id) || empty($_data) || !is_array($_data)) {
-            throw new Exception('insufficient data');
+            throw new \Exception('insufficient data');
         }
         $names = array();
         foreach (array_keys($_data) as $key) {
@@ -147,7 +147,7 @@ class DBModel
     {
 
         if (empty($this->tablename) || empty($_id)) {
-            throw new Exception('insufficient data');
+            throw new \Exception('insufficient data');
         }
         $sql = "DELETE FROM `" . $this->tablename . "` WHERE id=" . (int) $_id;
         $stmt = $this->app->dbh->prepare($sql);

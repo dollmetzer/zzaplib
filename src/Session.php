@@ -59,6 +59,7 @@ class Session
     {
 
         $this->app = $_app;
+        
         $this->init();
     }
 
@@ -66,14 +67,11 @@ class Session
      * Initialize a session.
      * 
      * Sets the main session variables.
-     * If a mobile channel is in the config, try to detect mobile clients
-     * If a mobile client is detectec, try to performs a mobile quicklogin.
      */
     public function init()
     {
 
         session_start();
-
         $hits = $this->hits;
         if (empty($hits)) {
             $this->start = time();
@@ -88,6 +86,17 @@ class Session
             $hits++;
             $this->hits = $hits;
         }
+    }
+
+    /**
+     * Destroys a session and creates a new one
+     */
+    public function destroy()
+    {
+
+        session_destroy();
+        session_unset();
+        $this->init();
     }
 
     /**
