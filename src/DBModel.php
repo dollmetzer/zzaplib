@@ -85,7 +85,7 @@ class DBModel
         if (empty($this->tablename) || empty($_data) || !is_array($_data)) {
             throw new \Exception('insufficient data');
         }
-        $names = join(', ', array_keys($_data));
+        $names = '`' . join('`, `', array_keys($_data)) . '`';
         $questionmarks = join(', ', array_fill(0, sizeof(array_keys($_data)), '?'));
         $values = array_values($_data);
         $sql = "INSERT INTO `" . $this->tablename . '` (' . $names . ') VALUES (' . $questionmarks . ')';
