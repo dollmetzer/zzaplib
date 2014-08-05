@@ -175,12 +175,7 @@ class Application extends \dollmetzer\zzaplib\Base
     public function buildURL($_path, $_attributes = array())
     {
 
-        if (empty($_SERVER['SERVER_NAME'])) {
-            return '';
-        }
-        
-        $url = 'http://';
-        $url .= $_SERVER['SERVER_NAME'];
+        $url = 'http://'.URL_BASE;
         if(URL_REWRITE) {
             $url .= '/'.$_path;
         } else {
