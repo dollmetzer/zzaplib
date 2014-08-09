@@ -106,7 +106,11 @@ class Application extends \dollmetzer\zzaplib\Base
                 $controller->$actionName();
                 $controller->postAction();
             } else {
-                $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');
+                if($this->session->user_id == 0) {
+                    $this->forward($this->buildURL('account/login'), $this->lang('error_not_logged_in'), 'error');
+                } else {
+                    $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');                    
+                }
             }
             $this->view->render();
 
