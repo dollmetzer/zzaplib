@@ -48,6 +48,11 @@ class Form
      * @var string $title Title of the form
      */
     public $title;
+    
+    /**
+     * @var string $action optional. If empty, form calls itself
+     */
+    public $action;
 
     /**
      * @var boolean $hasErrors Indicates, if an error occured during the processing 
@@ -69,6 +74,7 @@ class Form
         $this->app = $_app;
         $this->name = '';
         $this->title = '';
+        $this->action = '';
         $this->hasErrors = false;
     }
 
@@ -129,6 +135,7 @@ class Form
         return array(
             'name' => $this->name,
             'title' => $this->title,
+            'action' => $this->action,
             'hasErrors' => $this->hasErrors,
             'fields' => $this->fields
         );

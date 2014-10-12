@@ -37,7 +37,7 @@ class Base
     public $actionName;
 
     /**
-     * @var string $params Holds the URL parameters after controller/action/...
+     * @var array $params Holds the URL parameters after controller/action/...
      */
     public $params;
 
