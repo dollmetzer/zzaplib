@@ -1,6 +1,6 @@
 CHANGELOG
 =========
-
+2014-11-29 View::toDate, toDatetime and toDatetimeShort returning '-' for 0000-00-00 00:00:00 
 2014-06-10 DBModel added standard methods create, read, update and delete
 2014-06-03 Refactored for use of namespaces 
 2014-06-01 Controller::inGroup now working with group ID or group name

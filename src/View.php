@@ -209,7 +209,11 @@ class View
     public function toDate($_datetime, $_output = true)
     {
 
-        $text = strftime($this->lang('format_date', false), strtotime($_datetime));
+        if($_datetime == '0000-00-00 00:00:00') {
+            $text = '-';
+        } else {
+            $text = strftime($this->lang('format_date', false), strtotime($_datetime));        
+        }
 
         if ($_output === true) {
             echo $text;
@@ -228,7 +232,12 @@ class View
     public function toDatetime($_datetime, $_output = true)
     {
 
-        $text = strftime($this->lang('format_datetime', false), strtotime($_datetime));
+        
+        if($_datetime == '0000-00-00 00:00:00') {
+            $text = '-';
+        } else {
+            $text = strftime($this->lang('format_datetime', false), strtotime($_datetime));
+        }
 
         if ($_output === true) {
             echo $text;
@@ -247,8 +256,13 @@ class View
     public function toDatetimeShort($_datetime, $_output = true)
     {
 
-        $text = strftime($this->lang('format_datetime_short', false), strtotime($_datetime));
-
+        
+        if($_datetime == '0000-00-00 00:00:00') {
+            $text = '-';
+        } else {
+            $text = strftime($this->lang('format_datetime_short', false), strtotime($_datetime));
+        }
+        
         if ($_output === true) {
             echo $text;
             return;
