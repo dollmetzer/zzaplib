@@ -109,7 +109,15 @@ class Form
         foreach ($this->fields as $name => $field) {
             if (!in_array($field['type'], array('static', 'divider', 'submit'))) {
                 // fetch
-                $value = $_POST[$name];
+                if($field['type'] == 'checkbox') {
+                    if(empty($_POST[$name])) {
+                        $value = false;
+                    } else {
+                        $value = true;
+                    }
+                } else {
+                    $value = $_POST[$name];    
+                }
                 // preprocessing
                 $this->fields[$name]['value'] = $value;
                 // validating

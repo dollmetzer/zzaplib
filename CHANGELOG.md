@@ -1,5 +1,6 @@
 CHANGELOG
 =========
+2014-12-07 Form update checkbox
 2014-11-29 View::toDate, toDatetime and toDatetimeShort returning '-' for 0000-00-00 00:00:00 
 2014-06-10 DBModel added standard methods create, read, update and delete
 2014-06-03 Refactored for use of namespaces 
