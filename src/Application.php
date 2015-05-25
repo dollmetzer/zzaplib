@@ -91,9 +91,13 @@ class Application extends \dollmetzer\zzaplib\Base
 
         // start controller
         $controllerName = '\Application\modules\\' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller';
-
+        
         try {
-            $controller = new $controllerName($this);
+            if(class_exists($controllerName)) {
+                $controller = new $controllerName($this);
+            } else {
+                throw new \Exception('Controller class '.$controllerName.' not found');
+            }
 
             $actionName = (string) $this->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
