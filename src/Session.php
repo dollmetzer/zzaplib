@@ -32,8 +32,7 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Session
-{
+class Session {
 
     /**
      * @var Application $app The application object (singleton)
@@ -55,11 +54,10 @@ class Session
      * 
      * @param Application $_app The application object
      */
-    public function __construct($_app)
-    {
+    public function __construct($_app) {
 
         $this->app = $_app;
-        
+
         $this->init();
     }
 
@@ -68,8 +66,7 @@ class Session
      * 
      * Sets the main session variables.
      */
-    public function init()
-    {
+    public function init() {
 
         session_start();
         $hits = $this->hits;
@@ -91,8 +88,7 @@ class Session
     /**
      * Destroys a session and creates a new one
      */
-    public function destroy()
-    {
+    public function destroy() {
 
         session_destroy();
         session_unset();
@@ -104,12 +100,11 @@ class Session
      * 
      * Depending on $this->is_web stores the value in $_SESSION or in the session object
      * 
-     * @param string $name
-     * @param mixed  $value
+     * @param string $_name
+     * @param mixed  $_value
      */
-    public function __set($name, $value)
-    {
-        $_SESSION[$name] = $value;
+    public function __set($_name, $_value) {
+        $_SESSION[$_name] = $_value;
     }
 
     /**
@@ -117,13 +112,12 @@ class Session
      * 
      * Depending on $this->is_web stores gets the value from $_SESSION or from the session object
      * 
-     * @param string $name
+     * @param string $_name
      * @return mixed
      */
-    public function __get($name)
-    {
-        if (isset($_SESSION[$name])) {
-            return $_SESSION[$name];
+    public function __get($_name) {
+        if (isset($_SESSION[$_name])) {
+            return $_SESSION[$_name];
         } else {
             return null;
         }
@@ -134,9 +128,22 @@ class Session
      * 
      * @return array
      */
-    public function getAsArray()
-    {
+    public function getAsArray() {
         return $_SESSION;
+    }
+
+    /**
+     * Write an entry in the session table
+     * 
+     * CAUTION: There must be the following model in your app:
+     * \Application\modules\core\models\sessionModel
+     * 
+     * @param type $_area
+     */
+    public function track($_area = '') {
+
+        $sessionModel = new \Application\modules\core\models\sessionModel($this->app);
+        $sessionModel->update($_area);
     }
 
 }
