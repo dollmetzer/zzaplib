@@ -174,7 +174,11 @@ class Form
 
         $result = array();
         foreach ($this->fields as $name => $field) {
-            $result[$name] = $field['value'];
+            if($field['type'] == 'code') {
+                $result[$name] = $field['value'];
+            } else {
+                $result[$name] = htmlentities($field['value']) ;
+            }
         }
         return $result;
     }
