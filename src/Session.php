@@ -86,6 +86,40 @@ class Session {
     }
 
     /**
+     * Login with user credentials
+     * 
+     * @param array $_user
+     */
+    public function login($_user) {
+
+        $userModel = new \Application\modules\core\models\userModel($this->app);
+        $userModel->setLastlogin($_user['id']);
+        $data = array(
+            'token' => md5($_user['handle'] . time() . $_user['lastlogin']),
+            'useragent' => $_SERVER['HTTP_USER_AGENT']
+        );
+        $userModel->update($_user['id'], $data);
+        $this->app->session->user_id = $_user['id'];
+        $this->app->session->user_handle = $_user['handle'];
+        $this->app->session->user_lastlogin = $_user['lastlogin'];
+        $this->app->session->user_language = $_user['language'];
+        // get user groups
+        $groupModel = new \Application\modules\core\models\groupModel($this->app);
+        $groups = $groupModel->getUserGroups($_user['id']);
+        $sessionGroups = array();
+        for ($i = 0; $i < sizeof($groups); $i++) {
+            $sessionGroups[$groups[$i]['id']] = $groups[$i]['name'];
+        }
+        $this->app->session->groups = $sessionGroups;
+
+        $this->app->session->groups = array('user');
+        if($this->app->config['quicklogin'] === true) {
+            setcookie('qltoken', $data['token'], 0, null, null, false, true);
+        }
+        
+    }
+    
+    /**
      * Destroys a session and creates a new one
      */
     public function destroy() {
