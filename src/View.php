@@ -86,10 +86,15 @@ class View
      * If $this->template is not empty, use this file (PATH_APP.$this->template).
      * Normally use the following template file:
      * PATH_APP/modules/MODULE_NAME/views/SESSION_THEME/CONTROLLER_NAME/ACTION_NAME.php
+     * 
+     * @param boolean $_capture If true, captures and returns result.
+     * @param string $_template If given, it overrides the standard template and also $this->template
+     * @return string
+     * @throws \Exception
      */
-    public function render()
+    public function render($_capture=false, $_template='')
     {
-
+        
         $content = & $this->content;
         $lang = & $this->app->lang;
         if (!empty($this->template)) {
@@ -99,10 +104,26 @@ class View
             $filename .= '/views/' . $this->app->session->theme . '/' . $this->app->controllerName . '/';
             $filename .= $this->app->actionName . '.php';
         }
+        if(!empty($_template)) {
+            $filename = PATH_APP . $_template;
+        }
         if(!file_exists($filename)) {
             throw new \Exception("View: Template $filename not found.");
         }
+
+        // direct output...
+        if($_capture === false) {
+            include $filename;
+            return;
+        }
+        
+        /// ... or capture rendering
+        ob_start();
         include $filename;
+        $result = ob_get_contents();
+        ob_end_clean();
+        return $result;
+        
     }
 
     /**
