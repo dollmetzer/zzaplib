@@ -1,7 +1,7 @@
 zzaplib
 =======
 
-Zzaplib is a lightweigt PHP application framework.
+Zzaplib is a lightweight PHP application framework.
 The first version was used in a now defunct messaging application named zzap in 2006-2009.
 It was under constant development since then for various web applications.
 

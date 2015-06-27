@@ -115,23 +115,16 @@ class Form
                     } else {
                         $value = true;
                     }
-                } else {
-                    $value = $_POST[$name];    
-                }
-                if($field['type'] == 'file') {
+                } elseif($field['type'] == 'file') {
                     // check, if file was sent...
-                    $value = $FILES[$name];
+                    $value = $_FILES[$name]['name'];
                     
                     // check mimetype
-                    if(!empty($field['mimetype'])) {
-                        $mimetypes = explode(',',$field['mimetype']);
-                        print_r($mimetypes);
-                    }
                     
                     // check filesize
                     
-                    // check moved
-                    
+                } else {
+                    $value = $_POST[$name];    
                 }
                 // preprocessing
                 $this->fields[$name]['value'] = $value;
