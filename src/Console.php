@@ -131,7 +131,12 @@ class Console extends \dollmetzer\zzaplib\Base
         
     }
     
-    
+    /**
+     * Dummy method
+     */
+    public function loadLanguage() {
+        
+    }
     
 }
 ?>
