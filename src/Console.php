@@ -29,9 +29,8 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Console extends \dollmetzer\zzaplib\Base
-{
- 
+class Console extends \dollmetzer\zzaplib\Base {
+
     /**
      * @var string $scriptname Name of the script (usually 'console' 
      */
@@ -41,58 +40,54 @@ class Console extends \dollmetzer\zzaplib\Base
      * @var string $action Name of the action
      */
     public $action;
-    
+
     /**
      * @var array $commands 
      */
     protected $commands;
 
-    
     /**
      * Construct the application
      * 
      * @param array $config Configuration array
      */
-    public function __construct($config)
-    {
+    public function __construct($config) {
 
         $this->config = $config;
         $this->dbh = NULL;
         $this->commands = array();
-        
     }
-    
+
     /**
      * Run the command
      */
-    public function run($argv)
-    {
-        
+    public function run($argv) {
+
         // only commandline execution allowed 
-        if(sizeof($argv) < 1) {
+        if (sizeof($argv) < 1) {
             die("\nRemote call prohibited");
-        }   
-     
+        }
+
         $this->scriptname = array_shift($argv);
 
         $this->getCommands();
-        if(sizeof($argv) < 1) {
-            die("\nNo action given. Valid actions are : ".join(', ', array_keys($this->commands))."\n");
+        if (sizeof($argv) < 1) {
+            die("\nNo action given. Valid actions are : " . join(', ', array_keys($this->commands)) . "\n");
         }
-        if(!in_array($argv[0], array_keys($this->commands))) {
-            die("\nNo valid action given. Valid actions are : ".join(', ', array_keys($this->commands))."\n");
+        if (!in_array($argv[0], array_keys($this->commands))) {
+            die("\nNo valid action given. Valid actions are : " . join(', ', array_keys($this->commands)) . "\n");
         }
-        
+
         $this->action = array_shift($argv);
-        
+
         $this->params = $argv;
-        
+
         //include $this->commands[$this->action];
-        
+
         $commandName = '\Application\modules\\' . $this->commands[$this->action] . '\commands\\' . $this->action . 'Command';
         try {
             $command = new $commandName($this);
-            $command->run();    
+            $command->run();
         } catch (\Exception $e) {
             $message = 'Commandline error in ';
             $message .= $e->getFile() . ' in Line ';
@@ -101,26 +96,25 @@ class Console extends \dollmetzer\zzaplib\Base
             error_log($message);
         }
         /*
-        $cmdClass = $this->action.'Command';
-        $command = new $cmdClass($this);
-        $command->run();
-        */
+          $cmdClass = $this->action.'Command';
+          $command = new $cmdClass($this);
+          $command->run();
+         */
     }
-    
-    
+
     /**
      * Get a list of valid commands
      */
     public function getCommands() {
-        
+
         $modules = $this->getModuleList();
-        
-        foreach($modules as $module) {
-            $modDir = PATH_APP.'modules/'.$module.'/commands/';
-            if(is_dir($modDir)) {
+
+        foreach ($modules as $module) {
+            $modDir = PATH_APP . 'modules/' . $module . '/commands/';
+            if (is_dir($modDir)) {
                 $dir = opendir($modDir);
                 while ($file = readdir($dir)) {
-                    if(preg_match('/Command\.php$/', $file)) {
+                    if (preg_match('/Command\.php$/', $file)) {
                         $cname = preg_replace('/Command\.php$/', '', $file);
                         //$this->commands[$cname] = $modDir.$file;
                         $this->commands[$cname] = $module;
@@ -128,15 +122,8 @@ class Console extends \dollmetzer\zzaplib\Base
                 }
             }
         }
-        
     }
-    
-    /**
-     * Dummy method
-     */
-    public function loadLanguage() {
-        
-    }
-    
+
 }
+
 ?>

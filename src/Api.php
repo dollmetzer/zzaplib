@@ -191,16 +191,4 @@ class Api extends Base
         $this->params = $query;
     }
 
-    /**
-     * Dummy method
-     * 
-     * @param string $_snippet
-     * @param string $_module
-     */
-    public function loadLanguage($_snippet, $_module = '')
-    {
-
-        // do nothing
-    }
-
 }

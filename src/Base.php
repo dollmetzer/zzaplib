@@ -29,8 +29,7 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Base
-{
+class Base {
 
     /**
      * @var array The configuration of the application 
@@ -58,6 +57,11 @@ class Base
     public $params;
 
     /**
+     * @var array Language snippets 
+     */
+    public $lang;
+
+    /**
      * @var Controller Holds the instance of the Controller 
      */
     public $controller;
@@ -80,8 +84,7 @@ class Base
      * 
      * @return array
      */
-    protected function getModuleList()
-    {
+    protected function getModuleList() {
 
         if (empty($this->config['modules'])) {
             $list = array();
@@ -110,8 +113,7 @@ class Base
      * 
      * @return array
      */
-    protected function getControllerList()
-    {
+    protected function getControllerList() {
 
         if (!empty($this->config['modules'][$this->moduleName])) {
 
@@ -132,12 +134,91 @@ class Base
     }
 
     /**
+     * Try to load language snippets and store them in $this->lang
+     * The desired language is stored in $_SESSION['user_language'].
+     * The name of the file is [language]_[snippet].ini
+     * E.g. 'de_account.ini' holds the snippets for the account controller in german.
+     * 
+     * @param string $_snippet  Name of the snippet - mostly the controller name
+     * @param string $_module   Name of the module, if language file shouldn't be for current module
+     * @param string $_language two letter code of language, if not to use the user language in the session
+     * @return boolean success
+     */
+    public function loadLanguage($_snippet, $_module = '', $_language = '') {
+
+        if (empty($_language)) {
+            $language = $this->session->user_language;
+        } else {
+            $language = $_language;
+        }
+
+        if ($_module == '') {
+            $filename = PATH_APP . 'modules/' . $this->moduleName . '/data/' . $language . '_' . $_snippet . '.ini';
+        } else {
+            $filename = PATH_APP . 'modules/' . $_module . '/data/' . $language . '_' . $_snippet . '.ini';
+        }
+
+        if (file_exists($filename)) {
+            $lang = parse_ini_file($filename);
+            $this->lang = array_merge($this->lang, $lang);
+            return true;
+        } else {
+            error_log('Language File ' . $filename . ' not found');
+        }
+        return false;
+    }
+
+    /**
+     * Return a language snippet in the current language
+     * 
+     * @param string $_snippet Name of the snippet
+     * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
+     */
+    public function lang($_snippet) {
+
+        if (empty($this->lang[$_snippet])) {
+            $text = '###_' . $_snippet . '_###';
+        } else {
+            $text = $this->lang[$_snippet];
+        }
+
+        return $text;
+    }
+
+    /**
+     * Build a complete URL from a query string
+     * 
+     * @param string $_path       Query string like controller/action/param_1/param_n 
+     * @param array  $_attributes Additional Attributes. Array of key=>value pairs
+     * @return string
+     */
+    public function buildURL($_path, $_attributes = array()) {
+
+        $url = 'http://' . URL_BASE;
+        if (URL_REWRITE) {
+            $url .= '/' . $_path;
+        } else {
+            if (!empty($_path))
+                $url .= '/index.php?q=' . $_path;
+        }
+
+        if (!empty($_attributes)) {
+            $addition = array();
+            foreach ($_attributes as $key => $val) {
+                $addition[] = $key . '=' . urlencode($val);
+            }
+            $url .= '&' . join('&', $addition);
+        }
+
+        return $url;
+    }
+
+    /**
      * Returns an array of 2 digit ISO 3166 country codes
      * 
      * @return array
      */
-    public function getCountryCodes()
-    {
+    public function getCountryCodes() {
 
         return array(
             "AF" => "Afghanistan",

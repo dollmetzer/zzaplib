@@ -29,8 +29,7 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Application extends \dollmetzer\zzaplib\Base
-{
+class Application extends \dollmetzer\zzaplib\Base {
 
     /**
      * @var Session Holds the instance of the session 
@@ -43,17 +42,11 @@ class Application extends \dollmetzer\zzaplib\Base
     public $view;
 
     /**
-     * @var array Language snippets 
-     */
-    public $lang;
-
-    /**
      * Construct the application
      * 
      * @param array $config Configuration array
      */
-    public function __construct($config)
-    {
+    public function __construct($config) {
 
         $this->config = $config;
         $this->dbh = NULL;
@@ -62,8 +55,7 @@ class Application extends \dollmetzer\zzaplib\Base
     /**
      * Run the application
      */
-    public function run()
-    {
+    public function run() {
 
         // start session
         $this->session = new \dollmetzer\zzaplib\Session($this);
@@ -73,12 +65,12 @@ class Application extends \dollmetzer\zzaplib\Base
 
         // split query path into module, controller, action and params
         $this->processQueryPath();
-        
-        if(DEBUG_REQUEST) {
+
+        if (DEBUG_REQUEST) {
             echo "\n<!-- REQUEST\n";
-            echo 'Module     : '.$this->moduleName."\n";
-            echo 'Controller : '.$this->controllerName."\n";
-            echo 'Action     : '.$this->actionName."\n";
+            echo 'Module     : ' . $this->moduleName . "\n";
+            echo 'Controller : ' . $this->controllerName . "\n";
+            echo 'Action     : ' . $this->actionName . "\n";
             echo "Parameters : \n";
             var_dump($this->params);
             echo "\n-->\n";
@@ -91,12 +83,12 @@ class Application extends \dollmetzer\zzaplib\Base
 
         // start controller
         $controllerName = '\Application\modules\\' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller';
-        
+
         try {
-            if(class_exists($controllerName)) {
+            if (class_exists($controllerName)) {
                 $controller = new $controllerName($this);
             } else {
-                throw new \Exception('Controller class '.$controllerName.' not found');
+                throw new \Exception('Controller class ' . $controllerName . ' not found');
             }
 
             $actionName = (string) $this->actionName . 'Action';
@@ -110,10 +102,10 @@ class Application extends \dollmetzer\zzaplib\Base
                 $controller->$actionName();
                 $controller->postAction();
             } else {
-                if($this->session->user_id == 0) {
+                if ($this->session->user_id == 0) {
                     $this->forward($this->buildURL('account/login'), $this->lang('error_not_logged_in'), 'error');
                 } else {
-                    $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');                    
+                    $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');
                 }
             }
             $this->view->render();
@@ -138,8 +130,7 @@ class Application extends \dollmetzer\zzaplib\Base
      * @param string $_message     (optional) flash message to be displayed on next page
      * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
      */
-    public function forward($_url = '', $_message = '', $_messageType = '')
-    {
+    public function forward($_url = '', $_message = '', $_messageType = '') {
 
         if (!empty($_message)) {
             if ($_messageType == 'error') {
@@ -156,92 +147,15 @@ class Application extends \dollmetzer\zzaplib\Base
     }
 
     /**
-     * Return a language snippet in the current language
-     * 
-     * @param string $_snippet Name of the snippet
-     * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
-     */
-    public function lang($_snippet)
-    {
-
-        if (empty($this->lang[$_snippet])) {
-            $text = '###_' . $_snippet . '_###';
-        } else {
-            $text = $this->lang[$_snippet];
-        }
-
-        return $text;
-    }
-
-    /**
-     * Build a complete URL from a query string
-     * 
-     * @param string $_path       Query string like controller/action/param_1/param_n 
-     * @param array  $_attributes Additional Attributes. Array of key=>value pairs
-     * @return string
-     */
-    public function buildURL($_path, $_attributes = array())
-    {
-
-        $url = 'http://'.URL_BASE;
-        if(URL_REWRITE) {
-            $url .= '/'.$_path;
-        } else {
-            if (!empty($_path))
-                $url .= '/index.php?q=' . $_path;
-        }
-
-        if (!empty($_attributes)) {
-            $addition = array();
-            foreach ($_attributes as $key => $val) {
-                $addition[] = $key . '=' . urlencode($val);
-            }
-            $url .= '&' . join('&', $addition);
-        }
-
-        return $url;
-    }
-
-    /**
      * Build a complete URL from a query string
      * 
      * @param string $_path       Path to the picture on the media server
      * @return string
      */
-    public function buildMediaURL($_path)
-    {
+    public function buildMediaURL($_path) {
 
         $url = 'http://' . URL_MEDIA . $_path;
         return $url;
-    }
-
-    /**
-     * Try to load language snippets and store them in $this->lang
-     * The desired language is stored in $_SESSION['user_language'].
-     * The name of the file is [language]_[snippet].ini
-     * E.g. 'de_account.ini' holds the snippets for the account controller in german.
-     * 
-     * @param string $_snippet Name of the snippet - mostly the controller name
-     * @param string $_module  Name of the module, if language file shouldn't be for current module
-     * @return boolean success
-     */
-    public function loadLanguage($_snippet, $_module = '')
-    {
-
-        if ($_module == '') {
-            $filename = PATH_APP . 'modules/' . $this->moduleName . '/data/' . $this->session->user_language . '_' . $_snippet . '.ini';
-        } else {
-            $filename = PATH_APP . 'modules/' . $_module . '/data/' . $this->session->user_language . '_' . $_snippet . '.ini';
-        }
-
-        if (file_exists($filename)) {
-            $lang = parse_ini_file($filename);
-            $this->lang = array_merge($this->lang, $lang);
-            return true;
-        } else {
-            error_log('Language File ' . $filename . ' not found');
-        }
-        return false;
     }
 
     /**
@@ -254,8 +168,7 @@ class Application extends \dollmetzer\zzaplib\Base
      * If the then first parameter is an action name, extract it from the query and set $this->actionName 
      * The now remaining parameters are going to $this->params
      */
-    protected function processQueryPath()
-    {
+    protected function processQueryPath() {
 
         // set default values
         $this->moduleName = 'core';
@@ -293,10 +206,9 @@ class Application extends \dollmetzer\zzaplib\Base
         if (sizeof($query) > 0) {
             $this->actionName = array_shift($query);
         }
-        
+
         // still any additional parameter remaining?
         $this->params = $query;
-        
     }
 
 }
