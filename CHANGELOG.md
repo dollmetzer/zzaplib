@@ -1,5 +1,6 @@
 CHANGELOG
 =========
+2015-07-12 Added a new session parameter user_haspassword
 2015-07-06 Moved loadLang() and lang() to Base to enable languages in scripts
 2015-06-27 Corrected File upload
 2015-06-26 Added capturing for view::render for processing mail templates or enable caching

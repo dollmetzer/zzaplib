@@ -77,6 +77,7 @@ class Session {
             $this->user_handle = 'guest';
             $this->user_lastlogin = 0;
             $this->user_language = $this->app->config['languages'][0];
+            $this->user_haspassword = false;
             $this->theme = $this->app->config['themes'][0];
             $this->groups = array(1 => 'guest');
         } else {
@@ -99,10 +100,16 @@ class Session {
             'useragent' => $_SERVER['HTTP_USER_AGENT']
         );
         $userModel->update($_user['id'], $data);
-        $this->app->session->user_id = $_user['id'];
-        $this->app->session->user_handle = $_user['handle'];
-        $this->app->session->user_lastlogin = $_user['lastlogin'];
-        $this->app->session->user_language = $_user['language'];
+        $this->user_id = $_user['id'];
+        $this->user_handle = $_user['handle'];
+        $this->user_lastlogin = $_user['lastlogin'];
+        $this->user_language = $_user['language'];
+        if (empty($_user['password'])) {
+            $this->user_haspassword = false;
+        } else {
+            $this->user_haspassword = true;
+        }
+
         // get user groups
         $groupModel = new \Application\modules\core\models\groupModel($this->app);
         $groups = $groupModel->getUserGroups($_user['id']);
@@ -110,15 +117,14 @@ class Session {
         for ($i = 0; $i < sizeof($groups); $i++) {
             $sessionGroups[$groups[$i]['id']] = $groups[$i]['name'];
         }
-        $this->app->session->groups = $sessionGroups;
+        $this->groups = $sessionGroups;
 
-        $this->app->session->groups = array('user');
-        if($this->app->config['quicklogin'] === true) {
+        $this->groups = array('user');
+        if ($this->app->config['quicklogin'] === true) {
             setcookie('qltoken', $data['token'], 0, null, null, false, true);
         }
-        
     }
-    
+
     /**
      * Destroys a session and creates a new one
      */
