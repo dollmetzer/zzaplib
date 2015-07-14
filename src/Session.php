@@ -121,7 +121,8 @@ class Session {
 
         $this->groups = array('user');
         if ($this->app->config['quicklogin'] === true) {
-            setcookie('qltoken', $data['token'], 0, null, null, false, true);
+            // Set cookie for 90 days
+            setcookie('qltoken', $data['token'], time()+60*60*24*90, null, null, false, true);
         }
     }
 
