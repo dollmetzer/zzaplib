@@ -93,13 +93,8 @@ class Console extends \dollmetzer\zzaplib\Base {
             $message .= $e->getFile() . ' in Line ';
             $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
-            error_log($message);
+            $this->log($message);
         }
-        /*
-          $cmdClass = $this->action.'Command';
-          $command = new $cmdClass($this);
-          $command->run();
-         */
     }
 
     /**

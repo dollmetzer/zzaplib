@@ -163,7 +163,7 @@ class Base {
             $this->lang = array_merge($this->lang, $lang);
             return true;
         } else {
-            error_log('Language File ' . $filename . ' not found');
+            $this->log('Language File ' . $filename . ' not found');
         }
         return false;
     }
@@ -213,6 +213,33 @@ class Base {
         return $url;
     }
 
+    /**
+     * Write a log entry.
+     * 
+     * The logfile is in PATH_LOGS and its name consist of type and 
+     * date (e.g. notice_2015_07_25.txt).
+     * 
+     * @param string $_message
+     * @param string $_type 'error'(default) or 'notice'
+     */
+    public function log($_message, $_type='error') {
+        
+        if(in_array($_type, array('error', 'notice'))) {
+            $type = $_type;
+        } else {
+            $type = 'error';
+        }
+        
+        $message = strftime('%d.%m.%Y %H:%M:%S', time());
+        $message .= "\t".$_message."\n";
+        
+        $logfile = PATH_LOGS.$type.strftime('_%Y_%m_%d.txt', time());
+        $fp = fopen($logfile, 'a+');
+        fwrite($fp, $message);
+        fclose($fp);
+        
+    }
+    
     /**
      * Returns an array of 2 digit ISO 3166 country codes
      * 

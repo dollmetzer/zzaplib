@@ -111,14 +111,14 @@ class Api extends Base
             $actionName = (string) $this->actionName . 'ApiAction';
 
             if (method_exists($controller, $actionName) === false) {
-                error_log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
+                $this->log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
                 $this->response['statusCode'] = 405;
                 $this->response['statusMessage'] = $this->HTTP_STATUS[405];
             } else {
                 if ($controller->isAllowed($this->actionName)) {
                     $controller->$actionName();
                 } else {
-                    error_log('Application::run() - access to ' . $controllerName . '::' . $actionName . ' is forbidden');
+                    $this->log('Application::run() - access to ' . $controllerName . '::' . $actionName . ' is forbidden');
                     $this->response['statusCode'] = 403;
                     $this->response['statusMessage'] = $this->HTTP_STATUS[403];
                 }
@@ -129,7 +129,7 @@ class Api extends Base
             $message .= $e->getFile() . ' in Line ';
             $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
-            error_log($message);
+            $this->log($message);
             $this->response['statusCode'] = 500;
             $this->response['statusMessage'] = $this->HTTP_STATUS[500];
         }

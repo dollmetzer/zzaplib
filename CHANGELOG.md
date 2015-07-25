@@ -1,5 +1,6 @@
 CHANGELOG
 =========
+2015-07-25 Added log method to Base Class
 2015-07-12 Added a new session parameter user_haspassword
 2015-07-06 Moved loadLang() and lang() to Base to enable languages in scripts
 2015-06-27 Corrected File upload

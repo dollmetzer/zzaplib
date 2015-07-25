@@ -93,7 +93,7 @@ class Application extends \dollmetzer\zzaplib\Base {
 
             $actionName = (string) $this->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
-                error_log('Application::run() - method ' . $actionName . ' not found in ' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller');
+                $this->log('Application::run() - method ' . $actionName . ' not found in ' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller');
                 $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter'], 'error');
             }
 
@@ -118,7 +118,7 @@ class Application extends \dollmetzer\zzaplib\Base {
             $message .= $e->getFile() . ' in Line ';
             $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
-            error_log($message);
+            $this->log($message);
             $this->forward($this->buildURL(''), $this->lang['error_application'], 'error');
         }
     }
