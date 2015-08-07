@@ -176,7 +176,7 @@ class Base {
      */
     public function lang($_snippet) {
 
-        if (empty($this->lang[$_snippet])) {
+        if (!isset($this->lang[$_snippet])) {
             $text = '###_' . $_snippet . '_###';
         } else {
             $text = $this->lang[$_snippet];
