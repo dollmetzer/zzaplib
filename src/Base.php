@@ -234,6 +234,12 @@ class Base {
         $message .= "\t".$_message."\n";
         
         $logfile = PATH_LOGS.$type.strftime('_%Y_%m_%d.txt', time());
+        if(!file_exists($logfile)) {
+            $fp = fopen($logfile, 'w+');
+            fwrite($fp, "Logfile $logfile\n--------------------\n");
+            fclose($fp);
+            chmod($logfile, 0664);
+        }
         $fp = fopen($logfile, 'a+');
         fwrite($fp, $message);
         fclose($fp);

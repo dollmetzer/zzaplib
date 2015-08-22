@@ -1,5 +1,7 @@
 CHANGELOG
 =========
+2015-08-22 Form::process accept NULL Values as input without notice
+2015-08-22 base::log setzt permissions to 0664
 2015-08-07 lang() returns placeholder only on !isset() instead of empty() to enable empty language strings
 2015-07-25 Added log method to Base Class
 2015-07-12 Added a new session parameter user_haspassword

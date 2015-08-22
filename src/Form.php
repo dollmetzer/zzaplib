@@ -124,7 +124,11 @@ class Form
                     // check filesize
                     
                 } else {
-                    $value = $_POST[$name];    
+                    if(isset($_POST[$name])) {
+                        $value = $_POST[$name];
+                    } else {
+                        $value = NULL;
+                    }
                 }
                 // preprocessing
                 $this->fields[$name]['value'] = $value;
