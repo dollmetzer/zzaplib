@@ -1,5 +1,7 @@
 CHANGELOG
 =========
+2015-10-14 split format of config array in modules
+2015-09-14 Translation app/item
 2015-09-13 Fixed quicklogin. Forward to target page after login.
 2015-08-22 Form::process accept NULL Values as input without notice
 2015-08-22 base::log setzt permissions to 0664

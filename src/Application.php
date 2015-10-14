@@ -114,7 +114,7 @@ class Application extends \dollmetzer\zzaplib\Base {
 
                     // Not logged in
                     // Remeber target page, try quicklogin or jump to login page
-                    if($this->config['quicklogin'] === true) {
+                    if($this->config['core']['quicklogin'] === true) {
                         $this->quicklogin();
                     }
                     $this->session->queryString = $this->queryString;

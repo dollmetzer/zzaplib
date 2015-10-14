@@ -76,9 +76,9 @@ class Session {
             $this->user_id = 0;
             $this->user_handle = 'guest';
             $this->user_lastlogin = 0;
-            $this->user_language = $this->app->config['languages'][0];
+            $this->user_language = $this->app->config['core']['languages'][0];
             $this->user_haspassword = false;
-            $this->theme = $this->app->config['themes'][0];
+            $this->theme = $this->app->config['core']['themes'][0];
             $this->groups = array(1 => 'guest');
         } else {
             $hits++;
@@ -120,7 +120,7 @@ class Session {
         $this->groups = $sessionGroups;
 
         $this->groups = array('user');
-        if ($this->app->config['quicklogin'] === true) {
+        if ($this->app->config['core']['quicklogin'] === true) {
             // Set cookie for 90 days
             setcookie('qltoken', $data['token'], time()+60*60*24*90, null, null, false, true);
         }

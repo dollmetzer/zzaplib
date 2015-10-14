@@ -50,13 +50,13 @@ class DBModel
 
         if (empty($this->app->dbh)) {
             if ($_master === false) {
-                $dsn = $this->app->config['db']['slave']['dsn'];
-                $user = $this->app->config['db']['slave']['user'];
-                $pass = $this->app->config['db']['slave']['pass'];
+                $dsn = $this->app->config['core']['db']['slave']['dsn'];
+                $user = $this->app->config['core']['db']['slave']['user'];
+                $pass = $this->app->config['core']['db']['slave']['pass'];
             } else {
-                $dsn = $this->app->config['db']['master']['dsn'];
-                $user = $this->app->config['db']['master']['user'];
-                $pass = $this->app->config['db']['master']['pass'];
+                $dsn = $this->app->config['core']['db']['master']['dsn'];
+                $user = $this->app->config['core']['db']['master']['user'];
+                $pass = $this->app->config['core']['db']['master']['pass'];
             }
 
             $options = array(
