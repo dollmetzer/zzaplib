@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -31,7 +30,6 @@ namespace dollmetzer\zzaplib;
  */
 class DBModel
 {
-
     /**
      * @var Application $app Holds the instance of the application 
      */
@@ -50,11 +48,11 @@ class DBModel
 
         if (empty($this->app->dbh)) {
             if ($_master === false) {
-                $dsn = $this->app->config['core']['db']['slave']['dsn'];
+                $dsn  = $this->app->config['core']['db']['slave']['dsn'];
                 $user = $this->app->config['core']['db']['slave']['user'];
                 $pass = $this->app->config['core']['db']['slave']['pass'];
             } else {
-                $dsn = $this->app->config['core']['db']['master']['dsn'];
+                $dsn  = $this->app->config['core']['db']['master']['dsn'];
                 $user = $this->app->config['core']['db']['master']['user'];
                 $pass = $this->app->config['core']['db']['master']['pass'];
             }
@@ -66,9 +64,10 @@ class DBModel
             try {
                 $this->app->dbh = new \PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {
-                die('DB Error: ' . $e->getMessage() . "<br />\n");
+                die('DB Error: '.$e->getMessage()."<br />\n");
             }
-            $this->app->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->app->dbh->setAttribute(\PDO::ATTR_ERRMODE,
+                \PDO::ERRMODE_EXCEPTION);
         }
     }
 
@@ -85,11 +84,12 @@ class DBModel
         if (empty($this->tablename) || empty($_data) || !is_array($_data)) {
             throw new \Exception('insufficient data');
         }
-        $names = '`' . join('`, `', array_keys($_data)) . '`';
-        $questionmarks = join(', ', array_fill(0, sizeof(array_keys($_data)), '?'));
-        $values = array_values($_data);
-        $sql = "INSERT INTO `" . $this->tablename . '` (' . $names . ') VALUES (' . $questionmarks . ')';
-        $stmt = $this->app->dbh->prepare($sql);
+        $names         = '`'.join('`, `', array_keys($_data)).'`';
+        $questionmarks = join(', ',
+            array_fill(0, sizeof(array_keys($_data)), '?'));
+        $values        = array_values($_data);
+        $sql           = "INSERT INTO `".$this->tablename.'` ('.$names.') VALUES ('.$questionmarks.')';
+        $stmt          = $this->app->dbh->prepare($sql);
         $stmt->execute($values);
         return $this->app->dbh->lastInsertId();
     }
@@ -107,7 +107,7 @@ class DBModel
         if (empty($this->tablename) || empty($_id)) {
             throw new \Exception('insufficient data');
         }
-        $sql = "SELECT * FROM `" . $this->tablename . "` WHERE id=" . (int) $_id;
+        $sql  = "SELECT * FROM `".$this->tablename."` WHERE id=".(int) $_id;
         $stmt = $this->app->dbh->prepare($sql);
         $stmt->execute();
         return $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -128,12 +128,12 @@ class DBModel
         }
         $names = array();
         foreach (array_keys($_data) as $key) {
-            $names[] = $key . '=?';
+            $names[] = $key.'=?';
         }
-        $values = array_values($_data);
+        $values   = array_values($_data);
         $values[] = $_id;
-        $sql = "UPDATE `" . $this->tablename . "` SET " . join(', ', $names) . " WHERE id=?";
-        $stmt = $this->app->dbh->prepare($sql);
+        $sql      = "UPDATE `".$this->tablename."` SET ".join(', ', $names)." WHERE id=?";
+        $stmt     = $this->app->dbh->prepare($sql);
         $stmt->execute($values);
     }
 
@@ -149,11 +149,9 @@ class DBModel
         if (empty($this->tablename) || empty($_id)) {
             throw new \Exception('insufficient data');
         }
-        $sql = "DELETE FROM `" . $this->tablename . "` WHERE id=" . (int) $_id;
+        $sql  = "DELETE FROM `".$this->tablename."` WHERE id=".(int) $_id;
         $stmt = $this->app->dbh->prepare($sql);
         $stmt->execute();
     }
-
 }
-
 ?>

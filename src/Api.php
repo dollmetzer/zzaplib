@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -31,7 +30,6 @@ namespace dollmetzer\zzaplib;
  */
 class Api extends Base
 {
-
     public $HTTP_STATUS;
     public $response;
 
@@ -44,7 +42,7 @@ class Api extends Base
     {
 
         $this->config = $config;
-        $this->dbh = NULL;
+        $this->dbh    = NULL;
 
         // register autoloader for models, no class not found exception, not prepend
         spl_autoload_register(array($this, 'autoloadModels'), false, false);
@@ -102,40 +100,40 @@ class Api extends Base
          */
 
         // start controller
-        $controllerFile = PATH_APP . 'modules/' . $this->moduleName . '/controllers/' . $this->controllerName . 'Controller.php';
+        $controllerFile = PATH_APP.'modules/'.$this->moduleName.'/controllers/'.$this->controllerName.'Controller.php';
 
         try {
             include $controllerFile;
-            $controllerName = $this->controllerName . 'Controller';
-            $controller = new $controllerName($this);
-            $actionName = (string) $this->actionName . 'ApiAction';
+            $controllerName = $this->controllerName.'Controller';
+            $controller     = new $controllerName($this);
+            $actionName     = (string) $this->actionName.'ApiAction';
 
             if (method_exists($controller, $actionName) === false) {
-                $this->log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
-                $this->response['statusCode'] = 405;
+                $this->log('Application::run() - method '.$actionName.' not found in '.$controllerFile);
+                $this->response['statusCode']    = 405;
                 $this->response['statusMessage'] = $this->HTTP_STATUS[405];
             } else {
                 if ($controller->isAllowed($this->actionName)) {
                     $controller->$actionName();
                 } else {
-                    $this->log('Application::run() - access to ' . $controllerName . '::' . $actionName . ' is forbidden');
-                    $this->response['statusCode'] = 403;
+                    $this->log('Application::run() - access to '.$controllerName.'::'.$actionName.' is forbidden');
+                    $this->response['statusCode']    = 403;
                     $this->response['statusMessage'] = $this->HTTP_STATUS[403];
                 }
             }
         } catch (Exception $e) {
 
-            $message = 'Application error in ';
-            $message .= $e->getFile() . ' in Line ';
-            $message .= $e->getLine() . ' : ';
+            $message                         = 'Application error in ';
+            $message .= $e->getFile().' in Line ';
+            $message .= $e->getLine().' : ';
             $message .= $e->getMessage();
             $this->log($message);
-            $this->response['statusCode'] = 500;
+            $this->response['statusCode']    = 500;
             $this->response['statusMessage'] = $this->HTTP_STATUS[500];
         }
 
         header('Content-Type: application/json');
-        header('HTTP/1.0 ' . $this->response['statusCode'] . ' ' . $this->response['statusMessage']);
+        header('HTTP/1.0 '.$this->response['statusCode'].' '.$this->response['statusMessage']);
         echo json_encode($this->response);
     }
 
@@ -153,24 +151,22 @@ class Api extends Base
     {
 
         // set default values
-        $this->moduleName = 'core';
+        $this->moduleName     = 'core';
         $this->controllerName = 'index';
-        $this->actionName = 'get';
-        $this->params = array();
+        $this->actionName     = 'get';
+        $this->params         = array();
 
         // escape, if querypath is empty
-        if (empty($_GET['q']))
-            return;
+        if (empty($_GET['q'])) return;
 
         // action = method
         $this->actionName = strtolower($_SERVER['REQUEST_METHOD']);
 
         // clean query path
         $queryRaw = explode('/', $_GET['q']);
-        $query = array();
+        $query    = array();
         for ($i = 0; $i < sizeof($queryRaw); $i++) {
-            if ($queryRaw[$i] != '')
-                array_push($query, $queryRaw[$i]);
+            if ($queryRaw[$i] != '') array_push($query, $queryRaw[$i]);
         }
 
         // test if first entry is a module name
@@ -190,5 +186,4 @@ class Api extends Base
         // still any additional parameter remaining?
         $this->params = $query;
     }
-
 }

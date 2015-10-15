@@ -1,5 +1,6 @@
 CHANGELOG
 =========
+2015-10-15 PSR-2 reformatted
 2015-10-14 split format of config array in modules
 2015-09-14 Translation app/item
 2015-09-13 Fixed quicklogin. Forward to target page after login.

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -33,7 +32,6 @@ namespace dollmetzer\zzaplib;
  */
 class Form
 {
-
     /**
      * @var Application $app The application object
      */
@@ -48,7 +46,7 @@ class Form
      * @var string $title Title of the form
      */
     public $title;
-    
+
     /**
      * @var string $action optional. If empty, form calls itself
      */
@@ -71,10 +69,10 @@ class Form
      */
     public function __construct($_app)
     {
-        $this->app = $_app;
-        $this->name = '';
-        $this->title = '';
-        $this->action = '';
+        $this->app       = $_app;
+        $this->name      = '';
+        $this->title     = '';
+        $this->action    = '';
         $this->hasErrors = false;
     }
 
@@ -90,7 +88,7 @@ class Form
     {
 
         // set default values
-        $success = true;
+        $success         = true;
         $this->hasErrors = false;
         foreach ($this->fields as $name => $field) {
             if (!in_array($field['type'], array('static', 'divider', 'submit'))) {
@@ -109,22 +107,20 @@ class Form
         foreach ($this->fields as $name => $field) {
             if (!in_array($field['type'], array('static', 'divider', 'submit'))) {
                 // fetch
-                if($field['type'] == 'checkbox') {
-                    if(empty($_POST[$name])) {
+                if ($field['type'] == 'checkbox') {
+                    if (empty($_POST[$name])) {
                         $value = false;
                     } else {
                         $value = true;
                     }
-                } elseif($field['type'] == 'file') {
+                } elseif ($field['type'] == 'file') {
                     // check, if file was sent...
                     $value = $_FILES[$name]['name'];
-                    
+
                     // check mimetype
-                    
                     // check filesize
-                    
                 } else {
-                    if(isset($_POST[$name])) {
+                    if (isset($_POST[$name])) {
                         $value = $_POST[$name];
                     } else {
                         $value = NULL;
@@ -138,8 +134,7 @@ class Form
         }
 
         // process didn't succeeded
-        if ($this->hasErrors !== false)
-            return false;
+        if ($this->hasErrors !== false) return false;
 
         // processed succeeded
         return true;
@@ -171,10 +166,10 @@ class Form
 
         $result = array();
         foreach ($this->fields as $name => $field) {
-            if($field['type'] == 'code') {
+            if ($field['type'] == 'code') {
                 $result[$name] = $field['value'];
             } else {
-                $result[$name] = htmlentities($field['value']) ;
+                $result[$name] = htmlentities($field['value']);
             }
         }
         return $result;
@@ -194,7 +189,7 @@ class Form
         if (!empty($this->fields[$_name]['required'])) {
             if (empty($this->fields[$_name]['value'])) {
                 $this->fields[$_name]['error'] = $this->app->lang('form_error_required');
-                $this->hasErrors = true;
+                $this->hasErrors               = true;
                 return;
             }
         }
@@ -202,16 +197,18 @@ class Form
         // minlength
         if (!empty($this->fields[$_name]['minlength'])) {
             if (strlen($this->fields[$_name]['value']) < $this->fields[$_name]['minlength']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_minlength'), $this->fields[$_name]['minlength']);
-                $this->hasErrors = true;
+                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_minlength'),
+                    $this->fields[$_name]['minlength']);
+                $this->hasErrors               = true;
                 return;
             }
         }
         // maxlength
         if (!empty($this->fields[$_name]['maxlength'])) {
             if (strlen($this->fields[$_name]['value']) > $this->fields[$_name]['maxlength']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_maxlength'), $this->fields[$_name]['maxlength']);
-                $this->hasErrors = true;
+                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_maxlength'),
+                    $this->fields[$_name]['maxlength']);
+                $this->hasErrors               = true;
                 return;
             }
         }
@@ -219,8 +216,9 @@ class Form
         // min
         if (!empty($this->fields[$_name]['min'])) {
             if ($this->fields[$_name]['value'] < $this->fields[$_name]['min']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_min'), $this->fields[$_name]['min']);
-                $this->hasErrors = true;
+                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_min'),
+                    $this->fields[$_name]['min']);
+                $this->hasErrors               = true;
                 return;
             }
         }
@@ -228,8 +226,9 @@ class Form
         if (!empty($this->fields[$_name]['max'])) {
             if ($this->fields[$_name]['value'] > $this->fields[$_name]['max']) {
 
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_max'), $this->fields[$_name]['max']);
-                $this->hasErrors = true;
+                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_max'),
+                    $this->fields[$_name]['max']);
+                $this->hasErrors               = true;
                 return;
             }
         }
@@ -238,13 +237,12 @@ class Form
         if ($this->fields[$_name]['type'] == 'integer') {
             $value = (int) $this->fields[$_name]['value'];
             if ((string) $value != $this->fields[$_name]['value']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_integer'), $this->fields[$_name]['maxlength']);
-                $this->hasErrors = true;
+                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_integer'),
+                    $this->fields[$_name]['maxlength']);
+                $this->hasErrors               = true;
                 return;
             }
         }
     }
-
 }
-
 ?>

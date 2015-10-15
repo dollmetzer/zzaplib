@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -33,7 +32,6 @@ namespace dollmetzer\zzaplib;
  */
 class View
 {
-
     /**
      * @var array $content Page content elements
      */
@@ -72,12 +70,12 @@ class View
     public function __construct($_app)
     {
 
-        $this->app = $_app;
-        $this->content = array();
+        $this->app      = $_app;
+        $this->content  = array();
         $this->template = '';
-        $this->lang = array();
-        $this->js = array();
-        $this->css = array();
+        $this->lang     = array();
+        $this->js       = array();
+        $this->css      = array();
     }
 
     /**
@@ -92,38 +90,37 @@ class View
      * @return string
      * @throws \Exception
      */
-    public function render($_capture=false, $_template='')
+    public function render($_capture = false, $_template = '')
     {
-        
+
         $content = & $this->content;
-        $lang = & $this->app->lang;
+        $lang    = & $this->app->lang;
         if (!empty($this->template)) {
-            $filename = PATH_APP . $this->template;
+            $filename = PATH_APP.$this->template;
         } else {
-            $filename = PATH_APP . 'modules/' . $this->app->moduleName;
-            $filename .= '/views/' . $this->app->session->theme . '/' . $this->app->controllerName . '/';
-            $filename .= $this->app->actionName . '.php';
+            $filename = PATH_APP.'modules/'.$this->app->moduleName;
+            $filename .= '/views/'.$this->app->session->theme.'/'.$this->app->controllerName.'/';
+            $filename .= $this->app->actionName.'.php';
         }
-        if(!empty($_template)) {
-            $filename = PATH_APP . $_template;
+        if (!empty($_template)) {
+            $filename = PATH_APP.$_template;
         }
-        if(!file_exists($filename)) {
+        if (!file_exists($filename)) {
             throw new \Exception("View: Template $filename not found.");
         }
 
         // direct output...
-        if($_capture === false) {
+        if ($_capture === false) {
             include $filename;
             return;
         }
-        
+
         /// ... or capture rendering
         ob_start();
         include $filename;
         $result = ob_get_contents();
         ob_end_clean();
         return $result;
-        
     }
 
     /**
@@ -230,10 +227,11 @@ class View
     public function toDate($_datetime, $_output = true)
     {
 
-        if($_datetime == '0000-00-00 00:00:00') {
+        if ($_datetime == '0000-00-00 00:00:00') {
             $text = '-';
         } else {
-            $text = strftime($this->lang('format_date', false), strtotime($_datetime));        
+            $text = strftime($this->lang('format_date', false),
+                strtotime($_datetime));
         }
 
         if ($_output === true) {
@@ -253,11 +251,12 @@ class View
     public function toDatetime($_datetime, $_output = true)
     {
 
-        
-        if($_datetime == '0000-00-00 00:00:00') {
+
+        if ($_datetime == '0000-00-00 00:00:00') {
             $text = '-';
         } else {
-            $text = strftime($this->lang('format_datetime', false), strtotime($_datetime));
+            $text = strftime($this->lang('format_datetime', false),
+                strtotime($_datetime));
         }
 
         if ($_output === true) {
@@ -277,20 +276,19 @@ class View
     public function toDatetimeShort($_datetime, $_output = true)
     {
 
-        
-        if($_datetime == '0000-00-00 00:00:00') {
+
+        if ($_datetime == '0000-00-00 00:00:00') {
             $text = '-';
         } else {
-            $text = strftime($this->lang('format_datetime_short', false), strtotime($_datetime));
+            $text = strftime($this->lang('format_datetime_short', false),
+                strtotime($_datetime));
         }
-        
+
         if ($_output === true) {
             echo $text;
             return;
         }
         return $text;
     }
-
 }
-
 ?>

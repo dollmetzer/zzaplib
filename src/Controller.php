@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -31,7 +30,6 @@ namespace dollmetzer\zzaplib;
  */
 class Controller
 {
-
     /**
      * @var Application $app Holds the instance of the application 
      */
@@ -56,27 +54,27 @@ class Controller
         $this->app = $_app;
         $this->app->loadLanguage($this->app->controllerName);
 
-        if (method_exists($this, 'init'))
-            $this->init();
+        if (method_exists($this, 'init')) $this->init();
     }
 
     /**
      * Method is called before any controller action.
      * Overload in the application controller to use
      */
-    public function preAction() {
+    public function preAction()
+    {
         
     }
-    
+
     /**
      * Method is called after any controller action.
      * Overload in the application controller to use
      */
-    public function postAction() {
+    public function postAction()
+    {
         
     }
-        
-    
+
     /**
      * Returns a text snippet in the current language.
      * 
@@ -148,8 +146,9 @@ class Controller
             return true;
         }
         // allowed, if user is group member
-        $userGroups = $this->app->session->groups;
-        $intersection = array_intersect($userGroups, $this->accessGroups[$_actionName]);
+        $userGroups   = $this->app->session->groups;
+        $intersection = array_intersect($userGroups,
+            $this->accessGroups[$_actionName]);
         if (!empty($intersection)) {
             return true;
         }
@@ -177,7 +176,5 @@ class Controller
         }
         return false;
     }
-
 }
-
 ?>

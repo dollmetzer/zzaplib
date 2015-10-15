@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -29,8 +28,8 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Application extends \dollmetzer\zzaplib\Base {
-
+class Application extends \dollmetzer\zzaplib\Base
+{
     /**
      * @var Session Holds the instance of the session 
      */
@@ -40,7 +39,7 @@ class Application extends \dollmetzer\zzaplib\Base {
      * @var string Hold the URL query string
      */
     public $queryString;
-    
+
     /**
      * @var View Holds the instance of the view 
      */
@@ -51,16 +50,18 @@ class Application extends \dollmetzer\zzaplib\Base {
      * 
      * @param array $config Configuration array
      */
-    public function __construct($config) {
+    public function __construct($config)
+    {
 
         $this->config = $config;
-        $this->dbh = NULL;
+        $this->dbh    = NULL;
     }
 
     /**
      * Run the application
      */
-    public function run() {
+    public function run()
+    {
 
         // start session
         $this->session = new \dollmetzer\zzaplib\Session($this);
@@ -69,17 +70,17 @@ class Application extends \dollmetzer\zzaplib\Base {
         $this->view = new \dollmetzer\zzaplib\View($this);
 
         // Routing (split query path into module, controller, action and params)
-        $this->moduleName = 'core';
+        $this->moduleName     = 'core';
         $this->controllerName = 'index';
-        $this->actionName = 'index';
-        $this->params = array();
+        $this->actionName     = 'index';
+        $this->params         = array();
         $this->routing();
 
         if (DEBUG_REQUEST) {
             echo "\n<!-- REQUEST\n";
-            echo 'Module     : ' . $this->moduleName . "\n";
-            echo 'Controller : ' . $this->controllerName . "\n";
-            echo 'Action     : ' . $this->actionName . "\n";
+            echo 'Module     : '.$this->moduleName."\n";
+            echo 'Controller : '.$this->controllerName."\n";
+            echo 'Action     : '.$this->actionName."\n";
             echo "Parameters : \n";
             var_dump($this->params);
             echo "\n-->\n";
@@ -90,19 +91,20 @@ class Application extends \dollmetzer\zzaplib\Base {
         $this->loadLanguage('core', 'core');
 
         // start controller
-        $controllerName = '\Application\modules\\' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller';
+        $controllerName = '\Application\modules\\'.$this->moduleName.'\controllers\\'.$this->controllerName.'Controller';
 
         try {
             if (class_exists($controllerName)) {
                 $controller = new $controllerName($this);
             } else {
-                throw new \Exception('Controller class ' . $controllerName . ' not found');
+                throw new \Exception('Controller class '.$controllerName.' not found');
             }
 
-            $actionName = (string) $this->actionName . 'Action';
+            $actionName = (string) $this->actionName.'Action';
             if (method_exists($controller, $actionName) === false) {
-                $this->log('Application::run() - method ' . $actionName . ' not found in ' . $this->moduleName . '\controllers\\' . $this->controllerName . 'Controller');
-                $this->forward($this->buildURL(''), $this->lang['error_illegal_parameter'], 'error');
+                $this->log('Application::run() - method '.$actionName.' not found in '.$this->moduleName.'\controllers\\'.$this->controllerName.'Controller');
+                $this->forward($this->buildURL(''),
+                    $this->lang['error_illegal_parameter'], 'error');
             }
 
             if ($controller->isAllowed($this->actionName)) {
@@ -114,31 +116,32 @@ class Application extends \dollmetzer\zzaplib\Base {
 
                     // Not logged in
                     // Remeber target page, try quicklogin or jump to login page
-                    if($this->config['core']['quicklogin'] === true) {
+                    if ($this->config['core']['quicklogin'] === true) {
                         $this->quicklogin();
                     }
                     $this->session->queryString = $this->queryString;
-                    $this->forward($this->buildURL('account/login'), $this->lang('error_not_logged_in'), 'error');
-                    
+                    $this->forward($this->buildURL('account/login'),
+                        $this->lang('error_not_logged_in'), 'error');
                 } else {
-                    
+
                     // logged in, but no access rights
-                    $this->forward($this->buildURL(''), $this->lang('error_access_denied'), 'error');
-                    
+                    $this->forward($this->buildURL(''),
+                        $this->lang('error_access_denied'), 'error');
                 }
             }
             $this->view->render();
 
-            $this->session->flasherror = '';
+            $this->session->flasherror   = '';
             $this->session->flashmessage = '';
         } catch (\Exception $e) {
 
             $message = 'Application error in ';
-            $message .= $e->getFile() . ' in Line ';
-            $message .= $e->getLine() . ' : ';
+            $message .= $e->getFile().' in Line ';
+            $message .= $e->getLine().' : ';
             $message .= $e->getMessage();
             $this->log($message);
-            $this->forward($this->buildURL(''), $this->lang['error_application'], 'error');
+            $this->forward($this->buildURL(''),
+                $this->lang['error_application'], 'error');
         }
     }
 
@@ -149,7 +152,8 @@ class Application extends \dollmetzer\zzaplib\Base {
      * @param string $_message     (optional) flash message to be displayed on next page
      * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
      */
-    public function forward($_url = '', $_message = '', $_messageType = '') {
+    public function forward($_url = '', $_message = '', $_messageType = '')
+    {
 
         if (!empty($_message)) {
             if ($_messageType == 'error') {
@@ -161,7 +165,7 @@ class Application extends \dollmetzer\zzaplib\Base {
         if (empty($_url)) {
             $_url = $this->buildURL('');
         }
-        header('Location: ' . $_url);
+        header('Location: '.$_url);
         exit;
     }
 
@@ -171,9 +175,10 @@ class Application extends \dollmetzer\zzaplib\Base {
      * @param string $_path       Path to the picture on the media server
      * @return string
      */
-    public function buildMediaURL($_path) {
+    public function buildMediaURL($_path)
+    {
 
-        $url = 'http://' . URL_MEDIA . $_path;
+        $url = 'http://'.URL_MEDIA.$_path;
         return $url;
     }
 
@@ -189,19 +194,18 @@ class Application extends \dollmetzer\zzaplib\Base {
      * If the then first parameter is an action name, extract it from the query and set $this->actionName 
      * The now remaining parameters are going to $this->params
      */
-    protected function routing() {
+    protected function routing()
+    {
 
         // escape, if querypath is empty
-        if (empty($_GET['q']))
-            return;
+        if (empty($_GET['q'])) return;
         $this->queryString = $_GET['q'];
 
         // clean query path
         $queryRaw = explode('/', $this->queryString);
-        $query = array();
+        $query    = array();
         for ($i = 0; $i < sizeof($queryRaw); $i++) {
-            if ($queryRaw[$i] != '')
-                array_push($query, $queryRaw[$i]);
+            if ($queryRaw[$i] != '') array_push($query, $queryRaw[$i]);
         }
 
         // test if first entry is a module name
@@ -227,29 +231,28 @@ class Application extends \dollmetzer\zzaplib\Base {
         $this->params = $query;
     }
 
-    
-    protected function quicklogin() {
+    protected function quicklogin()
+    {
 
-        if(!empty($_COOKIE['qltoken'])) {
+        if (!empty($_COOKIE['qltoken'])) {
             $this->log('qltoken is '.$_COOKIE['qltoken'], 'notice');
             $userModel = new \Application\modules\core\models\userModel($this);
-            $user = $userModel->getByToken($_COOKIE['qltoken']);
+            $user      = $userModel->getByToken($_COOKIE['qltoken']);
             $this->log(print_r($user, true), 'notice');
-            if(!empty($user)) {
-                if($user['useragent'] == $_SERVER['HTTP_USER_AGENT']) {
+            if (!empty($user)) {
+                if ($user['useragent'] == $_SERVER['HTTP_USER_AGENT']) {
                     $this->session->login($user);
-                    if(empty($this->queryString)) {
-                        $this->forward($this->buildURL('/'), $this->lang('msg_logged_in'));
+                    if (empty($this->queryString)) {
+                        $this->forward($this->buildURL('/'),
+                            $this->lang('msg_logged_in'));
                     } else {
-                        
-                        $this->forward($this->buildURL($this->queryString), $this->lang('msg_logged_in'));
+
+                        $this->forward($this->buildURL($this->queryString),
+                            $this->lang('msg_logged_in'));
                     }
                 }
             }
         }
-
     }
-    
 }
-
 ?>

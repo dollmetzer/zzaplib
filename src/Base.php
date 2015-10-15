@@ -1,5 +1,4 @@
 <?php
-
 /**
  * z z a p l i b   m i n i   f r a m e w o r k
  * ===========================================
@@ -29,8 +28,8 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Base {
-
+class Base
+{
     /**
      * @var array The configuration of the application 
      */
@@ -84,15 +83,16 @@ class Base {
      * 
      * @return array
      */
-    protected function getModuleList() {
+    protected function getModuleList()
+    {
 
         if (empty($this->config['modules'])) {
             $list = array();
-            if (file_exists(PATH_APP . 'modules/')) {
-                $dir = opendir(PATH_APP . 'modules/');
+            if (file_exists(PATH_APP.'modules/')) {
+                $dir  = opendir(PATH_APP.'modules/');
                 while ($file = readdir($dir)) {
                     if (!preg_match('/^\./', $file)) {
-                        if (is_dir(PATH_APP . 'modules/' . $file)) {
+                        if (is_dir(PATH_APP.'modules/'.$file)) {
                             $list[] = $file;
                         }
                     }
@@ -113,17 +113,18 @@ class Base {
      * 
      * @return array
      */
-    protected function getControllerList() {
+    protected function getControllerList()
+    {
 
         if (!empty($this->config['modules'][$this->moduleName])) {
 
             $list = $this->config['modules'][$this->moduleName];
         } else {
 
-            $list = array();
-            $controllerDir = PATH_APP . 'modules/' . $this->moduleName . '/controllers/';
-            $dir = opendir($controllerDir);
-            while ($file = readdir($dir)) {
+            $list          = array();
+            $controllerDir = PATH_APP.'modules/'.$this->moduleName.'/controllers/';
+            $dir           = opendir($controllerDir);
+            while ($file          = readdir($dir)) {
                 if (preg_match('/Controller.php$/', $file)) {
                     $list[] = preg_replace('/Controller.php$/', '', $file);
                 }
@@ -144,7 +145,8 @@ class Base {
      * @param string $_language two letter code of language, if not to use the user language in the session
      * @return boolean success
      */
-    public function loadLanguage($_snippet, $_module = '', $_language = '') {
+    public function loadLanguage($_snippet, $_module = '', $_language = '')
+    {
 
         if (empty($_language)) {
             $language = $this->session->user_language;
@@ -153,17 +155,17 @@ class Base {
         }
 
         if ($_module == '') {
-            $filename = PATH_APP . 'modules/' . $this->moduleName . '/data/' . $language . '_' . $_snippet . '.ini';
+            $filename = PATH_APP.'modules/'.$this->moduleName.'/data/'.$language.'_'.$_snippet.'.ini';
         } else {
-            $filename = PATH_APP . 'modules/' . $_module . '/data/' . $language . '_' . $_snippet . '.ini';
+            $filename = PATH_APP.'modules/'.$_module.'/data/'.$language.'_'.$_snippet.'.ini';
         }
 
         if (file_exists($filename)) {
-            $lang = parse_ini_file($filename);
+            $lang       = parse_ini_file($filename);
             $this->lang = array_merge($this->lang, $lang);
             return true;
         } else {
-            $this->log('Language File ' . $filename . ' not found');
+            $this->log('Language File '.$filename.' not found');
         }
         return false;
     }
@@ -174,10 +176,11 @@ class Base {
      * @param string $_snippet Name of the snippet
      * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
      */
-    public function lang($_snippet) {
+    public function lang($_snippet)
+    {
 
         if (!isset($this->lang[$_snippet])) {
-            $text = '###_' . $_snippet . '_###';
+            $text = '###_'.$_snippet.'_###';
         } else {
             $text = $this->lang[$_snippet];
         }
@@ -192,22 +195,22 @@ class Base {
      * @param array  $_attributes Additional Attributes. Array of key=>value pairs
      * @return string
      */
-    public function buildURL($_path, $_attributes = array()) {
+    public function buildURL($_path, $_attributes = array())
+    {
 
-        $url = 'http://' . URL_BASE;
+        $url = 'http://'.URL_BASE;
         if (URL_REWRITE) {
-            $url .= '/' . $_path;
+            $url .= '/'.$_path;
         } else {
-            if (!empty($_path))
-                $url .= '/index.php?q=' . $_path;
+            if (!empty($_path)) $url .= '/index.php?q='.$_path;
         }
 
         if (!empty($_attributes)) {
             $addition = array();
             foreach ($_attributes as $key => $val) {
-                $addition[] = $key . '=' . urlencode($val);
+                $addition[] = $key.'='.urlencode($val);
             }
-            $url .= '&' . join('&', $addition);
+            $url .= '&'.join('&', $addition);
         }
 
         return $url;
@@ -222,19 +225,20 @@ class Base {
      * @param string $_message
      * @param string $_type 'error'(default) or 'notice'
      */
-    public function log($_message, $_type='error') {
-        
-        if(in_array($_type, array('error', 'notice'))) {
+    public function log($_message, $_type = 'error')
+    {
+
+        if (in_array($_type, array('error', 'notice'))) {
             $type = $_type;
         } else {
             $type = 'error';
         }
-        
+
         $message = strftime('%d.%m.%Y %H:%M:%S', time());
         $message .= "\t".$_message."\n";
-        
+
         $logfile = PATH_LOGS.$type.strftime('_%Y_%m_%d.txt', time());
-        if(!file_exists($logfile)) {
+        if (!file_exists($logfile)) {
             $fp = fopen($logfile, 'w+');
             fwrite($fp, "Logfile $logfile\n--------------------\n");
             fclose($fp);
@@ -243,15 +247,15 @@ class Base {
         $fp = fopen($logfile, 'a+');
         fwrite($fp, $message);
         fclose($fp);
-        
     }
-    
+
     /**
      * Returns an array of 2 digit ISO 3166 country codes
      * 
      * @return array
      */
-    public function getCountryCodes() {
+    public function getCountryCodes()
+    {
 
         return array(
             "AF" => "Afghanistan",
@@ -503,5 +507,4 @@ class Base {
             "ZW" => "Zimbabwe"
         );
     }
-
 }
