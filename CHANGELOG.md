@@ -1,5 +1,6 @@
 CHANGELOG
 =========
+2015-11-14 Added (CRUDE) permission class. NOT READY FRO PRODUCTION YET
 2015-10-15 PSR-2 reformatted
 2015-10-14 split format of config array in modules
 2015-09-14 Translation app/item
