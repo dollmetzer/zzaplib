@@ -31,6 +31,10 @@ use dollmetzer\zzaplib\View;
 class ViewTest extends PHPUnit_Framework_TestCase
 {
 
+    protected static $session;
+
+    protected static $request;
+
     /**
      * Execute once on class test start
      */
@@ -38,6 +42,12 @@ class ViewTest extends PHPUnit_Framework_TestCase
     {
 
         echo "\nStart " . __CLASS__ . "\n";
+
+        $configFile = realpath(__DIR__ . '/app/config.ini');
+        $config = parse_ini_file($configFile, true);
+        self::$session = new dollmetzer\zzaplib\Session($config);
+
+        self::$request = new dollmetzer\zzaplib\Request($config);
 
     }
 
@@ -73,11 +83,17 @@ class ViewTest extends PHPUnit_Framework_TestCase
     public function testConstruct()
     {
 
-        $view = new View(array());
+        $view = new View(self::$session, self::$request);
         $this->assertInstanceOf(View::class, $view);
 
     }
 
+    public function testLoadLanguageDefault()
+    {
 
+        $view = new View(self::$session, self::$request);
+        $this->assertTrue($view->loadLanguage());
+
+    }
 
 }
