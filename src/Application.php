@@ -28,17 +28,28 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Application extends \dollmetzer\zzaplib\Base
+class Application
 {
+
     /**
-     * @var Session Holds the instance of the session 
+     * @var array $config The configuration of the application
+     */
+    public $config;
+
+    /**
+     * @var \PDO $dbh Database handle
+     */
+    public $dbh;
+
+    /**
+     * @var Session $session Holds the instance of the session
      */
     public $session;
 
     /**
-     * @var string Hold the URL query string
+     * @var Request $request
      */
-    public $queryString;
+    public $request;
 
     /**
      * @var View Holds the instance of the view 
@@ -54,7 +65,11 @@ class Application extends \dollmetzer\zzaplib\Base
     {
 
         $this->config = $config;
-        $this->dbh    = NULL;
+        $this->dbh = null;
+
+        // start session
+        $this->session = new \dollmetzer\zzaplib\Session($config);
+
     }
 
     /**
@@ -63,54 +78,68 @@ class Application extends \dollmetzer\zzaplib\Base
     public function run()
     {
 
-        // start session
-        $this->session = new \dollmetzer\zzaplib\Session($this);
+        // construct request element
+        $this->request = new \dollmetzer\zzaplib\Request($this->config);
 
         // start view
-        $this->view = new \dollmetzer\zzaplib\View($this);
+        $this->view = new \dollmetzer\zzaplib\View($this->session, $this->request);
 
         // Routing (split query path into module, controller, action and params)
-        $this->moduleName     = 'core';
-        $this->controllerName = 'index';
-        $this->actionName     = 'index';
-        $this->params         = array();
-        $this->routing();
+        $this->request->routing();
 
         if (DEBUG_REQUEST) {
             echo "\n<!-- REQUEST\n";
-            echo 'Module     : '.$this->moduleName."\n";
-            echo 'Controller : '.$this->controllerName."\n";
-            echo 'Action     : '.$this->actionName."\n";
+            echo 'Module     : '.$this->request->moduleName."\n";
+            echo 'Controller : '.$this->request->controllerName."\n";
+            echo 'Action     : '.$this->request->actionName."\n";
             echo "Parameters : \n";
-            var_dump($this->params);
+            print_r($this->request->params);
             echo "\n-->\n";
         }
 
         // load core language file for core module
-        $this->lang = array();
-        $this->loadLanguage('core', 'core');
+        $this->view->loadLanguage('core', 'core', $this->session->user_language);
 
         // start controller
-        $controllerName = '\Application\modules\\'.$this->moduleName.'\controllers\\'.$this->controllerName.'Controller';
+        $controllerName = '\Application\modules\\'.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller';
 
         try {
+
+            // exists controller class?
             if (class_exists($controllerName)) {
-                $controller = new $controllerName($this);
+                $controller = new $controllerName(
+                    $this->session,
+                    $this->request,
+                    $this->view
+                );
             } else {
                 throw new \Exception('Controller class '.$controllerName.' not found');
             }
 
-            $actionName = (string) $this->actionName.'Action';
+            // exists action method?
+            $actionName = (string) $this->request->actionName.'Action';
             if (method_exists($controller, $actionName) === false) {
-                $this->log('Application::run() - method '.$actionName.' not found in '.$this->moduleName.'\controllers\\'.$this->controllerName.'Controller');
-                $this->forward($this->buildURL(''),
-                    $this->lang['error_illegal_parameter'], 'error');
+                $this->request->log('Application::run() - method '.$actionName.' not found in '.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller');
+                $this->request->forward($this->request->buildURL(''),
+                    $this->view->lang['error_illegal_parameter'], 'error');
             }
 
-            if ($controller->isAllowed($this->actionName)) {
-                $controller->preAction();
+            // is access to action method allowed?
+            if(method_exists($controller, 'isAllowed')) {
+                $isAllowed = $controller->isAllowed($this->request->actionName);
+            } else {
+                $isAllowed = true;
+            }
+
+            if ($isAllowed) {
+
+                if(method_exists($controller, 'preAction')) {
+                    $controller->preAction();
+                }
                 $controller->$actionName();
-                $controller->postAction();
+                if(method_exists($controller, 'postAction')) {
+                    $controller->postAction();
+                }
             } else {
                 if ($this->session->user_id == 0) {
 
@@ -119,140 +148,33 @@ class Application extends \dollmetzer\zzaplib\Base
                     if ($this->config['core']['quicklogin'] === true) {
                         $this->quicklogin();
                     }
-                    $this->session->queryString = $this->queryString;
-                    $this->forward($this->buildURL('account/login'),
-                        $this->lang('error_not_logged_in'), 'error');
+                    $this->session->queryString = $this->request->queryString;
+                    $this->request->forward($this->buildURL('account/login'),
+                        $this->view->lang('error_not_logged_in'), 'error');
                 } else {
 
                     // logged in, but no access rights
-                    $this->forward($this->buildURL(''),
-                        $this->lang('error_access_denied'), 'error');
+                    $this->request->forward($this->buildURL(''),
+                        $this->view->lang('error_access_denied'), 'error');
                 }
             }
             $this->view->render();
 
             $this->session->flasherror   = '';
             $this->session->flashmessage = '';
+
         } catch (\Exception $e) {
 
             $message = 'Application error in ';
             $message .= $e->getFile().' in Line ';
             $message .= $e->getLine().' : ';
             $message .= $e->getMessage();
-            $this->log($message);
-            $this->forward($this->buildURL(''),
-                $this->lang['error_application'], 'error');
+            $this->request->log($message);
+            $this->request->forward($this->request->buildURL(''),
+                $this->view->lang['error_application'], 'error');
+
         }
     }
 
-    /**
-     * Forward to another page
-     * 
-     * @param string $_url         Target URL 
-     * @param string $_message     (optional) flash message to be displayed on next page
-     * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
-     */
-    public function forward($_url = '', $_message = '', $_messageType = '')
-    {
-
-        if (!empty($_message)) {
-            if ($_messageType == 'error') {
-                $this->session->flasherror = $_message;
-            } else {
-                $this->session->flashmessage = $_message;
-            }
-        }
-        if (empty($_url)) {
-            $_url = $this->buildURL('');
-        }
-        header('Location: '.$_url);
-        exit;
-    }
-
-    /**
-     * Build a complete URL from a query string
-     * 
-     * @param string $_path       Path to the picture on the media server
-     * @return string
-     */
-    public function buildMediaURL($_path)
-    {
-
-        $url = 'http://'.URL_MEDIA.$_path;
-        return $url;
-    }
-
-    /**
-     * Standard routing processes URL to define module, controller, action and additional params.
-     * 
-     * Get Query parameters from the get parameter 'q', like
-     * 
-     * <pre>http://SERVER/?q=module/controller/action/param1/param2/...</pre>
-     * 
-     * If the first parameter is a module name (registered in $this->config['modules']), extract it from the query and set $this->moduleName
-     * If the then first parameter is a controller name, extract ist from the query and set $this->controllerName
-     * If the then first parameter is an action name, extract it from the query and set $this->actionName 
-     * The now remaining parameters are going to $this->params
-     */
-    protected function routing()
-    {
-
-        // escape, if querypath is empty
-        if (empty($_GET['q'])) return;
-        $this->queryString = $_GET['q'];
-
-        // clean query path
-        $queryRaw = explode('/', $this->queryString);
-        $query    = array();
-        for ($i = 0; $i < sizeof($queryRaw); $i++) {
-            if ($queryRaw[$i] != '') array_push($query, $queryRaw[$i]);
-        }
-
-        // test if first entry is a module name
-        if (sizeof($query) > 0) {
-            if (in_array($query[0], $this->getModuleList())) {
-                $this->moduleName = array_shift($query);
-            }
-        }
-
-        // test if first entry is a controller name
-        if (sizeof($query) > 0) {
-            if (in_array($query[0], $this->getControllerList())) {
-                $this->controllerName = array_shift($query);
-            }
-        }
-
-        // action name remaining?
-        if (sizeof($query) > 0) {
-            $this->actionName = array_shift($query);
-        }
-
-        // still any additional parameter remaining?
-        $this->params = $query;
-    }
-
-    protected function quicklogin()
-    {
-
-        if (!empty($_COOKIE['qltoken'])) {
-            $this->log('qltoken is '.$_COOKIE['qltoken'], 'notice');
-            $userModel = new \Application\modules\core\models\userModel($this);
-            $user      = $userModel->getByToken($_COOKIE['qltoken']);
-            $this->log(print_r($user, true), 'notice');
-            if (!empty($user)) {
-                if ($user['useragent'] == $_SERVER['HTTP_USER_AGENT']) {
-                    $this->session->login($user);
-                    if (empty($this->queryString)) {
-                        $this->forward($this->buildURL('/'),
-                            $this->lang('msg_logged_in'));
-                    } else {
-
-                        $this->forward($this->buildURL($this->queryString),
-                            $this->lang('msg_logged_in'));
-                    }
-                }
-            }
-        }
-    }
 }
 ?>

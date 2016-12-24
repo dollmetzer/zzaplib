@@ -30,10 +30,21 @@ namespace dollmetzer\zzaplib;
  */
 class Controller
 {
+
     /**
-     * @var Application $app Holds the instance of the application 
+     * @var Session $session
      */
-    public $app;
+    protected $session;
+
+    /**
+     * @var Request $request
+     */
+    protected $request;
+
+    /**
+     * @var View $view
+     */
+    protected $view;
 
     /**
      * @var array $accessGroups List of action names with lists of allowed groups
@@ -46,13 +57,19 @@ class Controller
      * If permissions are set, they're checked. If no execution right is found,
      * the application jumps to the startpage
      *
-     * @param Application $_app The application object
+     * Controller constructor.
+     * @param Session $_session
+     * @param Request $_request
+     * @param View $_view
      */
-    public function __construct($_app)
+    public function __construct(Session $_session, Request $_request, View $_view)
     {
 
-        $this->app = $_app;
-        $this->app->loadLanguage($this->app->controllerName);
+        $this->session = $_session;
+        $this->request = $_request;
+        $this->view = $_view;
+
+        $this->view->loadLanguage($this->request->controllerName, $this->request->moduleName, $this->session->user_language);
 
         if (method_exists($this, 'init')) $this->init();
     }
@@ -113,18 +130,6 @@ class Controller
     {
 
         return $this->app->buildMediaURL($_path);
-    }
-
-    /**
-     * Forward to another page
-     * 
-     * @param string $_url         Target URL 
-     * @param string $_message     (optional) flash message to be displayed on next page
-     * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
-     */
-    public function forward($_url = '', $_message = '', $_messageType = '')
-    {
-        $this->app->forward($_url, $_message, $_messageType);
     }
 
     /**

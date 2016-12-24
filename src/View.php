@@ -43,14 +43,9 @@ class View
     public $template;
 
     /**
-     * @var array $lang language snippets
+     * @var array $languageSnippets Language snippets
      */
-    public $lang;
-
-    /**
-     * @var Application $app The application object
-     */
-    protected $app;
+    public $languageSnippets;
 
     /**
      * @var array $js Additional Javascript files to include in the page 
@@ -62,20 +57,34 @@ class View
      */
     protected $css;
 
+
+    /**
+     * @var Session $session
+     */
+    protected $session;
+
+    /**
+     * @var Request $request
+     */
+    protected $request;
+
+
     /**
      * Basic setting for the view
      *
-     * @param Application $_app The application object
      */
-    public function __construct($_app)
+    public function __construct(Session $_session, Request $_request)
     {
 
-        $this->app      = $_app;
+        $this->session = $_session;
+        $this->request = $_request;
+
         $this->content  = array();
         $this->template = '';
-        $this->lang     = array();
         $this->js       = array();
         $this->css      = array();
+        $this->languageSnippets = array();
+
     }
 
     /**
@@ -94,13 +103,13 @@ class View
     {
 
         $content = & $this->content;
-        $lang    = & $this->app->lang;
+
         if (!empty($this->template)) {
             $filename = PATH_APP.$this->template;
         } else {
-            $filename = PATH_APP.'modules/'.$this->app->moduleName;
-            $filename .= '/views/'.$this->app->session->theme.'/'.$this->app->controllerName.'/';
-            $filename .= $this->app->actionName.'.php';
+            $filename = PATH_APP.'modules/'.$this->request->moduleName;
+            $filename .= '/views/'.$this->session->theme.'/'.$this->request->controllerName.'/';
+            $filename .= $this->request->actionName.'.php';
         }
         if (!empty($_template)) {
             $filename = PATH_APP.$_template;
@@ -152,7 +161,7 @@ class View
     public function userInGroup($_groupName)
     {
 
-        $userGroups = $this->app->session->groups;
+        $userGroups = $this->session->groups;
         if (in_array($_groupName, $userGroups)) {
             return true;
         }
@@ -169,52 +178,13 @@ class View
     public function buildURL($_path, $_output = true)
     {
 
-        $url = $this->app->buildURL($_path);
+        $url = $this->request->buildURL($_path);
 
         if ($_output === true) {
             echo $url;
             return;
         }
         return $url;
-    }
-
-    /**
-     * Build a URL for media assets (e.g. on a external CDN)
-     * 
-     * @param string $_path Path part of the URL
-     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
-     * @return string|null
-     */
-    public function buildMediaURL($_path, $_output = true)
-    {
-
-        $url = $this->app->buildMediaURL($_path);
-
-        if ($_output === true) {
-            echo $url;
-            return;
-        }
-        return $url;
-    }
-
-    /**
-     * Returns a text snippet in the current language.
-     * If no snippet is found, the placeholder with leading and trailing tripple hash and underscore is returned
-     * 
-     * @param string  $_snippet A placeholder like ERROR_FORM_TOO_LONG 
-     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
-     * @return string           The String in the current language
-     */
-    public function lang($_snippet, $_output = true)
-    {
-
-        $text = $this->app->lang($_snippet);
-
-        if ($_output === true) {
-            echo $text;
-            return;
-        }
-        return $text;
     }
 
     /**
@@ -290,5 +260,55 @@ class View
         }
         return $text;
     }
+
+    /**
+     * Try to load language snippets and store them in $this->lang
+     * The name of the file is [language]_[snippet].ini
+     * E.g. 'de_account.ini' holds the snippets for the account controller in german.
+     *
+     * @param string $_snippet Name of the snippet - mostly the controller name
+     * @param string $_module Name of the module, if language file shouldn't be for current module
+     * @param string $_language two letter code of language, if not to use the user language in the session
+     * @return boolean success
+     */
+    public function loadLanguage($_snippet = 'core', $_module = 'core', $_language = '')
+    {
+
+        $filename = PATH_APP . 'modules/' . $_module . '/data/' . $_snippet . '_' . $_language . '.ini';
+
+        if (file_exists($filename)) {
+            $lang = parse_ini_file($filename);
+            $this->languageSnippets = array_merge($this->languageSnippets, $lang);
+            return true;
+        } else {
+            $this->request->log('Language File ' . $filename . ' not found');
+        }
+        return false;
+    }
+
+
+    /**
+     * Return a language snippet in the current language
+     *
+     * @param string $_snippet Name of the snippet
+     * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
+     */
+    public function lang($_snippet, $_output = true)
+    {
+
+        if (isset($this->languageSnippets[$_snippet])) {
+            $text = $this->languageSnippets[$_snippet];
+        } else {
+            $text = '###_'.$_snippet.'_###';
+        }
+
+        if ($_output === true) {
+            echo $text;
+            return;
+        }
+        return $text;
+
+    }
+
 }
 ?>
