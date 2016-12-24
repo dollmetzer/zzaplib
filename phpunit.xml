@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="./autoload.php">
+    <testsuites>
+        <testsuite name="zzaplib">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory>src</directory>
+            <file>./coverage.txt</file>
+        </whitelist>
+    </filter>
+</phpunit>
