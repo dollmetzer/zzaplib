@@ -32,11 +32,11 @@ namespace dollmetzer\zzaplib;
  */
 class View
 {
-    /**
-     * @var array $content Page content elements
-     */
-    public $content;
 
+    /**
+     * @var string $theme
+     */
+    public $theme;
     /**
      * @var string $template template file name
      */
@@ -48,6 +48,11 @@ class View
     public $languageSnippets;
 
     /**
+     * @var array $content Page content elements
+     */
+    public $content;
+
+    /**
      * @var array $js Additional Javascript files to include in the page 
      */
     protected $js;
@@ -56,7 +61,6 @@ class View
      * @var array $css Additional Stylesheet files to include in the page
      */
     protected $css;
-
 
     /**
      * @var Session $session
@@ -79,11 +83,12 @@ class View
         $this->session = $_session;
         $this->request = $_request;
 
-        $this->content  = array();
+        $this->theme    = $_session->theme;
         $this->template = '';
+        $this->languageSnippets = array();
+        $this->content  = array();
         $this->js       = array();
         $this->css      = array();
-        $this->languageSnippets = array();
 
     }
 
@@ -108,7 +113,7 @@ class View
             $filename = PATH_APP.$this->template;
         } else {
             $filename = PATH_APP.'modules/'.$this->request->moduleName;
-            $filename .= '/views/'.$this->session->theme.'/'.$this->request->controllerName.'/';
+            $filename .= '/views/'.$this->theme.'/'.$this->request->controllerName.'/';
             $filename .= $this->request->actionName.'.php';
         }
         if (!empty($_template)) {

@@ -88,11 +88,25 @@ class ViewTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * Test, if language File can be loaded
+     */
     public function testLoadLanguageDefault()
     {
 
         $view = new View(self::$session, self::$request);
-        $this->assertTrue($view->loadLanguage());
+        $this->assertTrue($view->loadLanguage('core','core','de'));
+
+    }
+
+    /**
+     * Test, if language File can be loaded
+     */
+    public function testLoadLanguageFailed()
+    {
+
+        $view = new View(self::$session, self::$request);
+        $this->assertFalse($view->loadLanguage());
 
     }
 
