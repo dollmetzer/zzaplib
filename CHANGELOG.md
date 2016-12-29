@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+2016-12-28 Fixed tests
+
+2016-12-27 config accessible in view. Fixed some wrapper methods in Controller class.
+
+2016-12-26 Formatting, commenting
+
 2016-12-25 View theme switchable in controller
 
 2016-12-24 Refactoring in progress

@@ -56,15 +56,20 @@ class Request
      */
     public $params         = array();
 
+    public $config;
+
+    public $session;
+
     /**
      * Constructor
      *
      * @param array $config Configuration array
      */
-    public function __construct(array $config)
+    public function __construct(array $config, Session $_session)
     {
 
         $this->config = $config;
+        $this->session = $_session;
 
     }
 

@@ -2,34 +2,47 @@ zzaplib
 =======
 
 Zzaplib is a lightweight PHP application framework.
-The first version was used in a now defunct messaging application named zzap in 2006-2009.
-It was under constant development since then for various web applications.
+The roots of this library are a now defunct messaging application named zzap
+in 2006-2009.
+The library was under constant development since then for various web applications.
 
-The requirements are:
+Main Goals
+----------
 
-- MVC structure
+- Easy maintainable MVC structure
 - lean code, high speed and low memory usage
 - support multiple sites, multiple languages and multiple devices
-- Easy maintainable
 
 Installation using composer
 ---------------------------
-Insert the following into your project composer.json:
+Create a file named composer.json in your project directory and
+insert the following code:
 
-    "require": {
-        "dollmetzer/zzaplib": "dev-master"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git://github.com/dollmetzer/zzaplib",
-            "reference": "master"
+    {
+        "name": "zzapapp",
+        "require-dev": {
+            "dollmetzer/zzaplib": "2.0.0.x-dev"
         },
+        "repositories": [
+            {
+                "type": "vcs",
+                "url": "git://github.com/dollmetzer/zzaplib",
+                "reference": "2.0.0"
+            }
+        ],
+        "autoload": {
+            "psr-4": {
+                "Application\\": "app"
+            }
+        }
     }
 
-Then run php composer.phar install
+Then run on the command line:
 
+    php composer.phar install
 
 Create a new application
 ------------------------
-...to be written.
+See the scaffold / example application zzapapp on github:
+
+https://github.com/dollmetzer/zzapapp

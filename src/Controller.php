@@ -104,7 +104,20 @@ class Controller
     public function lang($_snippet)
     {
 
-        return $this->app->lang($_snippet);
+        return $this->request->lang($_snippet);
+    }
+
+    /**
+     * Forward to another page
+     *
+     * @param string $_url Target URL
+     * @param string $_message (optional) flash message to be displayed on next page
+     * @param string $_messageType (optinal) Type if flash message. Either 'error' or 'message'
+     */
+    public function forward($_url = '', $_message = '', $_messageType = '') {
+
+        $this->request->forward($_url, $_message, $_messageType);
+
     }
 
     /**
@@ -117,7 +130,7 @@ class Controller
     public function buildURL($_path, $_attributes = array())
     {
 
-        return $this->app->buildURL($_path, $_attributes);
+        return $this->request->buildURL($_path, $_attributes);
     }
 
     /**
@@ -129,7 +142,7 @@ class Controller
     public function buildMediaURL($_path)
     {
 
-        return $this->app->buildMediaURL($_path);
+        return $this->request->buildMediaURL($_path);
     }
 
     /**
@@ -151,7 +164,7 @@ class Controller
             return true;
         }
         // allowed, if user is group member
-        $userGroups   = $this->app->session->groups;
+        $userGroups   = $this->session->groups;
         $intersection = array_intersect($userGroups,
             $this->accessGroups[$_actionName]);
         if (!empty($intersection)) {
@@ -169,7 +182,7 @@ class Controller
     public function inGroup($_group)
     {
 
-        $userGroups = $this->app->session->groups;
+        $userGroups = $this->session->groups;
         if (is_int($_group)) {
             if (in_array($_group, array_keys($userGroups))) {
                 return true;

@@ -32,10 +32,11 @@ namespace dollmetzer\zzaplib;
  */
 class Form
 {
+
     /**
-     * @var Application $app The application object
+     * @var Request $request The Request Object
      */
-    protected $app;
+    protected $request;
 
     /**
      * @var string $name Name of the form 
@@ -67,9 +68,9 @@ class Form
      *
      * @param Application $_app The application object
      */
-    public function __construct($_app)
+    public function __construct(Request $_request)
     {
-        $this->app       = $_app;
+        $this->request   = $_request;
         $this->name      = '';
         $this->title     = '';
         $this->action    = '';
@@ -188,7 +189,7 @@ class Form
         // required
         if (!empty($this->fields[$_name]['required'])) {
             if (empty($this->fields[$_name]['value'])) {
-                $this->fields[$_name]['error'] = $this->app->lang('form_error_required');
+                $this->fields[$_name]['error'] = $this->request->lang('form_error_required');
                 $this->hasErrors               = true;
                 return;
             }
@@ -197,7 +198,7 @@ class Form
         // minlength
         if (!empty($this->fields[$_name]['minlength'])) {
             if (strlen($this->fields[$_name]['value']) < $this->fields[$_name]['minlength']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_minlength'),
+                $this->fields[$_name]['error'] = sprintf($this->request->lang('form_error_minlength'),
                     $this->fields[$_name]['minlength']);
                 $this->hasErrors               = true;
                 return;
@@ -206,7 +207,7 @@ class Form
         // maxlength
         if (!empty($this->fields[$_name]['maxlength'])) {
             if (strlen($this->fields[$_name]['value']) > $this->fields[$_name]['maxlength']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_maxlength'),
+                $this->fields[$_name]['error'] = sprintf($this->request->lang('form_error_maxlength'),
                     $this->fields[$_name]['maxlength']);
                 $this->hasErrors               = true;
                 return;
@@ -216,7 +217,7 @@ class Form
         // min
         if (!empty($this->fields[$_name]['min'])) {
             if ($this->fields[$_name]['value'] < $this->fields[$_name]['min']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_min'),
+                $this->fields[$_name]['error'] = sprintf($this->request->lang('form_error_min'),
                     $this->fields[$_name]['min']);
                 $this->hasErrors               = true;
                 return;
@@ -226,7 +227,7 @@ class Form
         if (!empty($this->fields[$_name]['max'])) {
             if ($this->fields[$_name]['value'] > $this->fields[$_name]['max']) {
 
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_max'),
+                $this->fields[$_name]['error'] = sprintf($this->request->lang('form_error_max'),
                     $this->fields[$_name]['max']);
                 $this->hasErrors               = true;
                 return;
@@ -237,7 +238,7 @@ class Form
         if ($this->fields[$_name]['type'] == 'integer') {
             $value = (int) $this->fields[$_name]['value'];
             if ((string) $value != $this->fields[$_name]['value']) {
-                $this->fields[$_name]['error'] = sprintf($this->app->lang('form_error_integer'),
+                $this->fields[$_name]['error'] = sprintf($this->request->lang('form_error_integer'),
                     $this->fields[$_name]['maxlength']);
                 $this->hasErrors               = true;
                 return;

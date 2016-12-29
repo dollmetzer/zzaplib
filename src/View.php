@@ -63,6 +63,11 @@ class View
     protected $css;
 
     /**
+     * @var array $config
+     */
+    protected $config;
+
+    /**
      * @var Session $session
      */
     protected $session;
@@ -82,6 +87,7 @@ class View
 
         $this->session = $_session;
         $this->request = $_request;
+        $this->config = $_request->config;
 
         $this->theme    = $_session->theme;
         $this->template = '';
@@ -230,8 +236,7 @@ class View
         if ($_datetime == '0000-00-00 00:00:00') {
             $text = '-';
         } else {
-            $text = strftime($this->lang('format_datetime', false),
-                strtotime($_datetime));
+            $text = strftime($this->lang('format_datetime', false), strtotime($_datetime));
         }
 
         if ($_output === true) {
@@ -255,8 +260,7 @@ class View
         if ($_datetime == '0000-00-00 00:00:00') {
             $text = '-';
         } else {
-            $text = strftime($this->lang('format_datetime_short', false),
-                strtotime($_datetime));
+            $text = strftime($this->lang('format_datetime_short', false), strtotime($_datetime));
         }
 
         if ($_output === true) {

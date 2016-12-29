@@ -79,7 +79,8 @@ class RequestTest extends PHPUnit_Framework_TestCase
     public function testConstruct()
     {
 
-        $request = new Request(self::$config);
+        $session = new \dollmetzer\zzaplib\Session(self::$config);
+        $request = new Request(self::$config, $session);
         $this->assertInstanceOf(Request::class, $request);
 
     }
@@ -96,7 +97,8 @@ class RequestTest extends PHPUnit_Framework_TestCase
             'this'
         );
 
-        $request = new Request(self::$config);
+        $session = new \dollmetzer\zzaplib\Session(self::$config);
+        $request = new Request(self::$config, $session);
         $moduleList = $request->getModuleList();
         $this->assertSame($moduleList, $list);
 
@@ -116,7 +118,8 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
         $config = array();
 
-        $request = new Request($config);
+        $session = new \dollmetzer\zzaplib\Session(self::$config);
+        $request = new Request($config, $session);
         $moduleList = $request->getModuleList();
         $this->assertSame($moduleList, $list);
 
@@ -133,7 +136,8 @@ class RequestTest extends PHPUnit_Framework_TestCase
             'index'
         );
 
-        $request = new Request(self::$config);
+        $session = new \dollmetzer\zzaplib\Session(self::$config);
+        $request = new Request(self::$config, $session);
         $controllerList = $request->getControllerList('that');
         $this->assertSame($controllerList, $list);
 
@@ -152,7 +156,8 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
         $config = array();
 
-        $request = new Request($config);
+        $session = new \dollmetzer\zzaplib\Session(self::$config);
+        $request = new Request(self::$config, $session);
         $controllerList = $request->getControllerList('foo');
         $this->assertSame($controllerList, $list);
 

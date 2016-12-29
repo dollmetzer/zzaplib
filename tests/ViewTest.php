@@ -47,7 +47,7 @@ class ViewTest extends PHPUnit_Framework_TestCase
         $config = parse_ini_file($configFile, true);
         self::$session = new dollmetzer\zzaplib\Session($config);
 
-        self::$request = new dollmetzer\zzaplib\Request($config);
+        self::$request = new dollmetzer\zzaplib\Request($config, self::$session);
 
     }
 

@@ -79,7 +79,7 @@ class Application
     {
 
         // construct request element
-        $this->request = new \dollmetzer\zzaplib\Request($this->config);
+        $this->request = new \dollmetzer\zzaplib\Request($this->config, $this->session);
 
         // start view
         $this->view = new \dollmetzer\zzaplib\View($this->session, $this->request);
@@ -145,17 +145,19 @@ class Application
 
                     // Not logged in
                     // Remeber target page, try quicklogin or jump to login page
-                    if ($this->config['core']['quicklogin'] === true) {
-                        $this->quicklogin();
+                    if ($this->config['quicklogin'] === true) {
+                        if(method_exists($controller, 'quicklogin')) {
+                            $controller->quicklogin();
+                        }
                     }
                     $this->session->queryString = $this->request->queryString;
-                    $this->request->forward($this->buildURL('account/login'),
-                        $this->view->lang('error_not_logged_in'), 'error');
+                    $this->request->forward($this->request->buildURL('account/login'),
+                        $this->view->lang('error_not_logged_in', false), 'error');
                 } else {
 
                     // logged in, but no access rights
-                    $this->request->forward($this->buildURL(''),
-                        $this->view->lang('error_access_denied'), 'error');
+                    $this->request->forward($this->request->buildURL(''),
+                        $this->view->lang('error_access_denied', false), 'error');
                 }
             }
             $this->view->render();
@@ -171,7 +173,7 @@ class Application
             $message .= $e->getMessage();
             $this->request->log($message);
             $this->request->forward($this->request->buildURL(''),
-                $this->view->lang['error_application'], 'error');
+                $this->view->lang('error_application', false), 'error');
 
         }
     }
