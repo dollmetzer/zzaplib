@@ -104,7 +104,7 @@ class Controller
     public function lang($_snippet)
     {
 
-        return $this->request->lang($_snippet);
+        return $this->view->lang($_snippet);
     }
 
     /**

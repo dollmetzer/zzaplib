@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2016-12-31 Fix Controller::lang()
+
 2016-12-28 Fixed tests
 
 2016-12-27 config accessible in view. Fixed some wrapper methods in Controller class.
