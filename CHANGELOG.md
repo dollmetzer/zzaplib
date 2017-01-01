@@ -1,7 +1,9 @@
 CHANGELOG
 =========
 
-2016-12-31 Fix Controller::lang()
+2017-01-01 Fixed Controller::lang() output. Form constructor changed. Fixed language snippet in Application
+
+2016-12-31 Fixed Controller::lang()
 
 2016-12-28 Fixed tests
 
