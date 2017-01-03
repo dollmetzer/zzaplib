@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2017-01-03 Started refactoring DBModel
+
+2017-01-03 Started Refactoring of REST API
+
 2017-01-01 Fixed Controller::lang() output. Form constructor changed. Fixed language snippet in Application
 
 2016-12-31 Fixed Controller::lang()

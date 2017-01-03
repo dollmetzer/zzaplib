@@ -108,6 +108,7 @@ class Application
             // exists controller class?
             if (class_exists($controllerName)) {
                 $controller = new $controllerName(
+                    $this->config,
                     $this->session,
                     $this->request,
                     $this->view

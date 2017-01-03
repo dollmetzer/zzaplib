@@ -32,6 +32,11 @@ class Controller
 {
 
     /**
+     * @var array $config
+     */
+    protected $config;
+
+    /**
      * @var Session $session
      */
     protected $session;
@@ -62,9 +67,10 @@ class Controller
      * @param Request $_request
      * @param View $_view
      */
-    public function __construct(Session $_session, Request $_request, View $_view)
+    public function __construct($_config, Session $_session, Request $_request, View $_view)
     {
 
+        $this->config = $_config;
         $this->session = $_session;
         $this->request = $_request;
         $this->view = $_view;

@@ -97,8 +97,9 @@ class Form
     public function process()
     {
 
-        // set default values
         $success         = true;
+
+        // set default values
         $this->hasErrors = false;
         foreach ($this->fields as $name => $field) {
             if (!in_array($field['type'], array('static', 'divider', 'submit'))) {
