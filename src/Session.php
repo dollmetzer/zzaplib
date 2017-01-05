@@ -110,6 +110,27 @@ class Session
     }
 
     /**
+     * Load User data into the session
+     *
+     * @param array $_user
+     * @param array $_groups
+     */
+    public function login(array $_user, array $_groups) {
+
+        $this->user_id = $_user['id'];
+        $this->user_handle = $_user['handle'];
+        $this->user_lastlogin = $_user['lastlogin'];
+        $this->user_language = $_user['language'];
+        $this->user_haspassword = true;
+        $groups = array();
+        foreach($_groups as $pos=>$group) {
+            print_r($group);
+            $groups[$group['id']] = $group['name'];
+        }
+        $this->groups = $groups;
+    }
+
+    /**
      * Destroys a session and creates a new one
      */
     public function destroy()

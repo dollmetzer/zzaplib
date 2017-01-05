@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-01-05 Session::login added
+
 2017-01-03 Started refactoring DBModel
 
 2017-01-03 Started Refactoring of REST API
