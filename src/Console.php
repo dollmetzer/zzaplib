@@ -28,7 +28,7 @@ namespace dollmetzer\zzaplib;
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class Console extends \dollmetzer\zzaplib\Base
+class Console
 {
     /**
      * @var string $scriptname Name of the script (usually 'console' 

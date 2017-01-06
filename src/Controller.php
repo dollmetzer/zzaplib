@@ -84,7 +84,7 @@ class Controller
      * Method is called before any controller action.
      * Overload in the application controller to use
      */
-    public function preAction()
+    public function before()
     {
         
     }
@@ -93,7 +93,7 @@ class Controller
      * Method is called after any controller action.
      * Overload in the application controller to use
      */
-    public function postAction()
+    public function after()
     {
         
     }

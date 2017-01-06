@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2017-01-06 Application: changed preAction() to before() and postAction() to after(), as they should not be direct accessible throught the URL
+
+2017-01-06 View: refactored getter and setter for JS and CSS files
+
 2017-01-05 Session::login added
 
 2017-01-03 Started refactoring DBModel

@@ -18,20 +18,29 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-use dollmetzer\zzaplib\Base;
+use dollmetzer\zzaplib\Form;
 
 /**
- * Class BaseTest
+ * Class FormTest
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
-class BaseTest extends PHPUnit_Framework_TestCase
+class FormTest extends PHPUnit_Framework_TestCase
 {
 
-    protected static $config;
+    /**
+     * @var \dollmetzer\zzaplib\Request $request
+     */
+    protected static $request;
+
+    /**
+     * @var \dollmetzer\zzaplib\View $view
+     */
+    protected static $view;
+
 
     /**
      * Execute once on class test start
@@ -43,10 +52,15 @@ class BaseTest extends PHPUnit_Framework_TestCase
 
         $configFile = realpath(__DIR__ . '/app/config.ini');
         $config = parse_ini_file($configFile, true);
-        self::$config = $config;
+        $session = new \dollmetzer\zzaplib\Session($config);
+        $request = new \dollmetzer\zzaplib\Request($config, $session);
+        $view = new \dollmetzer\zzaplib\View($session, $request);
 
-        define('PATH_APP', realpath(__DIR__ . '/app') . '/');
-        define('PATH_LOGS', realpath(__DIR__ . '/logs') . '/');
+        self::$request = $request;
+        self::$view = $view;
+
+        define('PATH_APP', realpath(__DIR__.'/app').'/');
+        define('PATH_LOGS', realpath(__DIR__.'/logs').'/');
 
     }
 
@@ -82,8 +96,8 @@ class BaseTest extends PHPUnit_Framework_TestCase
     public function testConstruct()
     {
 
-        $base = new Base(self::$config);
-        $this->assertInstanceOf(Base::class, $base);
+        $form = new Form(self::$request, self::$view);
+        $this->assertInstanceOf(Form::class, $form);
 
     }
 

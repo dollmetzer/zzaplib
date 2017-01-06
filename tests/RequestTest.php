@@ -116,7 +116,14 @@ class RequestTest extends PHPUnit_Framework_TestCase
             'foo'
         );
 
-        $config = array();
+        $config = array(
+            'languages' => array(
+                'de'
+            ),
+            'themes' => array(
+                'frontend'
+            )
+        );
 
         $session = new \dollmetzer\zzaplib\Session(self::$config);
         $request = new Request($config, $session);
@@ -154,9 +161,16 @@ class RequestTest extends PHPUnit_Framework_TestCase
             'bar'
         );
 
-        $config = array();
+        $config = array(
+            'languages' => array(
+                'de'
+            ),
+            'themes' => array(
+                'frontend'
+            )
+        );
 
-        $session = new \dollmetzer\zzaplib\Session(self::$config);
+        $session = new \dollmetzer\zzaplib\Session($config);
         $request = new Request(self::$config, $session);
         $controllerList = $request->getControllerList('foo');
         $this->assertSame($controllerList, $list);

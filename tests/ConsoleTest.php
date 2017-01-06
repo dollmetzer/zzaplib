@@ -73,7 +73,16 @@ class ConsoleTest extends PHPUnit_Framework_TestCase
     public function testConstruct()
     {
 
-        $console = new Console(array());
+        $config = array(
+            'languages' => array(
+                'de'
+            ),
+            'themes' => array(
+                'frontend'
+            )
+        );
+
+        $console = new Console($config);
         $this->assertInstanceOf(Console::class, $console);
 
     }

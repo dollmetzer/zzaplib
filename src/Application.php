@@ -134,12 +134,12 @@ class Application
 
             if ($isAllowed) {
 
-                if(method_exists($controller, 'preAction')) {
-                    $controller->preAction();
+                if(method_exists($controller, 'before')) {
+                    $controller->before();
                 }
                 $controller->$actionName();
-                if(method_exists($controller, 'postAction')) {
-                    $controller->postAction();
+                if(method_exists($controller, 'after')) {
+                    $controller->after();
                 }
             } else {
                 if ($this->session->user_id == 0) {

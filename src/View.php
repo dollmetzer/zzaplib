@@ -144,23 +144,53 @@ class View
     }
 
     /**
+     * Returns Array of URLs for additional Javascript files
+     *
+     * @return array
+     */
+    public function getJS() {
+
+        return $this->js;
+
+    }
+
+    /**
      * Add a javascript file to the page
      * 
-     * @param string $_filename
+     * @param string/array $_filename
      */
     public function addJS($_filename)
     {
-        $this->js[] = $_filename;
+        if(is_array($_filename)) {
+            $this->js = array_merge($this->js, $_filename);
+        } else {
+            $this->js[] = $_filename;
+        }
+    }
+
+    /**
+     * Returns Array of URLs for additional CSS files
+     *
+     * @return array
+     */
+    public function getCSS() {
+
+        return $this->css;
+
     }
 
     /**
      * Add a CSS File to the page
      * 
-     * @param string $_filename
+     * @param string/array $_filename
      */
     public function addCSS($_filename)
     {
-        $this->css[] = $_filename;
+        if(is_array($_filename)) {
+            $this->css = array_merge($this->css, $_filename);
+        } else {
+            $this->css[] = $_filename;
+        }
     }
 
     /**

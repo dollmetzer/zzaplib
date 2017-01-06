@@ -31,6 +31,8 @@ use dollmetzer\zzaplib\Api;
 class ApiTest extends PHPUnit_Framework_TestCase
 {
 
+    protected static $config;
+
     /**
      * Execute once on class test start
      */
@@ -38,6 +40,11 @@ class ApiTest extends PHPUnit_Framework_TestCase
     {
 
         echo "\nStart " . __CLASS__ . "\n";
+
+        $configFile = realpath( __DIR__ . '/app/config.ini' );
+        $config = parse_ini_file($configFile, true);
+
+        self::$config = $config;
 
     }
 
@@ -73,7 +80,7 @@ class ApiTest extends PHPUnit_Framework_TestCase
     public function testConstruct()
     {
 
-        $api = new Api(array());
+        $api = new Api(self::$config);
         $this->assertInstanceOf(Api::class, $api);
 
     }
