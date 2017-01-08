@@ -139,6 +139,7 @@ class Session
         if($this->is_web === true) {
             session_destroy();
             session_unset();
+            session_start();
         } else {
             $this->data = array();
         }

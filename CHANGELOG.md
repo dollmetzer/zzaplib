@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-01-07 Table added. Session::destroy also inits new session
+
 2017-01-06 Application: changed preAction() to before() and postAction() to after(), as they should not be direct accessible throught the URL
 
 2017-01-06 View: refactored getter and setter for JS and CSS files
