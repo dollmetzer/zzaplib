@@ -205,9 +205,10 @@ class Form
             }
         }
 
-        // minlength
+        // minlength check, if value is not empty
         if (!empty($this->fields[$_name]['minlength'])) {
-            if (strlen($this->fields[$_name]['value']) < $this->fields[$_name]['minlength']) {
+            $length = strlen($this->fields[$_name]['value']);
+            if (($length > 0) && ($length < $this->fields[$_name]['minlength'])) {
                 $this->fields[$_name]['error'] = sprintf($this->view->lang('form_error_minlength', false),
                     $this->fields[$_name]['minlength']);
                 $this->hasErrors               = true;
