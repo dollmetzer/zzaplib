@@ -122,7 +122,7 @@ class Application
             if (method_exists($controller, $actionName) === false) {
                 $this->request->log('Application::run() - method '.$actionName.' not found in '.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller');
                 $this->request->forward($this->request->buildURL(''),
-                    $this->view->lang('error_illegal_parameter'), 'error');
+                    $this->view->lang('error_core_illegal_parameter'), 'error');
             }
 
             // is access to action method allowed?
@@ -153,12 +153,12 @@ class Application
                     }
                     $this->session->queryString = $this->request->queryString;
                     $this->request->forward($this->request->buildURL('account/login'),
-                        $this->view->lang('error_not_logged_in', false), 'error');
+                        $this->view->lang('error_core_not_logged_in', false), 'error');
                 } else {
 
                     // logged in, but no access rights
                     $this->request->forward($this->request->buildURL(''),
-                        $this->view->lang('error_access_denied', false), 'error');
+                        $this->view->lang('error_core_access_denied', false), 'error');
                 }
             }
             $this->view->render();
@@ -174,7 +174,7 @@ class Application
             $message .= $e->getMessage();
             $this->request->log($message);
             $this->request->forward($this->request->buildURL(''),
-                $this->view->lang('error_application', false), 'error');
+                $this->view->lang('error_core_application', false), 'error');
 
         }
     }

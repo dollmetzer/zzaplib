@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-01-13 Changed four textindizes
+
 2017-01-07 Form check minlength only, if value is given
 
 2017-01-07 Table added. Session::destroy also inits new session
