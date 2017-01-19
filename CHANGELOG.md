@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2017-01-19 added View::getLangaugeCore for collection of language core files from all modules
+
+2017-01-19 added View::getNavigation method for collection navigation items of all modules
+
 2017-01-13 Changed four textindizes
 
 2017-01-07 Form check minlength only, if value is given

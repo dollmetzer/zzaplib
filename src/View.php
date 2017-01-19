@@ -4,27 +4,27 @@
  * ===========================================
  *
  * This library is a mini framework from php web applications
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 3 of the License, or (at your option) any later 
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, see <http://www.gnu.org/licenses/>. 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace dollmetzer\zzaplib;
 
 /**
  * View class
- * 
+ *
  * Manages the output of HTML pages in the web application
- * 
+ *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2015 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
@@ -53,7 +53,7 @@ class View
     public $content;
 
     /**
-     * @var array $js Additional Javascript files to include in the page 
+     * @var array $js Additional Javascript files to include in the page
      */
     protected $js;
 
@@ -89,22 +89,22 @@ class View
         $this->request = $_request;
         $this->config = $_request->config;
 
-        $this->theme    = $_session->theme;
+        $this->theme = $_session->theme;
         $this->template = '';
         $this->languageSnippets = array();
-        $this->content  = array();
-        $this->js       = array();
-        $this->css      = array();
+        $this->content = array();
+        $this->js = array();
+        $this->css = array();
 
     }
 
     /**
      * Render the template
-     * 
+     *
      * If $this->template is not empty, use this file (PATH_APP.$this->template).
      * Normally use the following template file:
      * PATH_APP/modules/MODULE_NAME/views/SESSION_THEME/CONTROLLER_NAME/ACTION_NAME.php
-     * 
+     *
      * @param boolean $_capture If true, captures and returns result.
      * @param string $_template If given, it overrides the standard template and also $this->template
      * @return string
@@ -113,17 +113,17 @@ class View
     public function render($_capture = false, $_template = '')
     {
 
-        $content = & $this->content;
+        $content = &$this->content;
 
         if (!empty($this->template)) {
-            $filename = PATH_APP.$this->template;
+            $filename = PATH_APP . $this->template;
         } else {
-            $filename = PATH_APP.'modules/'.$this->request->moduleName;
-            $filename .= '/views/'.$this->theme.'/'.$this->request->controllerName.'/';
-            $filename .= $this->request->actionName.'.php';
+            $filename = PATH_APP . 'modules/' . $this->request->moduleName;
+            $filename .= '/views/' . $this->theme . '/' . $this->request->controllerName . '/';
+            $filename .= $this->request->actionName . '.php';
         }
         if (!empty($_template)) {
-            $filename = PATH_APP.$_template;
+            $filename = PATH_APP . $_template;
         }
         if (!file_exists($filename)) {
             throw new \Exception("View: Template $filename not found.");
@@ -148,7 +148,8 @@ class View
      *
      * @return array
      */
-    public function getJS() {
+    public function getJS()
+    {
 
         return $this->js;
 
@@ -156,12 +157,12 @@ class View
 
     /**
      * Add a javascript file to the page
-     * 
-     * @param string/array $_filename
+     *
+     * @param string /array $_filename
      */
     public function addJS($_filename)
     {
-        if(is_array($_filename)) {
+        if (is_array($_filename)) {
             $this->js = array_merge($this->js, $_filename);
         } else {
             $this->js[] = $_filename;
@@ -173,7 +174,8 @@ class View
      *
      * @return array
      */
-    public function getCSS() {
+    public function getCSS()
+    {
 
         return $this->css;
 
@@ -181,12 +183,12 @@ class View
 
     /**
      * Add a CSS File to the page
-     * 
-     * @param string/array $_filename
+     *
+     * @param string /array $_filename
      */
     public function addCSS($_filename)
     {
-        if(is_array($_filename)) {
+        if (is_array($_filename)) {
             $this->css = array_merge($this->css, $_filename);
         } else {
             $this->css[] = $_filename;
@@ -195,7 +197,7 @@ class View
 
     /**
      * checks, if the current user is in a certain group
-     * 
+     *
      * @param string $_groupName
      * @return boolean
      */
@@ -211,9 +213,9 @@ class View
 
     /**
      * Build a URL with a query path considering server settings
-     * 
+     *
      * @param string $_path Path part of the URL
-     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
+     * @param boolean $_output Direct output(default) in the template or return value for use in Controller
      * @return string|null
      */
     public function buildURL($_path, $_output = true)
@@ -230,9 +232,9 @@ class View
 
     /**
      * Returns a formatted date from a database datetime
-     * 
+     *
      * @param string $_datetime Something like '2010-12-19 06:03_59'
-     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
+     * @param boolean $_output Direct output(default) in the template or return value for use in Controller
      * @return string           formatted date. In this case '19.12.2010' (german format)
      */
     public function toDate($_datetime, $_output = true)
@@ -254,9 +256,9 @@ class View
 
     /**
      * Returns a formatted date and time stamp from a database datetime
-     * 
+     *
      * @param string $_datetime Something like '2010-12-19 06:03:59'
-     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
+     * @param boolean $_output Direct output(default) in the template or return value for use in Controller
      * @return string           formatted date. In this case '19.12.2010 06:03:59' (german format)
      */
     public function toDatetime($_datetime, $_output = true)
@@ -278,9 +280,9 @@ class View
 
     /**
      * Returns a formatted date and time stamp from a database datetime
-     * 
+     *
      * @param string $_datetime Something like '2010-12-19 06:03:59'
-     * @param boolean $_output  Direct output(default) in the template or return value for use in Controller 
+     * @param boolean $_output Direct output(default) in the template or return value for use in Controller
      * @return string           formatted date. In this case '19.12.2010 06:03' (german format)
      */
     public function toDatetimeShort($_datetime, $_output = true)
@@ -298,6 +300,80 @@ class View
             return;
         }
         return $text;
+    }
+
+    /**
+     * Return the navigation array for all modules
+     *
+     * Try th fetch array from cachefile in system/navigation_'.$_frontBack.'.json
+     *
+     * @param string $_frontBack Either 'frontend' (default) or 'backend'
+     * @return array
+     */
+    public function getNavigation($_frontBack = 'frontend')
+    {
+
+        if ($_frontBack != 'backend') {
+            $_frontBack = 'frontend';
+        }
+
+        // check, if navigation already exists
+        $cacheFile = PATH_DATA . 'system/navigation_' . $_frontBack . '.json';
+        if (file_exists($cacheFile)) {
+            $navigation = json_decode(file_get_contents($cacheFile), true);
+            return $navigation;
+        }
+
+        $navigation = array();
+        $modules = $this->request->getModuleList();
+        for ($i = 0; $i < sizeof($modules); $i++) {
+            $filename = PATH_APP . 'modules/' . $modules[$i] . '/data/navigation_' . $_frontBack . '.php';
+            if (file_exists($filename)) {
+                $navigation = array_merge($navigation, include $filename);
+            }
+        }
+
+        $fp = fopen($cacheFile, 'w+');
+        fwrite($fp, json_encode($navigation));
+        fclose($fp);
+
+        return $navigation;
+
+    }
+
+    /**
+     * Initial loading of languag core snippets
+     * ( called in Application::run() )
+     *
+     * Try to cache all core files of all modules
+     *
+     * @param string $_language
+     */
+    public function getLangaugeCore($_language = '')
+    {
+
+        // check, if navigation already exists
+        $cacheFile = PATH_DATA . 'system/lang_core_' . $_language . '.json';
+        if (file_exists($cacheFile)) {
+            $this->languageSnippets = json_decode(file_get_contents($cacheFile), true);
+            return;
+        }
+
+        $modules = $this->request->getModuleList();
+        $lang = array();
+        for ($i = 0; $i < sizeof($modules); $i++) {
+            $filename = PATH_APP . 'modules/' . $modules[$i] . '/data/core_' . $_language . '.ini';
+            if (file_exists($filename)) {
+                $lang = array_merge($lang, parse_ini_file($filename, true));
+            }
+        }
+
+        $this->languageSnippets = $lang;
+
+        $fp = fopen($cacheFile, 'w+');
+        fwrite($fp, json_encode($lang));
+        fclose($fp);
+
     }
 
     /**
@@ -325,7 +401,6 @@ class View
         return false;
     }
 
-
     /**
      * Return a language snippet in the current language
      *
@@ -338,7 +413,7 @@ class View
         if (isset($this->languageSnippets[$_snippet])) {
             $text = $this->languageSnippets[$_snippet];
         } else {
-            $text = '###_'.$_snippet.'_###';
+            $text = '###_' . $_snippet . '_###';
         }
 
         if ($_output === true) {
@@ -350,4 +425,5 @@ class View
     }
 
 }
+
 ?>

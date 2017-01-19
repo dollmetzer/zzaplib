@@ -97,8 +97,8 @@ class Application
             echo "\n-->\n";
         }
 
-        // load core language file for core module
-        $this->view->loadLanguage('core', 'core', $this->session->user_language);
+        // load core language snippets
+        $this->view->getLangaugeCore($this->session->user_language);
 
         // start controller
         $controllerName = '\Application\modules\\'.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller';
