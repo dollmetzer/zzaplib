@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-03-15 View:userInGroup now also checks against arrays
+
 2017-01-20 added Mail Class for sending mails
 
 2017-01-19 added View::getLangaugeCore for collection of language core files from all modules

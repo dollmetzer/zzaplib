@@ -129,15 +129,7 @@ class Request
 
     /**
      * Get a list of installed modules. If modules are set in the configuration,
-     * get the list from the configuration. Every module entry must be an array.
-     *
-     * 'modules' => array (
-     *     'core' => array(
-     *         'index',
-     *         'account'
-     *     )
-     *  )
-     *
+     * get the list from the configuration.
      * If modules are not in the configuration, read list from filesystem
      * in app/modules.
      *

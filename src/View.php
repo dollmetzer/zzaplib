@@ -198,17 +198,24 @@ class View
     /**
      * checks, if the current user is in a certain group
      *
-     * @param string $_groupName
+     * @param string|array $_groupName
      * @return boolean
      */
     public function userInGroup($_groupName)
     {
 
+        $result = false;
         $userGroups = $this->session->groups;
-        if (in_array($_groupName, $userGroups)) {
-            return true;
+        if (is_array($_groupName)) {
+            if (sizeof(array_intersect($userGroups, $_groupName)) > 0) {
+                $result = true;
+            }
+        } else {
+            if (in_array($_groupName, $userGroups)) {
+                $result = true;
+            }
         }
-        return false;
+        return $result;
     }
 
     /**
