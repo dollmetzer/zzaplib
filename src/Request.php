@@ -70,6 +70,7 @@ class Request
 
         $this->config = $config;
         $this->session = $_session;
+        $this->module = new \dollmetzer\zzaplib\Module();
 
     }
 
@@ -133,30 +134,18 @@ class Request
      * If modules are not in the configuration, read list from filesystem
      * in app/modules.
      *
+     * @param bool $_onlyNames if true, return only names. If false return complete module config
      * @return array
      */
-    public function getModuleList()
+    public function getModuleList($_onlyNames = true)
     {
 
-        if (empty($this->config['modules'])) {
-            $list = array();
-            if (file_exists(PATH_APP . 'modules/')) {
-                $dir = opendir(PATH_APP . 'modules/');
-                while ($file = readdir($dir)) {
-                    if (!preg_match('/^\./', $file)) {
-                        if (is_dir(PATH_APP . 'modules/' . $file)) {
-                            $list[] = $file;
-                        }
-                    }
-                }
-                closedir($dir);
-            }
+        if($_onlyNames === true) {
+            return array_keys($this->module->getConfig());
         } else {
-            $list = array_keys($this->config['modules']);
+            return $this->module->getConfig();
         }
-        sort($list);
 
-        return $list;
     }
 
     /**

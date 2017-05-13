@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2017-05-13 Module Class support loading and saving configuartion, setting and getting values
+
+2017-05-11 Started Module Class for managing modules
+
 2017-03-15 View:userInGroup now also checks against arrays
 
 2017-01-20 added Mail Class for sending mails
