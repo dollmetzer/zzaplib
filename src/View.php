@@ -325,7 +325,8 @@ class View
         }
 
         // check, if navigation already exists
-        $cacheFile = PATH_DATA . 'system/navigation_' . $_frontBack . '.json';
+        $cacheFile = PATH_TMP . 'navigation_' . $_frontBack . '.json';
+
         if (file_exists($cacheFile)) {
             $navigation = json_decode(file_get_contents($cacheFile), true);
             return $navigation;
@@ -349,6 +350,21 @@ class View
     }
 
     /**
+     * Delete navigation cache files
+     */
+    public function deleteNavigation() {
+
+        if(file_exists(PATH_TMP.'navigation_frontend.json')) {
+            unlink(PATH_TMP.'navigation_frontend.json');
+        }
+
+        if(file_exists(PATH_TMP.'navigation_backend.json')) {
+            unlink(PATH_TMP.'navigation_backend.json');
+        }
+
+    }
+
+    /**
      * Initial loading of languag core snippets
      * ( called in Application::run() )
      *
@@ -360,7 +376,7 @@ class View
     {
 
         // check, if navigation already exists
-        $cacheFile = PATH_DATA . 'system/lang_core_' . $_language . '.json';
+        $cacheFile = PATH_TMP . 'lang_core_' . $_language . '.json';
         if (file_exists($cacheFile)) {
             $this->languageSnippets = json_decode(file_get_contents($cacheFile), true);
             return;
@@ -380,6 +396,20 @@ class View
         $fp = fopen($cacheFile, 'w+');
         fwrite($fp, json_encode($lang));
         fclose($fp);
+
+    }
+
+    /**
+     * Delete cached core language files
+     */
+    public function deleteLanguageCore() {
+
+        foreach($this->config['languages'] as $lang) {
+            $fileName = PATH_TMP.'lang_core_'.$lang.'.json';
+            if(file_exists($fileName)) {
+                unlink($fileName);
+            }
+        }
 
     }
 

@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-05-14 Deletion of language and navigation cache files moved to zzablib View class into ~/tmp folder
+
 2017-05-13 Module Class support loading and saving configuartion, setting and getting values
 
 2017-05-11 Started Module Class for managing modules
