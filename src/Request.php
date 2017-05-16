@@ -106,7 +106,8 @@ class Request
 
         // test if first entry is a module name
         if (sizeof($query) > 0) {
-            if (in_array($query[0], $this->getModuleList())) {
+            $moduleList = $this->getModuleList();
+            if (in_array($query[0], $moduleList)) {
                 $this->moduleName = array_shift($query);
             }
         }

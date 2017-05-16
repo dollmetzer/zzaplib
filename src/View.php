@@ -335,6 +335,10 @@ class View
         $navigation = array();
         $modules = $this->request->getModuleList();
         for ($i = 0; $i < sizeof($modules); $i++) {
+
+            // skip inactive modules
+            if($this->request->module->isActive($modules[$i]) !== true) continue;
+
             $filename = PATH_APP . 'modules/' . $modules[$i] . '/data/navigation_' . $_frontBack . '.php';
             if (file_exists($filename)) {
                 $navigation = array_merge($navigation, include $filename);

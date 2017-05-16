@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-05-16 Application::run checks, if module is active
+
 2017-05-14 Deletion of language and navigation cache files moved to zzablib View class into ~/tmp folder
 
 2017-05-13 Module Class support loading and saving configuartion, setting and getting values

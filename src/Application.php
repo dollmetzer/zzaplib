@@ -100,6 +100,12 @@ class Application
         // load core language snippets
         $this->view->getLangaugeCore($this->session->user_language);
 
+        // check, if module is active
+        if(!$this->request->module->isActive($this->request->moduleName)) {
+            $this->request->forward($this->request->buildURL(''),
+                $this->view->lang('error_core_illegal_parameter', false), 'error');
+        }
+
         // start controller
         $controllerName = '\Application\modules\\'.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller';
 
@@ -122,7 +128,7 @@ class Application
             if (method_exists($controller, $actionName) === false) {
                 $this->request->log('Application::run() - method '.$actionName.' not found in '.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller');
                 $this->request->forward($this->request->buildURL(''),
-                    $this->view->lang('error_core_illegal_parameter'), 'error');
+                    $this->view->lang('error_core_illegal_parameter', false), 'error');
             }
 
             // is access to action method allowed?

@@ -32,15 +32,19 @@ class Module
 {
 
     /**
-     * @var string Path and filename to configuration file
+     * @var string $configFilePath Path and filename to configuration file
      */
     protected $configFilePath;
 
     /**
-     * @var array module configuration
+     * @var array $config module configuration
      */
     protected $config;
 
+    /**
+     * @var array $protectedModules Modules, that must be active
+     */
+    protected $protectedModules = array('core', 'users');
 
     /**
      * Module constructor.
@@ -88,10 +92,10 @@ class Module
     /**
      * Set a configuration value
      *
-     * @param string $_module
-     * @param string $_name
-     * @param mixed $_value
-     * @return bool
+     * @param string $_module Name of the module
+     * @param string $_name Name of the arameter
+     * @param mixed $_value Value
+     * @return bool Success
      */
     public function set($_module, $_name, $_value)
     {
@@ -100,7 +104,7 @@ class Module
             return false;
         }
 
-        if (($_module == 'core') && ($_name == 'active')) {
+        if( ($_name == 'active') && in_array($_module, $this->protectedModules)) {
             return false;
         }
 
@@ -112,8 +116,8 @@ class Module
     /**
      * Get a configuration value
      *
-     * @param string $_module
-     * @param string $_name
+     * @param string $_module Name of the module
+     * @param string $_name Name of the parameter
      * @return mixed/null If no value is found, NULL is returned
      */
     public function get($_module, $_name)
@@ -124,6 +128,21 @@ class Module
         }
 
         return $this->config[$_module][$_name];
+
+    }
+
+    /**
+     * Get information if a module is active
+     *
+     * @param string $_module Name of the module
+     * @return bool Active state
+     */
+    public function isActive($_module) {
+
+        if($this->config[$_module]['active'] === true) {
+            return true;
+        }
+        return false;
 
     }
 
@@ -148,8 +167,8 @@ class Module
         if ($this->get($_module, 'active') !== true) {
             throw new \Exception("Module '$_module' can't be deactivated, because it's not active");
         }
-        if ($_module == 'core') {
-            throw new \Exception("Module 'core' can't be deactivated!");
+        if ( in_array($_module, $this->protectedModules) ) {
+            throw new \Exception("Module '".$_module."' can't be deactivated!");
         }
 
 
