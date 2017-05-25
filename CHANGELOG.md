@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-05-25 Controller::isAllowed now supports strings and arrays in $accessGroups
+
 2017-05-16 Application::run checks, if module is active
 
 2017-05-14 Deletion of language and navigation cache files moved to zzablib View class into ~/tmp folder
