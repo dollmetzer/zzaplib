@@ -337,13 +337,17 @@ class View
         for ($i = 0; $i < sizeof($modules); $i++) {
 
             // skip inactive modules
-            if($this->request->module->isActive($modules[$i]) !== true) continue;
+            if ($this->request->module->isActive($modules[$i]) !== true) {
+                continue;
+            }
 
             $filename = PATH_APP . 'modules/' . $modules[$i] . '/data/navigation_' . $_frontBack . '.php';
             if (file_exists($filename)) {
                 $navigation = array_merge($navigation, include $filename);
             }
         }
+
+        uasort($navigation, array($this, 'sortNavElements'));
 
         $fp = fopen($cacheFile, 'w+');
         fwrite($fp, json_encode($navigation));
@@ -356,14 +360,15 @@ class View
     /**
      * Delete navigation cache files
      */
-    public function deleteNavigation() {
+    public function deleteNavigation()
+    {
 
-        if(file_exists(PATH_TMP.'navigation_frontend.json')) {
-            unlink(PATH_TMP.'navigation_frontend.json');
+        if (file_exists(PATH_TMP . 'navigation_frontend.json')) {
+            unlink(PATH_TMP . 'navigation_frontend.json');
         }
 
-        if(file_exists(PATH_TMP.'navigation_backend.json')) {
-            unlink(PATH_TMP.'navigation_backend.json');
+        if (file_exists(PATH_TMP . 'navigation_backend.json')) {
+            unlink(PATH_TMP . 'navigation_backend.json');
         }
 
     }
@@ -406,11 +411,12 @@ class View
     /**
      * Delete cached core language files
      */
-    public function deleteLanguageCore() {
+    public function deleteLanguageCore()
+    {
 
-        foreach($this->config['languages'] as $lang) {
-            $fileName = PATH_TMP.'lang_core_'.$lang.'.json';
-            if(file_exists($fileName)) {
+        foreach ($this->config['languages'] as $lang) {
+            $fileName = PATH_TMP . 'lang_core_' . $lang . '.json';
+            if (file_exists($fileName)) {
                 unlink($fileName);
             }
         }
@@ -463,6 +469,21 @@ class View
         }
         return $text;
 
+    }
+
+    /**
+     * Callback method for sorting navigation elements
+     * @param array $a Navigation element
+     * @param array $b Navigation element
+     * @return int
+     */
+    protected function sortNavElements(array $a, array $b)
+    {
+
+        if ($a['sort'] == $b['sort']) {
+            return 0;
+        }
+        return ($a['sort'] < $b['sort']) ? -1 : 1;
     }
 
 }

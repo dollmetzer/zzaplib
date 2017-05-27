@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-05-27 View::getNavigation now sorts navigation elements
+
 2017-05-25 Controller::isAllowed now supports strings and arrays in $accessGroups
 
 2017-05-16 Application::run checks, if module is active
