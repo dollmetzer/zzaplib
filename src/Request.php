@@ -49,12 +49,12 @@ class Request
     /**
      * @var string $actionName Hold the name of the called action. Default is 'index'
      */
-    public $actionName     = 'index';
+    public $actionName = 'index';
 
     /**
      * @var array $params Array of optional parameters
      */
-    public $params         = array();
+    public $params = array();
 
     public $config;
 
@@ -141,7 +141,7 @@ class Request
     public function getModuleList($_onlyNames = true)
     {
 
-        if($_onlyNames === true) {
+        if ($_onlyNames === true) {
             return array_keys($this->module->getConfig());
         } else {
             return $this->module->getConfig();
@@ -206,35 +206,58 @@ class Request
     /**
      * Build a complete URL from a query string
      *
-     * @param string $_path       Query string like controller/action/param_1/param_n
-     * @param array  $_attributes Additional Attributes. Array of key=>value pairs
+     * @param string $_path Query string like controller/action/param_1/param_n
+     * @param array $_attributes Additional Attributes. Array of key=>value pairs
      * @return string
      */
     public function buildURL($_path, $_attributes = array())
     {
 
-        if(URL_HTTPS === true) {
+        if (URL_HTTPS === true) {
             $protocol = 'https://';
         } else {
             $protocol = 'http://';
         }
 
-        $url = $protocol.URL_BASE;
+        $url = $protocol . URL_BASE;
         if (URL_REWRITE) {
-            $url .= '/'.$_path;
+            $url .= '/' . $_path;
         } else {
-            if (!empty($_path)) $url .= '/index.php?q='.$_path;
+            if (!empty($_path)) {
+                $url .= '/index.php?q=' . $_path;
+            }
         }
 
         if (!empty($_attributes)) {
             $addition = array();
             foreach ($_attributes as $key => $val) {
-                $addition[] = $key.'='.urlencode($val);
+                $addition[] = $key . '=' . urlencode($val);
             }
-            $url .= '&'.join('&', $addition);
+            $url .= '&' . join('&', $addition);
         }
 
         return $url;
+    }
+
+    /**
+     * Build a complete URL for media files
+     *
+     * @param string $_path Path to media file
+     * @return string
+     */
+    public function buildMediaURL($_path)
+    {
+
+        if (URL_HTTPS === true) {
+            $protocol = 'https://';
+        } else {
+            $protocol = 'http://';
+        }
+
+        $url = $protocol . URL_MEDIA . '/' . $_path;
+
+        return $url;
+
     }
 
     /**

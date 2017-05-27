@@ -238,6 +238,26 @@ class View
     }
 
     /**
+     * Build a URL for media files considering server settings
+     *
+     * @param string $_path Path part of the URL
+     * @param boolean $_output Direct output(default) in the template or return value for use in Controller
+     * @return string|null
+     */
+    public function buildMediaURL($_path, $_output = true)
+    {
+
+        $url = $this->request->buildMediaURL($_path);
+
+        if ($_output === true) {
+            echo $url;
+            return;
+        }
+        return $url;
+
+    }
+
+    /**
      * Returns a formatted date from a database datetime
      *
      * @param string $_datetime Something like '2010-12-19 06:03_59'

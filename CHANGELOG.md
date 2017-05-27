@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-05-27 View::buildMediaURL added for construction of media URLs
+
 2017-05-27 View::getNavigation now sorts navigation elements
 
 2017-05-25 Controller::isAllowed now supports strings and arrays in $accessGroups
