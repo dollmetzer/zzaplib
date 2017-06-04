@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-06-04 Application: Extended logging. Api: Construction of Controller changed
+
 2017-05-27 View::buildMediaURL added for construction of media URLs
 
 2017-05-27 View::getNavigation now sorts navigation elements
