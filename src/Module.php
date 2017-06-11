@@ -55,7 +55,7 @@ class Module
 
         $this->configFilePath = PATH_TMP . 'module_config.json';
         if ($this->loadConfig() === false) {
-            $this->buildConfig();
+            $this->config = $this->buildConfig();
             $this->saveConfig();
         }
 
@@ -146,7 +146,39 @@ class Module
 
     }
 
+    /**
+     * Remove entries from deleted modules and add entries from new modules
+     */
+    public function rebuildConfig() {
 
+        // first remove entries for deleted modles
+        $currentModules = $this->buildConfig();
+        $currentNames = array_keys($currentModules);
+        foreach(array_keys($this->config) as $mName) {
+            if(!in_array($mName, $currentNames)) {
+                unset($this->config[$mName]);
+            }
+        }
+
+        // add enties for new modules
+        $previousNames = array_keys($this->config);
+        foreach($currentNames as $mName) {
+            if(!in_array($mName, $previousNames)) {
+                $this->config[$mName] = $currentModules[$mName];
+            }
+        }
+
+        $this->saveConfig();
+
+    }
+
+    /**
+     * Activate a module
+     *
+     * @param string $_module Name of the module
+     * @return bool Success
+     * @throws \Exception If module can't be activated
+     */
     public function activate($_module)
     {
 
@@ -154,13 +186,19 @@ class Module
             throw new \Exception("Module '$_module' can't be activated, because it's not inactive");
         }
 
-
         $this->set($_module, 'active', true);
         $this->saveConfig();
 
         return true;
     }
 
+    /**
+     * Deactivate Module
+     *
+     * @param string $_module Name of the module
+     * @return bool Success
+     * @throws \Exception If module can't be deactivated
+     */
     public function deactivate($_module)
     {
 
@@ -192,10 +230,13 @@ class Module
 
     /**
      * Build a new module config from the filesystem
+     *
+     * @return array
      */
     protected function buildConfig()
     {
 
+        $config = array();
         $moduleDir = PATH_APP . 'modules/';
         $dir = opendir($moduleDir);
         while ($file = readdir($dir)) {
@@ -209,19 +250,22 @@ class Module
             if ($file == 'core') {
                 $active = true;
             }
-            $this->config[$file] = array(
+            $config[$file] = array(
                 'active' => $active
             );
 
-            // merge defult config, if available
+            // merge default config, if available
             $dataFile = $moduleDir . $file . '/data/config.php';
             if (file_exists($dataFile)) {
-                $this->config[$file] = array_merge($this->config[$file], include $dataFile);
+                $config[$file] = array_merge($config[$file], include $dataFile);
             }
 
         }
         closedir($dir);
-        ksort($this->config);
+        ksort($config);
+
+        return $config;
+
     }
 
     /**
