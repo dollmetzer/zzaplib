@@ -330,6 +330,32 @@ class View
     }
 
     /**
+     * Shorten a text
+     *
+     * @param string $_text The full text
+     * @param int $_length maximum length of the returned text
+     * @param bool $_ellipsis if true, add ellipsis (...) to shortended text
+     * @return string shortened text
+     */
+    public function textToShort($_text, $_length=40, $_ellipsis=true) {
+
+        $length = (int)$_length;
+        if(mb_strlen($_text) > $length) {
+
+            if($_ellipsis===true) {
+                $length = $length-3;
+                if($length < 4) $length = 4;
+                $text = mb_substr($_text, 0, $length).'...';
+            } else {
+                $text = mb_substr($_text, 0, $length);
+            }
+        } else {
+            $text = $_text;
+        }
+        return $text;
+    }
+
+    /**
      * Return the navigation array for all modules
      *
      * Try th fetch array from cachefile in system/navigation_'.$_frontBack.'.json

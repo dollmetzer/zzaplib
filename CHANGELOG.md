@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-06-19 View::textToShort Text shortener added
+
 2017-06-05 Api functionality updated (to be continued)
 
 2017-06-04 Application: Extended logging. Api: Construction of Controller changed
