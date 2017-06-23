@@ -56,8 +56,14 @@ class Request
      */
     public $params = array();
 
+    /**
+     * @var array $config Configuration array
+     */
     public $config;
 
+    /**
+     * @var Session $session
+     */
     public $session;
 
     /**

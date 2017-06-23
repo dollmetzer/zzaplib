@@ -245,7 +245,7 @@ class Form
             }
         }
 
-        // type
+        // type integer
         if ($this->fields[$_name]['type'] == 'integer') {
             $value = (int) $this->fields[$_name]['value'];
             if ((string) $value != $this->fields[$_name]['value']) {
@@ -255,6 +255,17 @@ class Form
                 return;
             }
         }
+
+        if ($this->fields[$_name]['type'] == 'date') {
+            $value = $this->fields[$_name]['value'];
+            if(!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value)) {
+                $this->fields[$_name]['error'] = sprintf($this->view->lang('form_error_date', false),
+                    $this->fields[$_name]['maxlength']);
+                $this->hasErrors               = true;
+                return;
+            }
+        }
+
     }
 }
 ?>

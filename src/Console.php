@@ -55,7 +55,9 @@ class Console
 
         $this->config   = $config;
         $this->dbh      = NULL;
+        $this->module = new \dollmetzer\zzaplib\Module();
         $this->commands = array();
+
     }
 
     /**
@@ -89,7 +91,7 @@ class Console
 
         $commandName = '\Application\modules\\'.$this->commands[$this->action].'\commands\\'.$this->action.'Command';
         try {
-            $command = new $commandName($this);
+            $command = new $commandName($this->config);
             $command->run();
         } catch (\Exception $e) {
             $message = 'Commandline error in ';
@@ -114,7 +116,7 @@ class Console
                 $dir  = opendir($modDir);
                 while ($file = readdir($dir)) {
                     if (preg_match('/Command\.php$/', $file)) {
-                        $cname                  = preg_replace('/Command\.php$/',
+                        $cname = preg_replace('/Command\.php$/',
                             '', $file);
                         //$this->commands[$cname] = $modDir.$file;
                         $this->commands[$cname] = $module;
@@ -123,5 +125,26 @@ class Console
             }
         }
     }
+
+    /**
+     * Get a list of installed modules. If modules are set in the configuration,
+     * get the list from the configuration.
+     * If modules are not in the configuration, read list from filesystem
+     * in app/modules.
+     *
+     * @param bool $_onlyNames if true, return only names. If false return complete module config
+     * @return array
+     */
+    public function getModuleList($_onlyNames = true)
+    {
+
+        if ($_onlyNames === true) {
+            return array_keys($this->module->getConfig());
+        } else {
+            return $this->module->getConfig();
+        }
+
+    }
+
 }
 ?>

@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2017-06-23 Console commands added
+
+2017-06-20 Form: date validator added
+
 2017-06-19 View::textToShort Text shortener added
 
 2017-06-05 Api functionality updated (to be continued)
