@@ -4,18 +4,18 @@
  * ===========================================
  *
  * This library is a mini framework from php web applications
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 3 of the License, or (at your option) any later 
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, see <http://www.gnu.org/licenses/>. 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace dollmetzer\zzaplib;
@@ -31,7 +31,7 @@ namespace dollmetzer\zzaplib;
 class Console
 {
     /**
-     * @var string $scriptname Name of the script (usually 'console' 
+     * @var string $scriptname Name of the script (usually 'console'
      */
     public $scriptname;
 
@@ -41,20 +41,20 @@ class Console
     public $action;
 
     /**
-     * @var array $commands 
+     * @var array $commands
      */
     protected $commands;
 
     /**
      * Construct the application
-     * 
+     *
      * @param array $config Configuration array
      */
     public function __construct($config)
     {
 
-        $this->config   = $config;
-        $this->dbh      = NULL;
+        $this->config = $config;
+        $this->dbh = null;
         $this->module = new \dollmetzer\zzaplib\Module();
         $this->commands = array();
 
@@ -75,12 +75,12 @@ class Console
 
         $this->getCommands();
         if (sizeof($argv) < 1) {
-            die("\nNo action given. Valid actions are : ".join(', ',
-                    array_keys($this->commands))."\n");
+            die("\nNo action given. Valid actions are : " . join(', ',
+                    array_keys($this->commands)) . "\n");
         }
         if (!in_array($argv[0], array_keys($this->commands))) {
-            die("\nNo valid action given. Valid actions are : ".join(', ',
-                    array_keys($this->commands))."\n");
+            die("\nNo valid action given. Valid actions are : " . join(', ',
+                    array_keys($this->commands)) . "\n");
         }
 
         $this->action = array_shift($argv);
@@ -89,14 +89,14 @@ class Console
 
         //include $this->commands[$this->action];
 
-        $commandName = '\Application\modules\\'.$this->commands[$this->action].'\commands\\'.$this->action.'Command';
+        $commandName = '\Application\modules\\' . $this->commands[$this->action] . '\commands\\' . $this->action . 'Command';
         try {
             $command = new $commandName($this->config);
             $command->run();
         } catch (\Exception $e) {
             $message = 'Commandline error in ';
-            $message .= $e->getFile().' in Line ';
-            $message .= $e->getLine().' : ';
+            $message .= $e->getFile() . ' in Line ';
+            $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
             $this->log($message);
         }
@@ -111,9 +111,9 @@ class Console
         $modules = $this->getModuleList();
 
         foreach ($modules as $module) {
-            $modDir = PATH_APP.'modules/'.$module.'/commands/';
+            $modDir = PATH_APP . 'modules/' . $module . '/commands/';
             if (is_dir($modDir)) {
-                $dir  = opendir($modDir);
+                $dir = opendir($modDir);
                 while ($file = readdir($dir)) {
                     if (preg_match('/Command\.php$/', $file)) {
                         $cname = preg_replace('/Command\.php$/',
@@ -147,4 +147,3 @@ class Console
     }
 
 }
-?>

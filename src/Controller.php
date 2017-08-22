@@ -213,5 +213,3 @@ class Controller
         return false;
     }
 }
-
-?>

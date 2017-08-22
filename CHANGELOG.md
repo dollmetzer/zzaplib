@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-08-22 Reformatted PSR-1/PSR-2 Coding style
+
 2017-06-23 Console commands added
 
 2017-06-20 Form: date validator added

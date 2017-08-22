@@ -146,7 +146,7 @@ class Request
      *
      * @return bool Success. If false, either module name or controller name are invalid
      */
-    public function ApiRouting()
+    public function apiRouting()
     {
 
         // set default values

@@ -104,7 +104,7 @@ class Module
             return false;
         }
 
-        if( ($_name == 'active') && in_array($_module, $this->protectedModules)) {
+        if (($_name == 'active') && in_array($_module, $this->protectedModules)) {
             return false;
         }
 
@@ -137,9 +137,10 @@ class Module
      * @param string $_module Name of the module
      * @return bool Active state
      */
-    public function isActive($_module) {
+    public function isActive($_module)
+    {
 
-        if($this->config[$_module]['active'] === true) {
+        if ($this->config[$_module]['active'] === true) {
             return true;
         }
         return false;
@@ -149,21 +150,22 @@ class Module
     /**
      * Remove entries from deleted modules and add entries from new modules
      */
-    public function rebuildConfig() {
+    public function rebuildConfig()
+    {
 
         // first remove entries for deleted modles
         $currentModules = $this->buildConfig();
         $currentNames = array_keys($currentModules);
-        foreach(array_keys($this->config) as $mName) {
-            if(!in_array($mName, $currentNames)) {
+        foreach (array_keys($this->config) as $mName) {
+            if (!in_array($mName, $currentNames)) {
                 unset($this->config[$mName]);
             }
         }
 
         // add enties for new modules
         $previousNames = array_keys($this->config);
-        foreach($currentNames as $mName) {
-            if(!in_array($mName, $previousNames)) {
+        foreach ($currentNames as $mName) {
+            if (!in_array($mName, $previousNames)) {
                 $this->config[$mName] = $currentModules[$mName];
             }
         }
@@ -205,8 +207,8 @@ class Module
         if ($this->get($_module, 'active') !== true) {
             throw new \Exception("Module '$_module' can't be deactivated, because it's not active");
         }
-        if ( in_array($_module, $this->protectedModules) ) {
-            throw new \Exception("Module '".$_module."' can't be deactivated!");
+        if (in_array($_module, $this->protectedModules)) {
+            throw new \Exception("Module '" . $_module . "' can't be deactivated!");
         }
 
 

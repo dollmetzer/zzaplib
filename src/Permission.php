@@ -82,9 +82,9 @@ class Permission
     public function __construct($_userId = 0, $_groupId = 0, $_permissions = 0)
     {
 
-        $this->userId      = (int) $_userId;
-        $this->groupId     = (int) $_groupId;
-        $this->permissions = (int) $_permissions;
+        $this->userId = (int)$_userId;
+        $this->groupId = (int)$_groupId;
+        $this->permissions = (int)$_permissions;
         $this->calculateRights();
     }
 
@@ -138,97 +138,117 @@ class Permission
         return $this->isExecute;
     }
 
-    public function setCreate(bool $_status=true, $_context='all') {
+    public function setCreate(bool $_status = true, $_context = 'all')
+    {
 
-        if((int)$_status === false) {
+        if ((int)$_status === false) {
             // delete bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions & (~16384);
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions & (~512);
             } else {
-                $this->permissions = $this->permissions & (~16);
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions & (~512);
+                } else {
+                    $this->permissions = $this->permissions & (~16);
+                }
             }
         } else {
             // set bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions | 16384;
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions | 512;
             } else {
-                $this->permissions = $this->permissions | 16;
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions | 512;
+                } else {
+                    $this->permissions = $this->permissions | 16;
+                }
             }
         }
 
     }
 
-    public function setRead(bool $_status=true, $_context='all') {
+    public function setRead(bool $_status = true, $_context = 'all')
+    {
 
-        if((int)$_status === false) {
+        if ((int)$_status === false) {
             // delete bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions & (~8192);
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions & (~256);
             } else {
-                $this->permissions = $this->permissions & (~8);
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions & (~256);
+                } else {
+                    $this->permissions = $this->permissions & (~8);
+                }
             }
         } else {
             // set bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions | 8192;
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions | 256;
             } else {
-                $this->permissions = $this->permissions | 8;
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions | 256;
+                } else {
+                    $this->permissions = $this->permissions | 8;
+                }
             }
         }
 
     }
 
-    public function setUpdate(bool $_status=true, $_context='all') {
+    public function setUpdate(bool $_status = true, $_context = 'all')
+    {
 
-        if((int)$_status === false) {
+        if ((int)$_status === false) {
             // delete bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions & (~4096);
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions & (~128);
             } else {
-                $this->permissions = $this->permissions & (~4);
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions & (~128);
+                } else {
+                    $this->permissions = $this->permissions & (~4);
+                }
             }
         } else {
             // set bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions | 4096;
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions | 128;
             } else {
-                $this->permissions = $this->permissions | 4;
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions | 128;
+                } else {
+                    $this->permissions = $this->permissions | 4;
+                }
             }
         }
 
     }
 
-    public function setDelete(bool $_status=true, $_context='all') {
+    public function setDelete(bool $_status = true, $_context = 'all')
+    {
 
-        if((int)$_status === false) {
+        if ((int)$_status === false) {
             // delete bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions & (~2048);
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions & (~64);
             } else {
-                $this->permissions = $this->permissions & (~2);
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions & (~64);
+                } else {
+                    $this->permissions = $this->permissions & (~2);
+                }
             }
         } else {
             // set bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions | 2048;
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions | 64;
             } else {
-                $this->permissions = $this->permissions | 2;
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions | 64;
+                } else {
+                    $this->permissions = $this->permissions | 2;
+                }
             }
         }
 
@@ -240,25 +260,30 @@ class Permission
      * @param integer $_status
      * @param string $_context Set flag for 'user', 'group' or 'all'
      */
-    public function setExecute(bool $_status=true, $_context='all') {
+    public function setExecute(bool $_status = true, $_context = 'all')
+    {
 
-        if((int)$_status === false) {
+        if ((int)$_status === false) {
             // delete bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions & (~1024);
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions & (~32);
             } else {
-                $this->permissions = $this->permissions & (~1);
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions & (~32);
+                } else {
+                    $this->permissions = $this->permissions & (~1);
+                }
             }
         } else {
             // set bits
-            if($_context == 'user') {
+            if ($_context == 'user') {
                 $this->permissions = $this->permissions | 1024;
-            } else if($_context == 'group') {
-                $this->permissions = $this->permissions | 32;
             } else {
-                $this->permissions = $this->permissions | 1;
+                if ($_context == 'group') {
+                    $this->permissions = $this->permissions | 32;
+                } else {
+                    $this->permissions = $this->permissions | 1;
+                }
             }
         }
 
@@ -271,38 +296,68 @@ class Permission
     {
 
         // start without any permission
-        $this->isCreate  = false;
-        $this->isRead    = false;
-        $this->isUpdate  = false;
-        $this->isDelete  = false;
+        $this->isCreate = false;
+        $this->isRead = false;
+        $this->isUpdate = false;
+        $this->isDelete = false;
         $this->isExecute = false;
 
         // calculate rights for all (bits 1-5)
-        if ($this->permissions & 16) $this->isCreate  = true;
-        if ($this->permissions & 8) $this->isRead    = true;
-        if ($this->permissions & 4) $this->isUpdate  = true;
-        if ($this->permissions & 2) $this->isDelete  = true;
-        if ($this->permissions & 1) $this->isExecute = true;
+        if ($this->permissions & 16) {
+            $this->isCreate = true;
+        }
+        if ($this->permissions & 8) {
+            $this->isRead = true;
+        }
+        if ($this->permissions & 4) {
+            $this->isUpdate = true;
+        }
+        if ($this->permissions & 2) {
+            $this->isDelete = true;
+        }
+        if ($this->permissions & 1) {
+            $this->isExecute = true;
+        }
 
         // calculate rights for group (bits 6-10)
         if (isset($_SESSION['groups'])) {
             if (in_array($this->groupId, array_keys($_SESSION['groups']))) {
-                if ($this->permissions & 512) $this->isCreate  = true;
-                if ($this->permissions & 256) $this->isRead    = true;
-                if ($this->permissions & 128) $this->isUpdate  = true;
-                if ($this->permissions & 64) $this->isDelete  = true;
-                if ($this->permissions & 32) $this->isExecute = true;
+                if ($this->permissions & 512) {
+                    $this->isCreate = true;
+                }
+                if ($this->permissions & 256) {
+                    $this->isRead = true;
+                }
+                if ($this->permissions & 128) {
+                    $this->isUpdate = true;
+                }
+                if ($this->permissions & 64) {
+                    $this->isDelete = true;
+                }
+                if ($this->permissions & 32) {
+                    $this->isExecute = true;
+                }
             }
         }
 
         // calculate rights for user (bits 11-15)
         if (isset($_SESSION['user_id'])) {
             if ($this->userId == $_SESSION['user_id']) {
-                if ($this->permissions & 16384) $this->isCreate  = true;
-                if ($this->permissions & 8192) $this->isRead    = true;
-                if ($this->permissions & 4096) $this->isUpdate  = true;
-                if ($this->permissions & 2048) $this->isDelete  = true;
-                if ($this->permissions & 1024) $this->isExecute = true;
+                if ($this->permissions & 16384) {
+                    $this->isCreate = true;
+                }
+                if ($this->permissions & 8192) {
+                    $this->isRead = true;
+                }
+                if ($this->permissions & 4096) {
+                    $this->isUpdate = true;
+                }
+                if ($this->permissions & 2048) {
+                    $this->isDelete = true;
+                }
+                if ($this->permissions & 1024) {
+                    $this->isExecute = true;
+                }
             }
         }
     }

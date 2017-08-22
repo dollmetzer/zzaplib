@@ -101,7 +101,7 @@ class Api
 
         // split query path into module, controller, action and params
         //$routing = $this->routing();
-        $routing = $this->request->ApiRouting();
+        $routing = $this->request->apiRouting();
 
         if (DEBUG_API) {
             $msg = 'API Call module ' . $this->request->moduleName;
@@ -181,5 +181,5 @@ class Api
         header('HTTP/1.0 ' . $this->response['statusCode'] . ' ' . $this->response['statusMessage']);
         echo json_encode($this->response);
     }
-    
+
 }
