@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-09-20 removed session from API to become REST compliant
+
 2017-08-22 Reformatted PSR-1/PSR-2 Coding style
 
 2017-06-23 Console commands added
