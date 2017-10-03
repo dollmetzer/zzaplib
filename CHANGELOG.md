@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2017-09-20 removed session from API to become REST compliant
+
 2017-06-23 Console commands added
 
 2017-06-20 Form: date validator added

@@ -37,11 +37,6 @@ class ApiController
     protected $config;
 
     /**
-     * @var Session $session
-     */
-    protected $session;
-
-    /**
      * @var Request $request
      */
     protected $request;
@@ -53,14 +48,12 @@ class ApiController
      * the application jumps to the startpage
      *
      * Controller constructor.
-     * @param Session $_session
      * @param Request $_request
      */
-    public function __construct($_config, Session $_session, Request $_request)
+    public function __construct($_config, Request $_request)
     {
 
         $this->config = $_config;
-        $this->session = $_session;
         $this->request = $_request;
 
         if (method_exists($this, 'init')) {

@@ -35,7 +35,6 @@ class Api
     public $params;
 
     protected $config;
-    protected $session;
     protected $request;
 
     /**
@@ -48,9 +47,6 @@ class Api
 
         $this->config = $config;
         $this->dbh = null;
-
-        // start session
-        $this->session = new \dollmetzer\zzaplib\Session($config);
 
         // register autoloader for models, no class not found exception, not prepend
         //spl_autoload_register(array($this, 'autoloadModels'), false, false);
@@ -90,7 +86,7 @@ class Api
     {
 
         // construct request element
-        $this->request = new \dollmetzer\zzaplib\Request($this->config, $this->session);
+        $this->request = new \dollmetzer\zzaplib\Request($this->config, null);
 
         // default response
         $this->response = array(
@@ -100,7 +96,6 @@ class Api
         );
 
         // split query path into module, controller, action and params
-        //$routing = $this->routing();
         $routing = $this->request->ApiRouting();
 
         if (DEBUG_API) {
@@ -118,20 +113,18 @@ class Api
 
             try {
 
-                $controller = new $controllerName(
-                    $this->config,
-                    $this->session,
-                    $this->request
-                );
-
                 // exists controller class?
                 if (class_exists($controllerName)) {
-
+                    $controller = new $controllerName(
+                        $this->config,
+                        $this->request
+                    );
                 } else {
                     throw new \Exception('Controller class ' . $controllerName . ' not found');
                 }
-                $actionName = (string)$this->request->actionName . 'Action';
 
+                // exists action method?
+                $actionName = (string)$this->request->actionName . 'Action';
                 if (method_exists($controller, $actionName) === false) {
                     $this->request->log('Application::run() - method ' . $actionName . ' not found in ' . $controllerName);
                     $this->response['statusCode'] = 405;

@@ -62,16 +62,22 @@ class Request
     public $config;
 
     /**
-     * @var Session $session
+     * @var Session|null $session For an API call, session is null
      */
     public $session;
+
+    /**
+     * @var Module $module
+     */
+    public $module;
+
 
     /**
      * Constructor
      *
      * @param array $config Configuration array
      */
-    public function __construct(array $config, Session $_session)
+    public function __construct(array $config, $_session)
     {
 
         $this->config = $config;
@@ -306,7 +312,7 @@ class Request
     public function forward($_url = '', $_message = '', $_messageType = '')
     {
 
-        if (!empty($_message)) {
+        if (!empty($_message) && ($this->session != null)) {
             if ($_messageType == 'error') {
                 $this->session->flasherror = $_message;
             } else {
