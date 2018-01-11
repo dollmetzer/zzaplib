@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+2018-01-11 Fixed codestyle issues
+
+2018-01-10 Fixed docblocks
+
+2018-01-10 DEBUG: Module::buildConfig now activates all protected modules
+
 2017-09-20 removed session from API to become REST compliant
 
 2017-08-22 Reformatted PSR-1/PSR-2 Coding style

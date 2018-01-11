@@ -76,6 +76,7 @@ class Mail
      * @param string $_from
      * @param string $_replyto
      * @return bool success
+     * @throws \Exception
      */
     public function send($_template, $_data, $_subject, $_to, $_cc = '', $_from = '', $_replyto = '')
     {
@@ -110,8 +111,7 @@ class Mail
     /**
      * Send the mail direct via your local MTA
      *
-     * @param string $_template Path to the mail template
-     * @param array $_data Data for the template processing
+     * @param string $_message
      * @param string $_subject mail subject
      * @param string $_to recipient
      * @param string $_cc additional recipients
@@ -123,12 +123,12 @@ class Mail
     protected function sendDirect($_message, $_subject, $_to, $_cc, $_from, $_replyto)
     {
 
-        $subject = $_subject;
+        //$subject = $_subject;
 
         $to = mb_encode_mimeheader($_to);
         $sender = mb_encode_mimeheader($_from);
         $replyto = mb_encode_mimeheader($_replyto);
-        $_subject = "=?utf-8?b?" . base64_encode($_subject) . "?=";
+        $subject = "=?utf-8?b?" . base64_encode($_subject) . "?=";
 
         $headers = "Mime-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";

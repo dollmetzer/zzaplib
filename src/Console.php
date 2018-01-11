@@ -55,13 +55,15 @@ class Console
 
         $this->config = $config;
         $this->dbh = null;
-        $this->module = new \dollmetzer\zzaplib\Module();
+        $this->module = new Module();
         $this->commands = array();
 
     }
 
     /**
      * Run the command
+     *
+     * @param array $argv
      */
     public function run($argv)
     {

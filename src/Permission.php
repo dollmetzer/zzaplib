@@ -91,7 +91,7 @@ class Permission
     /**
      * Has right to create?
      *
-     * @return type
+     * @return boolean
      */
     public function isCreate()
     {
@@ -101,7 +101,7 @@ class Permission
     /**
      * Has right to read?
      *
-     * @return type
+     * @return boolean
      */
     public function isRead()
     {
@@ -111,7 +111,7 @@ class Permission
     /**
      * Has right to update?
      *
-     * @return type
+     * @return boolean
      */
     public function isUpdate()
     {
@@ -121,7 +121,7 @@ class Permission
     /**
      * Has right to delete?
      *
-     * @return type
+     * @return boolean
      */
     public function isDelete()
     {
@@ -257,7 +257,7 @@ class Permission
     /**
      * Set Execute Flag in Permission
      *
-     * @param integer $_status
+     * @param boolean $_status
      * @param string $_context Set flag for 'user', 'group' or 'all'
      */
     public function setExecute(bool $_status = true, $_context = 'all')

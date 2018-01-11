@@ -76,13 +76,14 @@ class Request
      * Constructor
      *
      * @param array $config Configuration array
+     * @param Session $_session
      */
-    public function __construct(array $config, $_session)
+    public function __construct(array $config, Session $_session)
     {
 
         $this->config = $config;
         $this->session = $_session;
-        $this->module = new \dollmetzer\zzaplib\Module();
+        $this->module = new Module();
 
     }
 

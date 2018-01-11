@@ -86,7 +86,7 @@ class Api
     {
 
         // construct request element
-        $this->request = new \dollmetzer\zzaplib\Request($this->config, null);
+        $this->request = new Request($this->config, null);
 
         // default response
         $this->response = array(
@@ -149,7 +149,7 @@ class Api
                     }
 
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
                 $message = 'Application error in ';
                 $message .= $e->getFile() . ' in Line ';

@@ -79,8 +79,11 @@ class View
 
 
     /**
+     * View constructor.
      * Basic setting for the view
      *
+     * @param Session $_session
+     * @param Request $_request
      */
     public function __construct(Session $_session, Request $_request)
     {
@@ -501,6 +504,7 @@ class View
      * Return a language snippet in the current language
      *
      * @param string $_snippet Name of the snippet
+     * @param bool $_output
      * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
      */
     public function lang($_snippet, $_output = true)

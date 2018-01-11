@@ -97,8 +97,6 @@ class Form
     public function process()
     {
 
-        $success = true;
-
         // set default values
         $this->hasErrors = false;
         foreach ($this->fields as $name => $field) {
@@ -193,7 +191,6 @@ class Form
      * If an error occurred, the field gets an error entry and the globas $hasError flag is set true
      *
      * @param string $_name Name of the field
-     * @return type
      */
     public function validate($_name)
     {
@@ -270,5 +267,3 @@ class Form
 
     }
 }
-
-?>

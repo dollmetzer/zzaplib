@@ -119,7 +119,6 @@ class Table
     /**
      * Basic setting for the table
      *
-     * @param Application $_app The application object
      */
     public function __construct()
     {

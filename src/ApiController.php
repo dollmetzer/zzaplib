@@ -47,7 +47,7 @@ class ApiController
      * If permissions are set, they're checked. If no execution right is found,
      * the application jumps to the startpage
      *
-     * Controller constructor.
+     * @param array $_config
      * @param Request $_request
      */
     public function __construct($_config, Request $_request)

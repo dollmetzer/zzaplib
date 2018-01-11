@@ -63,6 +63,7 @@ class Controller
      * the application jumps to the startpage
      *
      * Controller constructor.
+     * @param array $_config
      * @param Session $_session
      * @param Request $_request
      * @param View $_view

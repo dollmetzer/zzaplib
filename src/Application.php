@@ -68,7 +68,7 @@ class Application
         $this->dbh = null;
 
         // start session
-        $this->session = new \dollmetzer\zzaplib\Session($config);
+        $this->session = new Session($config);
 
     }
 
@@ -79,10 +79,10 @@ class Application
     {
 
         // construct request element
-        $this->request = new \dollmetzer\zzaplib\Request($this->config, $this->session);
+        $this->request = new Request($this->config, $this->session);
 
         // start view
-        $this->view = new \dollmetzer\zzaplib\View($this->session, $this->request);
+        $this->view = new View($this->session, $this->request);
 
         // Routing (split query path into module, controller, action and params)
         $this->request->routing();
