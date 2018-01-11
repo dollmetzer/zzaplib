@@ -25,7 +25,7 @@ namespace dollmetzer\zzaplib;
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @copyright 2006 - 2018 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
 class Module
@@ -55,7 +55,7 @@ class Module
 
         $this->configFilePath = PATH_TMP . 'module_config.json';
         if ($this->loadConfig() === false) {
-            $this->buildConfig();
+            $this->config = $this->buildConfig();
             $this->saveConfig();
         }
 
@@ -104,7 +104,7 @@ class Module
             return false;
         }
 
-        if( ($_name == 'active') && in_array($_module, $this->protectedModules)) {
+        if (($_name == 'active') && in_array($_module, $this->protectedModules)) {
             return false;
         }
 
@@ -137,16 +137,50 @@ class Module
      * @param string $_module Name of the module
      * @return bool Active state
      */
-    public function isActive($_module) {
+    public function isActive($_module)
+    {
 
-        if($this->config[$_module]['active'] === true) {
+        if ($this->config[$_module]['active'] === true) {
             return true;
         }
         return false;
 
     }
 
+    /**
+     * Remove entries from deleted modules and add entries from new modules
+     */
+    public function rebuildConfig()
+    {
 
+        // first remove entries for deleted modles
+        $currentModules = $this->buildConfig();
+        $currentNames = array_keys($currentModules);
+        foreach (array_keys($this->config) as $mName) {
+            if (!in_array($mName, $currentNames)) {
+                unset($this->config[$mName]);
+            }
+        }
+
+        // add enties for new modules
+        $previousNames = array_keys($this->config);
+        foreach ($currentNames as $mName) {
+            if (!in_array($mName, $previousNames)) {
+                $this->config[$mName] = $currentModules[$mName];
+            }
+        }
+
+        $this->saveConfig();
+
+    }
+
+    /**
+     * Activate a module
+     *
+     * @param string $_module Name of the module
+     * @return bool Success
+     * @throws \Exception If module can't be activated
+     */
     public function activate($_module)
     {
 
@@ -154,21 +188,27 @@ class Module
             throw new \Exception("Module '$_module' can't be activated, because it's not inactive");
         }
 
-
         $this->set($_module, 'active', true);
         $this->saveConfig();
 
         return true;
     }
 
+    /**
+     * Deactivate Module
+     *
+     * @param string $_module Name of the module
+     * @return bool Success
+     * @throws \Exception If module can't be deactivated
+     */
     public function deactivate($_module)
     {
 
         if ($this->get($_module, 'active') !== true) {
             throw new \Exception("Module '$_module' can't be deactivated, because it's not active");
         }
-        if ( in_array($_module, $this->protectedModules) ) {
-            throw new \Exception("Module '".$_module."' can't be deactivated!");
+        if (in_array($_module, $this->protectedModules)) {
+            throw new \Exception("Module '" . $_module . "' can't be deactivated!");
         }
 
 
@@ -189,13 +229,15 @@ class Module
 
     }
 
-
     /**
      * Build a new module config from the filesystem
+     *
+     * @return array
      */
     protected function buildConfig()
     {
 
+        $config = array();
         $moduleDir = PATH_APP . 'modules/';
         $dir = opendir($moduleDir);
         while ($file = readdir($dir)) {
@@ -206,22 +248,25 @@ class Module
 
             // set module active state
             $active = false;
-            if ($file == 'core') {
+            if (in_array($file, $this->protectedModules)) {
                 $active = true;
             }
-            $this->config[$file] = array(
+            $config[$file] = array(
                 'active' => $active
             );
 
-            // merge defult config, if available
+            // merge default config, if available
             $dataFile = $moduleDir . $file . '/data/config.php';
             if (file_exists($dataFile)) {
-                $this->config[$file] = array_merge($this->config[$file], include $dataFile);
+                $config[$file] = array_merge($config[$file], include $dataFile);
             }
 
         }
         closedir($dir);
-        ksort($this->config);
+        ksort($config);
+
+        return $config;
+
     }
 
     /**

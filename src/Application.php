@@ -4,18 +4,18 @@
  * ===========================================
  *
  * This library is a mini framework from php web applications
- * 
+ *
  * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software 
- * Foundation; either version 3 of the License, or (at your option) any later 
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later
  * version.
- * 
- * This program is distributed in the hope that it will be useful, but WITHOUT 
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
- * this program; if not, see <http://www.gnu.org/licenses/>. 
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace dollmetzer\zzaplib;
@@ -52,13 +52,13 @@ class Application
     public $request;
 
     /**
-     * @var View Holds the instance of the view 
+     * @var View Holds the instance of the view
      */
     public $view;
 
     /**
      * Construct the application
-     * 
+     *
      * @param array $config Configuration array
      */
     public function __construct($config)
@@ -68,7 +68,7 @@ class Application
         $this->dbh = null;
 
         // start session
-        $this->session = new \dollmetzer\zzaplib\Session($config);
+        $this->session = new Session($config);
 
     }
 
@@ -79,19 +79,19 @@ class Application
     {
 
         // construct request element
-        $this->request = new \dollmetzer\zzaplib\Request($this->config, $this->session);
+        $this->request = new Request($this->config, $this->session);
 
         // start view
-        $this->view = new \dollmetzer\zzaplib\View($this->session, $this->request);
+        $this->view = new View($this->session, $this->request);
 
         // Routing (split query path into module, controller, action and params)
         $this->request->routing();
 
         if (DEBUG_REQUEST) {
             echo "\n<!-- REQUEST\n";
-            echo 'Module     : '.$this->request->moduleName."\n";
-            echo 'Controller : '.$this->request->controllerName."\n";
-            echo 'Action     : '.$this->request->actionName."\n";
+            echo 'Module     : ' . $this->request->moduleName . "\n";
+            echo 'Controller : ' . $this->request->controllerName . "\n";
+            echo 'Action     : ' . $this->request->actionName . "\n";
             echo "Parameters : \n";
             print_r($this->request->params);
             echo "\n-->\n";
@@ -101,13 +101,13 @@ class Application
         $this->view->getLangaugeCore($this->session->user_language);
 
         // check, if module is active
-        if(!$this->request->module->isActive($this->request->moduleName)) {
+        if (!$this->request->module->isActive($this->request->moduleName)) {
             $this->request->forward($this->request->buildURL(''),
                 $this->view->lang('error_core_illegal_parameter', false), 'error');
         }
 
         // start controller
-        $controllerName = '\Application\modules\\'.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller';
+        $controllerName = '\Application\modules\\' . $this->request->moduleName . '\controllers\\' . $this->request->controllerName . 'Controller';
 
         try {
 
@@ -120,19 +120,19 @@ class Application
                     $this->view
                 );
             } else {
-                throw new \Exception('Controller class '.$controllerName.' not found');
+                throw new \Exception('Controller class ' . $controllerName . ' not found');
             }
 
             // exists action method?
-            $actionName = (string) $this->request->actionName.'Action';
+            $actionName = (string)$this->request->actionName . 'Action';
             if (method_exists($controller, $actionName) === false) {
-                $this->request->log('Application::run() - method '.$actionName.' not found in '.$this->request->moduleName.'\controllers\\'.$this->request->controllerName.'Controller with query string '.$this->request->queryString);
+                $this->request->log('Application::run() - method ' . $actionName . ' not found in ' . $this->request->moduleName . '\controllers\\' . $this->request->controllerName . 'Controller with query string ' . $this->request->queryString);
                 $this->request->forward($this->request->buildURL(''),
                     $this->view->lang('error_core_illegal_parameter', false), 'error');
             }
 
             // is access to action method allowed?
-            if(method_exists($controller, 'isAllowed')) {
+            if (method_exists($controller, 'isAllowed')) {
                 $isAllowed = $controller->isAllowed($this->request->actionName);
             } else {
                 $isAllowed = true;
@@ -140,11 +140,11 @@ class Application
 
             if ($isAllowed) {
 
-                if(method_exists($controller, 'before')) {
+                if (method_exists($controller, 'before')) {
                     $controller->before();
                 }
                 $controller->$actionName();
-                if(method_exists($controller, 'after')) {
+                if (method_exists($controller, 'after')) {
                     $controller->after();
                 }
             } else {
@@ -153,7 +153,7 @@ class Application
                     // Not logged in
                     // Remeber target page, try quicklogin or jump to login page
                     if ($this->config['quicklogin'] === true) {
-                        if(method_exists($controller, 'quicklogin')) {
+                        if (method_exists($controller, 'quicklogin')) {
                             $controller->quicklogin();
                         }
                     }
@@ -169,14 +169,14 @@ class Application
             }
             $this->view->render();
 
-            $this->session->flasherror   = '';
+            $this->session->flasherror = '';
             $this->session->flashmessage = '';
 
         } catch (\Exception $e) {
 
             $message = 'Application error in ';
-            $message .= $e->getFile().' in Line ';
-            $message .= $e->getLine().' : ';
+            $message .= $e->getFile() . ' in Line ';
+            $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
             $this->request->log($message);
             $this->request->forward($this->request->buildURL(''),
@@ -186,4 +186,3 @@ class Application
     }
 
 }
-?>

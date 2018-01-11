@@ -119,7 +119,6 @@ class Table
     /**
      * Basic setting for the table
      *
-     * @param Application $_app The application object
      */
     public function __construct()
     {
@@ -145,6 +144,11 @@ class Table
 
     }
 
+    /**
+     * Return Columns
+     *
+     * @return array
+     */
     public function getColumns()
     {
 
@@ -152,6 +156,11 @@ class Table
 
     }
 
+    /**
+     * Set columns
+     *
+     * @param array $_columns
+     */
     public function setColumns(array $_columns)
     {
 
@@ -180,6 +189,11 @@ class Table
 
     }
 
+    /**
+     * Return rows
+     *
+     * @return array
+     */
     public function getRows()
     {
 
@@ -213,7 +227,11 @@ class Table
 
     }
 
-
+    /**
+     * Calculate number of pages
+     *
+     * @param interger $_maxNumRows
+     */
     public function calculateMaxPage($_maxNumRows)
     {
 

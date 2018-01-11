@@ -32,9 +32,9 @@ class Api
 {
     public $HTTP_STATUS;
     public $response;
+    public $params;
 
     protected $config;
-    protected $session;
     protected $request;
 
     /**
@@ -47,9 +47,6 @@ class Api
 
         $this->config = $config;
         $this->dbh = null;
-
-        // start session
-        $this->session = new \dollmetzer\zzaplib\Session($config);
 
         // register autoloader for models, no class not found exception, not prepend
         //spl_autoload_register(array($this, 'autoloadModels'), false, false);
@@ -89,7 +86,7 @@ class Api
     {
 
         // construct request element
-        $this->request = new \dollmetzer\zzaplib\Request($this->config, $this->session);
+        $this->request = new Request($this->config, null);
 
         // default response
         $this->response = array(
@@ -99,17 +96,14 @@ class Api
         );
 
         // split query path into module, controller, action and params
-        $routing = $this->routing();
+        $routing = $this->request->ApiRouting();
 
         if (DEBUG_API) {
-            echo "\n<!-- REQUEST\n";
-            echo $this->moduleName . "\n";
-            echo $this->controllerName . "\n";
-            echo $this->actionName . "\n";
-            echo "Parameters : \n";
-            print_r($this->params);
-            var_dump($routing);
-            echo "\n-->\n";
+            $msg = 'API Call module ' . $this->request->moduleName;
+            $msg .= ', controller ' . $this->request->controllerName;
+            $msg .= ', action ' . $this->request->actionName;
+            $msg .= ', parameters ' . print_r($this->request->params, true);
+            error_log($msg);
         }
 
         if ($routing === true) {
@@ -121,14 +115,18 @@ class Api
 
                 // exists controller class?
                 if (class_exists($controllerName)) {
-                    $controller = new $controllerName($this);
+                    $controller = new $controllerName(
+                        $this->config,
+                        $this->request
+                    );
                 } else {
                     throw new \Exception('Controller class ' . $controllerName . ' not found');
                 }
-                $actionName = (string)$this->actionName . 'Action';
 
+                // exists action method?
+                $actionName = (string)$this->request->actionName . 'Action';
                 if (method_exists($controller, $actionName) === false) {
-                    $this->request->log('Application::run() - method ' . $actionName . ' not found in ' . $controllerFile);
+                    $this->request->log('Application::run() - method ' . $actionName . ' not found in ' . $controllerName);
                     $this->response['statusCode'] = 405;
                     $this->response['statusMessage'] = $this->HTTP_STATUS[405];
                 } else {
@@ -141,7 +139,9 @@ class Api
                     }
 
                     if ($isAllowed) {
-                        $controller->$actionName();
+
+                        $this->response['data'] = $controller->$actionName();
+
                     } else {
                         $this->request->log('Application::run() - access to ' . $controllerName . '::' . $actionName . ' is forbidden');
                         $this->response['statusCode'] = 403;
@@ -149,7 +149,7 @@ class Api
                     }
 
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
 
                 $message = 'Application error in ';
                 $message .= $e->getFile() . ' in Line ';
@@ -174,68 +174,5 @@ class Api
         header('HTTP/1.0 ' . $this->response['statusCode'] . ' ' . $this->response['statusMessage']);
         echo json_encode($this->response);
     }
-
-    /**
-     * Get Query parameters from the get parameter 'q', like
-     *
-     * <pre>http://SERVER/?q=module/controller/param1/param2/...</pre>
-     *
-     * If the first parameter is a valid module name, extract it from the query and set $this->moduleName
-     * If the then first parameter is a controller name, extract ist from the query and set $this->controllerName
-     * The now remaining parameters are going to $this->params
-     *
-     * @return bool Success. If false, either module name or controller name are invalid
-     */
-    protected function routing()
-    {
-
-        // set default values
-        $this->moduleName = 'core';
-        $this->controllerName = 'index';
-        $this->actionName = 'get';
-        $this->params = array();
-        $success = true;
-
-        // escape, if querypath is empty
-        if (empty($_GET['q'])) {
-            return $success;
-        }
-
-        // action = method
-        $this->actionName = strtolower($_SERVER['REQUEST_METHOD']);
-
-        // clean query path
-        $queryRaw = explode('/', $_GET['q']);
-        $query = array();
-        for ($i = 0; $i < sizeof($queryRaw); $i++) {
-            if ($queryRaw[$i] != '') {
-                array_push($query, $queryRaw[$i]);
-            }
-        }
-
-        // test if first entry is a module name
-        if (sizeof($query) > 0) {
-            if (in_array($query[0], $this->request->getModuleList())) {
-                $this->moduleName = array_shift($query);
-            } else {
-                $success = false;
-            }
-        }
-
-        // test if first entry is a controller name
-        if (sizeof($query) > 0) {
-            if (in_array($query[0], $this->request->getControllerList($this->moduleName))) {
-                $this->controllerName = array_shift($query);
-            } else {
-                $success = false;
-            }
-        }
-
-        // still any additional parameter remaining?
-        $this->params = $query;
-
-        return $success;
-
-    }
-
+    
 }

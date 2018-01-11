@@ -79,8 +79,11 @@ class View
 
 
     /**
+     * View constructor.
      * Basic setting for the view
      *
+     * @param Session $_session
+     * @param Request $_request
      */
     public function __construct(Session $_session, Request $_request)
     {
@@ -330,6 +333,35 @@ class View
     }
 
     /**
+     * Shorten a text
+     *
+     * @param string $_text The full text
+     * @param int $_length maximum length of the returned text
+     * @param bool $_ellipsis if true, add ellipsis (...) to shortended text
+     * @return string shortened text
+     */
+    public function textToShort($_text, $_length = 40, $_ellipsis = true)
+    {
+
+        $length = (int)$_length;
+        if (mb_strlen($_text) > $length) {
+
+            if ($_ellipsis === true) {
+                $length = $length - 3;
+                if ($length < 4) {
+                    $length = 4;
+                }
+                $text = mb_substr($_text, 0, $length) . '...';
+            } else {
+                $text = mb_substr($_text, 0, $length);
+            }
+        } else {
+            $text = $_text;
+        }
+        return $text;
+    }
+
+    /**
      * Return the navigation array for all modules
      *
      * Try th fetch array from cachefile in system/navigation_'.$_frontBack.'.json
@@ -472,6 +504,7 @@ class View
      * Return a language snippet in the current language
      *
      * @param string $_snippet Name of the snippet
+     * @param bool $_output
      * @return string either the snippet, or - if snippet wasn't defined - the name of the snippet, wrapped in ###_ _###
      */
     public function lang($_snippet, $_output = true)
@@ -507,5 +540,3 @@ class View
     }
 
 }
-
-?>

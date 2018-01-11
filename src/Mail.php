@@ -76,11 +76,13 @@ class Mail
      * @param string $_from
      * @param string $_replyto
      * @return bool success
+     * @throws \Exception
      */
-    public function send($_template, $_data, $_subject, $_to, $_cc='', $_from='', $_replyto='') {
+    public function send($_template, $_data, $_subject, $_to, $_cc = '', $_from = '', $_replyto = '')
+    {
 
         // check parameters
-        if(empty($_from)) {
+        if (empty($_from)) {
             $_from = $this->config['mail']['from'];
         }
 
@@ -95,8 +97,8 @@ class Mail
         */
 
         // send mail direct or by spooler
-        if(!empty($this->config['mail']['spool'])) {
-            if($this->config['mail']['spool'] === true) {
+        if (!empty($this->config['mail']['spool'])) {
+            if ($this->config['mail']['spool'] === true) {
                 $this->send2Spooler($message, $_subject, $_to, $_cc, $_from, $_replyto);
                 return true;
             }
@@ -109,8 +111,7 @@ class Mail
     /**
      * Send the mail direct via your local MTA
      *
-     * @param string $_template Path to the mail template
-     * @param array $_data Data for the template processing
+     * @param string $_message
      * @param string $_subject mail subject
      * @param string $_to recipient
      * @param string $_cc additional recipients
@@ -119,25 +120,26 @@ class Mail
      * @return bool success
      * @throws \Exception
      */
-    protected function sendDirect($_message, $_subject, $_to, $_cc, $_from, $_replyto) {
+    protected function sendDirect($_message, $_subject, $_to, $_cc, $_from, $_replyto)
+    {
 
-        $subject = $_subject;
+        //$subject = $_subject;
 
         $to = mb_encode_mimeheader($_to);
         $sender = mb_encode_mimeheader($_from);
         $replyto = mb_encode_mimeheader($_replyto);
-        $_subject = "=?utf-8?b?" . base64_encode($_subject) . "?=";
+        $subject = "=?utf-8?b?" . base64_encode($_subject) . "?=";
 
         $headers = "Mime-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
         $headers .= "From: $sender";
-        if(!empty($replyto)) {
+        if (!empty($replyto)) {
             $headers .= "\r\nReply-To: $replyto";
         }
 
         $success = mb_send_mail($to, $subject, $_message, $headers);
-        if($success !== true) {
-            $this->request->log('Sending Mail to '.$to.' failed');
+        if ($success !== true) {
+            $this->request->log('Sending Mail to ' . $to . ' failed');
         }
         return $success;
 
@@ -155,7 +157,8 @@ class Mail
      * @param string $_replyto separate reply-to address
      * @return bool success
      */
-    protected function send2Spooler($_template, $_data, $_subject, $_to, $_cc, $_from, $_replyto) {
+    protected function send2Spooler($_template, $_data, $_subject, $_to, $_cc, $_from, $_replyto)
+    {
 
         return false;
 

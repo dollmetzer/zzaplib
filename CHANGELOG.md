@@ -1,6 +1,24 @@
 CHANGELOG
 =========
 
+2018-01-11 Fixed codestyle issues
+
+2018-01-10 Fixed docblocks
+
+2018-01-10 DEBUG: Module::buildConfig now activates all protected modules
+
+2017-09-20 removed session from API to become REST compliant
+
+2017-08-22 Reformatted PSR-1/PSR-2 Coding style
+
+2017-06-23 Console commands added
+
+2017-06-20 Form: date validator added
+
+2017-06-19 View::textToShort Text shortener added
+
+2017-06-05 Api functionality updated (to be continued)
+
 2017-06-04 Application: Extended logging. Api: Construction of Controller changed
 
 2017-05-27 View::buildMediaURL added for construction of media URLs

@@ -56,21 +56,34 @@ class Request
      */
     public $params = array();
 
+    /**
+     * @var array $config Configuration array
+     */
     public $config;
 
+    /**
+     * @var Session|null $session For an API call, session is null
+     */
     public $session;
+
+    /**
+     * @var Module $module
+     */
+    public $module;
+
 
     /**
      * Constructor
      *
      * @param array $config Configuration array
+     * @param Session $_session
      */
     public function __construct(array $config, Session $_session)
     {
 
         $this->config = $config;
         $this->session = $_session;
-        $this->module = new \dollmetzer\zzaplib\Module();
+        $this->module = new Module();
 
     }
 
@@ -130,6 +143,69 @@ class Request
     }
 
     /**
+     * Get Query parameters from the get parameter 'q', like
+     *
+     * <pre>http://SERVER/?q=module/controller/param1/param2/...</pre>
+     *
+     * If the first parameter is a valid module name, extract it from the query and set $this->moduleName
+     * If the then first parameter is a controller name, extract ist from the query and set $this->controllerName
+     * The now remaining parameters are going to $this->params
+     *
+     * @return bool Success. If false, either module name or controller name are invalid
+     */
+    public function apiRouting()
+    {
+
+        // set default values
+        $this->moduleName = 'core';
+        $this->controllerName = 'index';
+        $this->actionName = 'get';
+        $this->params = array();
+        $success = true;
+
+        // escape, if querypath is empty
+        if (empty($_GET['q'])) {
+            return $success;
+        }
+
+        // action = method
+        $this->actionName = strtolower($_SERVER['REQUEST_METHOD']);
+
+        // clean query path
+        $queryRaw = explode('/', $_GET['q']);
+        $query = array();
+        for ($i = 0; $i < sizeof($queryRaw); $i++) {
+            if ($queryRaw[$i] != '') {
+                array_push($query, $queryRaw[$i]);
+            }
+        }
+
+        // test if first entry is a module name
+        if (sizeof($query) > 0) {
+            if (in_array($query[0], $this->getModuleList())) {
+                $this->moduleName = array_shift($query);
+            } else {
+                $success = false;
+            }
+        }
+
+        // test if first entry is a controller name
+        if (sizeof($query) > 0) {
+            if (in_array($query[0], $this->getApiControllerList($this->moduleName))) {
+                $this->controllerName = array_shift($query);
+            } else {
+                $success = false;
+            }
+        }
+
+        // still any additional parameter remaining?
+        $this->params = $query;
+
+        return $success;
+
+    }
+
+    /**
      * Get a list of installed modules. If modules are set in the configuration,
      * get the list from the configuration.
      * If modules are not in the configuration, read list from filesystem
@@ -159,9 +235,8 @@ class Request
     public function getControllerList($_moduleName)
     {
 
-        if (!empty($this->config['modules'][$_moduleName])) {
-
-            $list = $this->config['modules'][$_moduleName];
+        if (!empty($this->config['modules'][$_moduleName]['controllers'])) {
+            $list = $this->config['modules'][$_moduleName]['controllers'];
         } else {
 
             $list = array();
@@ -180,6 +255,55 @@ class Request
     }
 
     /**
+     * Get a list of available API controllers for the module $this->moduleName
+     * If modules are set in the configuration, get the list from the
+     * configuration. Without configuration entry, get the list from the filesystem.
+     *
+     * @return array
+     */
+    public function getApiControllerList($_moduleName)
+    {
+
+        if (!empty($this->config['modules'][$_moduleName]['apiControllers'])) {
+            $list = $this->config['modules'][$_moduleName]['apiControllers'];
+        } else {
+
+            $list = array();
+            $controllerDir = PATH_APP . 'modules/' . $_moduleName . '/api/';
+            $dir = opendir($controllerDir);
+            while ($file = readdir($dir)) {
+                if (preg_match('/Controller.php$/', $file)) {
+                    $list[] = preg_replace('/Controller.php$/', '', $file);
+                }
+            }
+            closedir($dir);
+        }
+        sort($list);
+
+        return $list;
+
+    }
+
+    /**
+     * Get a list of possible API calls
+     *
+     * @return array
+     */
+    public function listApiCalls()
+    {
+
+        $calls = array();
+        foreach ($this->getModuleList() as $module) {
+            $apiControllerList = $this->getApiControllerList($module);
+            foreach ($apiControllerList as $controller) {
+                $calls[] = $module . '/' . $controller;
+            }
+        }
+        return $calls;
+
+    }
+
+    /**
      * Forward to another page
      *
      * @param string $_url Target URL
@@ -189,7 +313,7 @@ class Request
     public function forward($_url = '', $_message = '', $_messageType = '')
     {
 
-        if (!empty($_message)) {
+        if (!empty($_message) && ($this->session != null)) {
             if ($_messageType == 'error') {
                 $this->session->flasherror = $_message;
             } else {

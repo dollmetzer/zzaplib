@@ -115,7 +115,8 @@ class Session
      * @param array $_user
      * @param array $_groups
      */
-    public function login(array $_user, array $_groups) {
+    public function login(array $_user, array $_groups)
+    {
 
         $this->user_id = $_user['id'];
         $this->user_handle = $_user['handle'];
@@ -123,7 +124,7 @@ class Session
         $this->user_language = $_user['language'];
         $this->user_haspassword = true;
         $groups = array();
-        foreach($_groups as $pos=>$group) {
+        foreach ($_groups as $pos => $group) {
             print_r($group);
             $groups[$group['id']] = $group['name'];
         }
@@ -136,7 +137,7 @@ class Session
     public function destroy()
     {
 
-        if($this->is_web === true) {
+        if ($this->is_web === true) {
             session_destroy();
             session_unset();
             session_start();
