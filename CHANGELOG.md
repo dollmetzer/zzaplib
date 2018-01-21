@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2018-01-21 config accessible in DBModel
+
 2018-01-11 Fixed codestyle issues
 
 2018-01-10 Fixed docblocks
