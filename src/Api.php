@@ -25,17 +25,27 @@ namespace dollmetzer\zzaplib;
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @copyright 2006 - 2018 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
 class Api
 {
-    public $HTTP_STATUS;
-    public $response;
-    public $params;
 
+    /**
+     * @var array Configuration
+     */
     protected $config;
+
+    /**
+     * @var Request $request
+     */
     protected $request;
+
+    /**
+     * @var Response $response
+     */
+    protected $response;
+
 
     /**
      * Construct the API
@@ -48,35 +58,6 @@ class Api
         $this->config = $config;
         $this->dbh = null;
 
-        // register autoloader for models, no class not found exception, not prepend
-        //spl_autoload_register(array($this, 'autoloadModels'), false, false);
-
-        $this->HTTP_STATUS = array(
-            // 1xx - Informations not implemented
-            // 2xx - Successful operations
-            200 => 'OK', // success
-            201 => 'Created', // ressource was created. "Location“-header-field may contain Address of the ressource 
-            202 => 'Accepted', // request was queued and maybe later executed
-            // 3xx - Redirections not implemented
-            // 4xx - Client errors
-            400 => 'Bad Request', // syntax errors. 422 is semantic errors
-            401 => 'Unauthorized', // no authentication sent
-            403 => 'Forbidden', // 
-            404 => 'Not Found',
-            405 => 'Method Not Allowed',
-            409 => 'Conflict',
-            411 => 'Length Required',
-            412 => 'Precondition Failed',
-            422 => 'Unprocessable Entity', // semantic errors
-            423 => 'Locked',
-            429 => 'Too Many Requests',
-            451 => 'Unavailable For Legal Reasons',
-            // 5xx - Server errors
-            500 => 'Internal Server Error',
-            501 => 'Not Implemented',
-            503 => 'Service Unavailable',
-            507 => 'Insufficient Storage'
-        );
     }
 
     /**
@@ -85,15 +66,9 @@ class Api
     public function run()
     {
 
-        // construct request element
+        // construct request and response elements
         $this->request = new Request($this->config, null);
-
-        // default response
-        $this->response = array(
-            'statusCode' => 200,
-            'statusMessage' => $this->HTTP_STATUS[200],
-            'data' => array()
-        );
+        $this->response = new Response();
 
         // split query path into module, controller, action and params
         $routing = $this->request->ApiRouting();
@@ -117,7 +92,8 @@ class Api
                 if (class_exists($controllerName)) {
                     $controller = new $controllerName(
                         $this->config,
-                        $this->request
+                        $this->request,
+                        $this->response
                     );
                 } else {
                     throw new \Exception('Controller class ' . $controllerName . ' not found');
@@ -127,8 +103,7 @@ class Api
                 $actionName = (string)$this->request->actionName . 'Action';
                 if (method_exists($controller, $actionName) === false) {
                     $this->request->log('Application::run() - method ' . $actionName . ' not found in ' . $controllerName);
-                    $this->response['statusCode'] = 405;
-                    $this->response['statusMessage'] = $this->HTTP_STATUS[405];
+                    $this->response->setStatusCode(405);
                 } else {
 
                     // is access to action method allowed?
@@ -140,12 +115,11 @@ class Api
 
                     if ($isAllowed) {
 
-                        $this->response['data'] = $controller->$actionName();
+                        $this->response->setData($controller->$actionName());
 
                     } else {
                         $this->request->log('Application::run() - access to ' . $controllerName . '::' . $actionName . ' is forbidden');
-                        $this->response['statusCode'] = 403;
-                        $this->response['statusMessage'] = $this->HTTP_STATUS[403];
+                        $this->response->setStatusCode(403);
                     }
 
                 }
@@ -156,23 +130,21 @@ class Api
                 $message .= $e->getLine() . ' : ';
                 $message .= $e->getMessage();
                 $this->request->log($message);
-                $this->response['statusCode'] = 500;
-                $this->response['statusMessage'] = $this->HTTP_STATUS[500];
+                $this->response->setStatusCode(500);
             }
 
         } else {
 
             // no endpoint found
             $this->request->log('Api::run() - 400 - Endpoint not available');
-            $this->response['statusCode'] = 400;
-            $this->response['statusMessage'] = $this->HTTP_STATUS[400];
-            $this->response['statusInfo'] = 'Endpoint not available';
+            $this->response->setStatusCode(400);
+            $this->response->setStatusInfo('Endpoint not available');
 
         }
 
         header('Content-Type: application/json');
-        header('HTTP/1.0 ' . $this->response['statusCode'] . ' ' . $this->response['statusMessage']);
-        echo json_encode($this->response);
+        header('HTTP/1.0 ' . $this->response->getStatusCode() . ' ' . $this->response->getStatusMessage());
+        echo json_encode($this->response->getAsArray());
     }
-    
+
 }

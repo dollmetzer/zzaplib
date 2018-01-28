@@ -25,7 +25,7 @@ namespace dollmetzer\zzaplib;
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @copyright 2006 - 2018 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
 class Request
@@ -76,9 +76,9 @@ class Request
      * Constructor
      *
      * @param array $config Configuration array
-     * @param Session $_session
+     * @param Session|NULL $_session
      */
-    public function __construct(array $config, Session $_session)
+    public function __construct(array $config, $_session)
     {
 
         $this->config = $config;

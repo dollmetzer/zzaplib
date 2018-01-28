@@ -25,7 +25,7 @@ namespace dollmetzer\zzaplib;
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @copyright 2006 - 2018 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
 class ApiController
@@ -42,6 +42,11 @@ class ApiController
     protected $request;
 
     /**
+     * @var Response $response
+     */
+    protected $response;
+
+    /**
      * The constructor tries to execute init(), if it exists.
      *
      * If permissions are set, they're checked. If no execution right is found,
@@ -49,12 +54,14 @@ class ApiController
      *
      * @param array $_config
      * @param Request $_request
+     * @param Response $_response
      */
-    public function __construct($_config, Request $_request)
+    public function __construct($_config, Request $_request, Response $_response)
     {
 
         $this->config = $_config;
         $this->request = $_request;
+        $this->response = $_response;
 
         if (method_exists($this, 'init')) {
             $this->init();
