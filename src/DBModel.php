@@ -25,7 +25,7 @@ namespace dollmetzer\zzaplib;
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @copyright 2006 - 2018 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
 class DBModel
@@ -37,6 +37,12 @@ class DBModel
     protected $dbh;
 
     /**
+     * @var array Configuration
+     */
+    protected $config;
+
+
+    /**
      * Connects to DB
      *
      * @param array $_config
@@ -44,6 +50,8 @@ class DBModel
      */
     public function __construct($_config, $_master = true)
     {
+
+        $this->config = $_config;
 
         if ($_master === false) {
             $dsn = $_config['db']['slave']['dsn'];

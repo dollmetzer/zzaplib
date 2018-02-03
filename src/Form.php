@@ -177,6 +177,7 @@ class Form
 
         $result = array();
         foreach ($this->fields as $name => $field) {
+            if (empty($field['value'])) continue;
             if ($field['type'] == 'code') {
                 $result[$name] = $field['value'];
             } else {
