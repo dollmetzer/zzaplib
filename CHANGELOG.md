@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2018-12-06 DBModel added standard methods for simple search search() and getSearchEntries()
+
+2018-12-06 DBModel added standard methods for paged and sorted lists getList() and getListEntries()
+
 2018-02-03 Form::getValues() fixed notice, if field had no value
 
 2018-01-28 API: request with null session working, added setStatus method, added response class

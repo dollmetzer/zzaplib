@@ -161,4 +161,102 @@ class DBModel
         $stmt->execute();
 
     }
+
+    /**
+     * Get a paged list
+     *
+     * @param integer $_first (optional)
+     * @param integer $_length (optional)
+     * @param string $_sortColumn (optional)
+     * @param string $_sortDirection (optional)
+     * @return array
+     */
+    public function getList($_first = null, $_length = null, $_sortColumn = null, $_sortDirection = 'asc')
+    {
+
+        $sql = "SELECT * FROM ".$this->tablename;
+        if ($_sortColumn) {
+            if ($_sortDirection != 'desc') {
+                $_sortDirection = 'asc';
+            }
+            $sql .= ' ORDER BY ' . $_sortColumn . ' ' . strtoupper($_sortDirection);
+
+        }
+        if (isset($_first) && isset($_length)) {
+            $sql .= ' LIMIT ' . (int)$_first . ',' . (int)$_length;
+        }
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $list = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $list;
+    }
+
+    /**
+     * Get the number of entries the list
+     *
+     * @return integer
+     */
+    public function getListEntries()
+    {
+
+        $sql = "SELECT COUNT(*) as entries FROM ".$this->tablename;
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['entries'];
+    }
+
+
+    /**
+     * Search for a user
+     *
+     * @param string $_searchterm
+     * @param integer $_first
+     * @param integer $_length
+     * @param string $_sortColumn
+     * @param string $_sortDirection
+     * @param string $_searchcolumn (default columnname is 'name')
+     * @return array users
+     */
+    public function search($_searchterm, $_first = null, $_length = null, $_sortColumn = null, $_sortDirection = 'asc',$_searchcolumn='name')
+    {
+
+        $sql = "SELECT * FROM ".$this->tablename." WHERE ".$_searchcolumn." LIKE " . $this->dbh->quote($_searchterm);
+        if ($_sortColumn) {
+            if ($_sortDirection != 'desc') {
+                $_sortDirection = 'asc';
+            }
+            $sql .= ' ORDER BY ' . $_sortColumn . ' ' . strtoupper($_sortDirection);
+
+        }
+        if (isset($_first) && isset($_length)) {
+            $sql .= ' LIMIT ' . (int)$_first . ',' . (int)$_length;
+        }
+
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $list = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $list;
+
+    }
+
+    /**
+     * Get the number of results for a search
+     *
+     * @param string $_searchterm
+     * @param string $_searchcolumn (default columnname is 'name')
+     * @return array
+     */
+    public function getSearchEntries($_searchterm, $_searchcolumn='name')
+    {
+
+        $sql = "SELECT COUNT(*) as entries FROM ".$this->tablename." WHERE ".$_searchcolumn." LIKE " . $this->dbh->quote($_searchterm);
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['entries'];
+
+    }
+
 }
