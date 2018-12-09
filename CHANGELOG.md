@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2018-12-09 DBModel: added escape signs around tablename for list, getListEntries, serach and getSearchEntries
+
 2018-12-09 Table added $first as marker for the first row in the DB Search results
 
 2018-12-06 DBModel added standard methods for simple search search() and getSearchEntries()

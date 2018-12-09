@@ -174,7 +174,7 @@ class DBModel
     public function getList($_first = null, $_length = null, $_sortColumn = null, $_sortDirection = 'asc')
     {
 
-        $sql = "SELECT * FROM ".$this->tablename;
+        $sql = "SELECT * FROM `".$this->tablename."`";
         if ($_sortColumn) {
             if ($_sortDirection != 'desc') {
                 $_sortDirection = 'asc';
@@ -200,7 +200,7 @@ class DBModel
     public function getListEntries()
     {
 
-        $sql = "SELECT COUNT(*) as entries FROM ".$this->tablename;
+        $sql = "SELECT COUNT(*) as entries FROM `".$this->tablename."`";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -222,7 +222,7 @@ class DBModel
     public function search($_searchterm, $_first = null, $_length = null, $_sortColumn = null, $_sortDirection = 'asc',$_searchcolumn='name')
     {
 
-        $sql = "SELECT * FROM ".$this->tablename." WHERE ".$_searchcolumn." LIKE " . $this->dbh->quote($_searchterm);
+        $sql = "SELECT * FROM `".$this->tablename."` WHERE ".$_searchcolumn." LIKE " . $this->dbh->quote($_searchterm);
         if ($_sortColumn) {
             if ($_sortDirection != 'desc') {
                 $_sortDirection = 'asc';
@@ -251,7 +251,8 @@ class DBModel
     public function getSearchEntries($_searchterm, $_searchcolumn='name')
     {
 
-        $sql = "SELECT COUNT(*) as entries FROM ".$this->tablename." WHERE ".$_searchcolumn." LIKE " . $this->dbh->quote($_searchterm);
+        $sql = "SELECT COUNT(*) as entries FROM `".$this->tablename."` WHERE ".$_searchcolumn." LIKE " . $this->dbh->quote($_searchterm);
+
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
