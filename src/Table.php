@@ -72,6 +72,11 @@ class Table
     public $entriesPerPage;
 
     /**
+     * @var integer Pagination: First record to select from DB
+     */
+    public $first;
+
+    /**
      * @var string URL for pagination link
      */
     public $urlPage;
