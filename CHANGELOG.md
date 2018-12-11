@@ -1,7 +1,9 @@
 CHANGELOG
 =========
 
-2018-12-09 DBModel: added escape signs around tablename for list, getListEntries, serach and getSearchEntries
+2018-12-11 Form: added input type datetime
+
+2018-12-09 DBModel: added escape signs around tablename for list, getListEntries, search and getSearchEntries
 
 2018-12-09 Table added $first as marker for the first row in the DB Search results
 

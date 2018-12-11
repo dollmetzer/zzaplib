@@ -122,6 +122,20 @@ class Form
                     } else {
                         $value = true;
                     }
+                } elseif ($field['type'] == 'datetime') {
+                    // Assemble field from two separate fields
+                    $day = $_POST[$name.'_day'];
+                    $time = $_POST[$name.'_time'];
+                    if(!empty($day) || !empty($time)) {
+                        $tmp = explode(':', $time);
+                        if(sizeof($tmp) == 2) {
+                            $time = $time.':00';
+                        }
+                        $value = $day.' '.$time;
+                    } else {
+                        $value = null;
+                    }
+
                 } elseif ($field['type'] == 'file') {
                     // check, if file was sent...
                     $value = $_FILES[$name]['name'];
@@ -249,22 +263,34 @@ class Form
         if ($this->fields[$_name]['type'] == 'integer') {
             $value = (int)$this->fields[$_name]['value'];
             if ((string)$value != $this->fields[$_name]['value']) {
-                $this->fields[$_name]['error'] = sprintf($this->view->lang('form_error_integer', false),
-                    $this->fields[$_name]['maxlength']);
+                $this->fields[$_name]['error'] = $this->view->lang('form_error_integer', false);
                 $this->hasErrors = true;
                 return;
             }
         }
 
+        // type date
         if ($this->fields[$_name]['type'] == 'date') {
             $value = $this->fields[$_name]['value'];
             if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value)) {
-                $this->fields[$_name]['error'] = sprintf($this->view->lang('form_error_date', false),
-                    $this->fields[$_name]['maxlength']);
+                $this->fields[$_name]['error'] = $this->view->lang('form_error_date', false);
                 $this->hasErrors = true;
                 return;
             }
         }
+
+        // type datetime
+        if ($this->fields[$_name]['type'] == 'datetime') {
+            $value = $this->fields[$_name]['value'];
+            if($value != null) {
+                if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/', $value)) {
+                    $this->fields[$_name]['error'] = $this->view->lang('form_error_datetime', false);
+                    $this->hasErrors = true;
+                    return;
+                }
+            }
+        }
+
 
     }
 }
