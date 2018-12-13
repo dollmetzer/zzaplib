@@ -57,6 +57,11 @@ class Request
     public $params = array();
 
     /**
+     * @var string|null Raw input from request body on PUT oder POST requests
+     */
+    public $rawBody;
+
+    /**
      * @var array $config Configuration array
      */
     public $config;
@@ -200,6 +205,11 @@ class Request
 
         // still any additional parameter remaining?
         $this->params = $query;
+
+        // get request body on POST or PUT
+        if( ($this->actionName == 'put') || ($this->actionName == 'post') ) {
+            $this->rawBody = file_get_contents('php://input');
+        }
 
         return $success;
 

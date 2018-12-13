@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2018-12-13 Request: Added $rawBody for POST and PUT requests (API)
+
 2018-12-11 Form: added input type datetime
 
 2018-12-09 DBModel: added escape signs around tablename for list, getListEntries, search and getSearchEntries
