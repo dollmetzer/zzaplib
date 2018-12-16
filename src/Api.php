@@ -46,6 +46,11 @@ class Api
      */
     protected $response;
 
+    /**
+     * @var View Holds the instance of the view (for access to the formatting methods)
+     */
+    public $view;
+
 
     /**
      * Construct the API
@@ -70,6 +75,10 @@ class Api
         $this->request = new Request($this->config, null);
         $this->response = new Response();
 
+        // start view
+        $this->session = new Session($this->config);
+        $this->view = new View($this->session, $this->request);
+
         // split query path into module, controller, action and params
         $routing = $this->request->ApiRouting();
 
@@ -93,7 +102,8 @@ class Api
                     $controller = new $controllerName(
                         $this->config,
                         $this->request,
-                        $this->response
+                        $this->response,
+                        $this->view
                     );
                 } else {
                     throw new \Exception('Controller class ' . $controllerName . ' not found');

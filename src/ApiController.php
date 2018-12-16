@@ -47,6 +47,12 @@ class ApiController
     protected $response;
 
     /**
+     * @var View $view
+     */
+    protected $view;
+
+
+    /**
      * The constructor tries to execute init(), if it exists.
      *
      * If permissions are set, they're checked. If no execution right is found,
@@ -55,13 +61,15 @@ class ApiController
      * @param array $_config
      * @param Request $_request
      * @param Response $_response
+     * @param View $_view
      */
-    public function __construct($_config, Request $_request, Response $_response)
+    public function __construct($_config, Request $_request, Response $_response, View $_view)
     {
 
         $this->config = $_config;
         $this->request = $_request;
         $this->response = $_response;
+        $this->view = $_view;
 
         if (method_exists($this, 'init')) {
             $this->init();

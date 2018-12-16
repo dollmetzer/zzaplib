@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2018-12-16 Added view to Api and ApiController to make formatting accessible
+
 2018-12-13 Request: Added $rawBody for POST and PUT requests (API)
 
 2018-12-11 Form: added input type datetime

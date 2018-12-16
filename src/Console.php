@@ -76,13 +76,16 @@ class Console
         $this->scriptname = array_shift($argv);
 
         $this->getCommands();
+        if(!empty($this->commands)) {
+            $validActions = join(', ', array_keys($this->commands));
+        } else {
+            $validActions = 'None';
+        }
         if (sizeof($argv) < 1) {
-            die("\nNo action given. Valid actions are : " . join(', ',
-                    array_keys($this->commands)) . "\n");
+            die("\nNo action given. Valid actions are : $validActions\n");
         }
         if (!in_array($argv[0], array_keys($this->commands))) {
-            die("\nNo valid action given. Valid actions are : " . join(', ',
-                    array_keys($this->commands)) . "\n");
+            die("\nNo valid action given. Valid actions are : $validActions\n");
         }
 
         $this->action = array_shift($argv);
@@ -146,6 +149,39 @@ class Console
             return $this->module->getConfig();
         }
 
+    }
+
+    /**
+     * Write a log entry.
+     *
+     * The logfile is in PATH_LOGS and its name consist of type and
+     * date (e.g. notice_2015_07_25.txt).
+     *
+     * @param string $_message
+     * @param string $_type 'error'(default) or 'notice'
+     */
+    public function log($_message, $_type = 'error')
+    {
+
+        if (in_array($_type, array('error', 'notice'))) {
+            $type = $_type;
+        } else {
+            $type = 'error';
+        }
+
+        $message = strftime('%d.%m.%Y %H:%M:%S', time());
+        $message .= "\t" . $_message . "\n";
+
+        $logfile = PATH_LOGS . $type . strftime('_%Y_%m_%d.txt', time());
+        if (!file_exists($logfile)) {
+            $fp = fopen($logfile, 'w+');
+            fwrite($fp, "Logfile $logfile\n--------------------\n");
+            fclose($fp);
+            chmod($logfile, 0664);
+        }
+        $fp = fopen($logfile, 'a+');
+        fwrite($fp, $message);
+        fclose($fp);
     }
 
 }
