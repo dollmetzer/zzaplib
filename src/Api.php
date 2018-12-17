@@ -78,6 +78,8 @@ class Api
         // start view
         $this->session = new Session($this->config);
         $this->view = new View($this->session, $this->request);
+        // load core language snippets
+        $this->view->getLangaugeCore($this->session->user_language);
 
         // split query path into module, controller, action and params
         $routing = $this->request->ApiRouting();
