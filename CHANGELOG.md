@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2019-01-27 API: added methods lang, buildURL and buildMediaURL
+
 2018-12-17 API: now loads core language snippets
 
 2018-12-16 Added view to Api and ApiController to make formatting accessible

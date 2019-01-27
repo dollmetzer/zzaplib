@@ -25,7 +25,7 @@ namespace dollmetzer\zzaplib;
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2018 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package zzaplib
  */
 class ApiController
@@ -74,6 +74,46 @@ class ApiController
         if (method_exists($this, 'init')) {
             $this->init();
         }
+    }
+
+    /**
+     * Returns a text snippet in the current language.
+     *
+     * If no snippet is found, the placeholder with leading and trailing tripple
+     * hash and underscore is returned.
+     *
+     * @param string $_snippet A placeholder like ERROR_FORM_TOO_LONG
+     * @return string           The String in the current language
+     */
+    public function lang($_snippet)
+    {
+
+        return $this->view->lang($_snippet, false);
+    }
+
+    /**
+     * Build a complete URL from a query string
+     *
+     * @param string $_path Query string like controller/action/param_1/param_n
+     * @param array $_attributes Additional Attributes. Array of key=>value pairs
+     * @return string
+     */
+    public function buildURL($_path, $_attributes = array())
+    {
+
+        return $this->request->buildURL($_path, $_attributes);
+    }
+
+    /**
+     * Build a complete URL from a query string
+     *
+     * @param string $_path Path to the picture on the media server
+     * @return string
+     */
+    public function buildMediaURL($_path)
+    {
+
+        return $this->request->buildMediaURL($_path);
     }
 
 }
