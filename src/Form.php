@@ -195,7 +195,7 @@ class Form
             if ($field['type'] == 'code') {
                 $result[$name] = $field['value'];
             } else {
-                $result[$name] = htmlentities($field['value']);
+                $result[$name] = strip_tags($field['value']);
             }
         }
         return $result;
