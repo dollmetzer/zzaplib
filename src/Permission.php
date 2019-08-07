@@ -1,7 +1,7 @@
 <?php
 /**
- * z z a p l i b   m i n i   f r a m e w o r k
- * ===========================================
+ * z z a p l i b   3   m i n i   f r a m e w o r k
+ * ===============================================
  *
  * This library is a mini framework from php web applications
  *
@@ -20,346 +20,171 @@
 
 namespace dollmetzer\zzaplib;
 
+use dollmetzer\zzaplib\exception\ValidationException;
+
 /**
- * Base class for permission handling
- *
- * NOT FOR PRODUCTION READY YET!
+ * Class Permission
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package zzaplib
+ * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @package dollmetzer\zzaplib
  */
 class Permission
 {
-    /**
-     * @var integer User Id - Owner of the item
-     */
-    protected $userId;
+    const CREATE = 1;
+    const READ = 2;
+    const UPDATE = 4;
+    const DELETE = 8;
+    const EXECUTE = 16;
+    const MULTIPLY_GROUP = 32;
+    const MULTIPLY_ALL = 1024;
 
     /**
-     * @var integer Group Id - Group of the item
+     * @var int
+     */
+    protected $ownerId;
+
+    /**
+     * @var int
      */
     protected $groupId;
 
     /**
-     * @var integer 15 bit encoded access permissions of the item
+     * @var int
      */
     protected $permissions;
 
     /**
-     * @var boolean Right to create new item
+     * @var int
      */
-    protected $isCreate;
+    protected $userId;
 
     /**
-     * @var boolean Right to read item
+     * @var array
      */
-    protected $isRead;
+    protected $groupIds;
+
 
     /**
-     * @var boolean Right to update item
-     */
-    protected $isUpdate;
-
-    /**
-     * @var boolean Right to delete item
-     */
-    protected $isDelete;
-
-    /**
-     * @var boolean Right to execute item
-     */
-    protected $isExecute;
-
-    /**
-     * Create new Permission object
+     * Permission constructor.
      *
-     * @param integer $_userId
-     * @param integer $_groupId
-     * @param integer $_permissions Permissions are bit based (15 bit)
+     * @param int $ownerId
+     * @param int $groupId
+     * @param int $permissions
+     * @throws ValidationException
      */
-    public function __construct($_userId = 0, $_groupId = 0, $_permissions = 0)
+    public function __construct(int $ownerId=0, int $groupId=0, int $permissions=31)
     {
-
-        $this->userId = (int)$_userId;
-        $this->groupId = (int)$_groupId;
-        $this->permissions = (int)$_permissions;
-        $this->calculateRights();
+        $this->setObject($ownerId, $groupId, $permissions);
+        $this->userId = 0;
+        $this->groupIds = [];
     }
 
     /**
-     * Has right to create?
-     *
-     * @return boolean
+     * @param int $ownerId
+     * @param int $groupId
+     * @param int $permissions
+     * @throws ValidationException
      */
-    public function isCreate()
+    public function setObject(int $ownerId, int $groupId, int $permissions)
     {
-        return $this->isCreate;
+        if($ownerId < 0) {
+            throw new ValidationException('ownerId', 'value is less than 0');
+        }
+        $this->ownerId = $ownerId;
+
+        if($groupId < 0) {
+            throw new ValidationException('groupId', 'value is less than 0');
+        }
+        $this->groupId = $groupId;
+
+        if(($permissions < 0) or ($permissions >32767))
+        {
+            throw new ValidationException('permissions', 'value is less than 0 or greater than 32767');
+        }
+        $this->permissions = $permissions; // muss < 2 ^ 15 32768
     }
 
     /**
-     * Has right to read?
-     *
-     * @return boolean
+     * @param int $userId
+     * @param array $groupIds
+     * @throws ValidationException
      */
-    public function isRead()
+    public function setUser(int $userId, array $groupIds)
     {
-        return $this->isRead;
+        if($userId < 0) {
+            throw new ValidationException('userId', 'value is less than 0');
+        }
+        $this->userId = $userId;
+
+        if(!is_array($groupIds)) {
+            throw new ValidationException('groupIds', 'value is no array of int');
+        }
+        $this->groupIds = $groupIds;
     }
 
     /**
-     * Has right to update?
-     *
-     * @return boolean
+     * @return bool
      */
-    public function isUpdate()
+    public function isCreateAllowed()
     {
-        return $this->isUpdate;
+        return $this->testPermissionBit(self::CREATE);
     }
 
     /**
-     * Has right to delete?
-     *
-     * @return boolean
+     * @return bool
      */
-    public function isDelete()
+    public function isReadAllowed()
     {
-        return $this->isDelete;
+        return $this->testPermissionBit(self::READ);
     }
 
     /**
-     * Has right to execute?
-     *
-     * @return boolean
+     * @return bool
      */
-    public function isExecute()
+    public function isUpdateAllowed()
     {
-        return $this->isExecute;
-    }
-
-    public function setCreate(bool $_status = true, $_context = 'all')
-    {
-
-        if ((int)$_status === false) {
-            // delete bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions & (~16384);
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions & (~512);
-                } else {
-                    $this->permissions = $this->permissions & (~16);
-                }
-            }
-        } else {
-            // set bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions | 16384;
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions | 512;
-                } else {
-                    $this->permissions = $this->permissions | 16;
-                }
-            }
-        }
-
-    }
-
-    public function setRead(bool $_status = true, $_context = 'all')
-    {
-
-        if ((int)$_status === false) {
-            // delete bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions & (~8192);
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions & (~256);
-                } else {
-                    $this->permissions = $this->permissions & (~8);
-                }
-            }
-        } else {
-            // set bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions | 8192;
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions | 256;
-                } else {
-                    $this->permissions = $this->permissions | 8;
-                }
-            }
-        }
-
-    }
-
-    public function setUpdate(bool $_status = true, $_context = 'all')
-    {
-
-        if ((int)$_status === false) {
-            // delete bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions & (~4096);
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions & (~128);
-                } else {
-                    $this->permissions = $this->permissions & (~4);
-                }
-            }
-        } else {
-            // set bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions | 4096;
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions | 128;
-                } else {
-                    $this->permissions = $this->permissions | 4;
-                }
-            }
-        }
-
-    }
-
-    public function setDelete(bool $_status = true, $_context = 'all')
-    {
-
-        if ((int)$_status === false) {
-            // delete bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions & (~2048);
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions & (~64);
-                } else {
-                    $this->permissions = $this->permissions & (~2);
-                }
-            }
-        } else {
-            // set bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions | 2048;
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions | 64;
-                } else {
-                    $this->permissions = $this->permissions | 2;
-                }
-            }
-        }
-
+        return $this->testPermissionBit(self::UPDATE);
     }
 
     /**
-     * Set Execute Flag in Permission
-     *
-     * @param boolean $_status
-     * @param string $_context Set flag for 'user', 'group' or 'all'
+     * @return bool
      */
-    public function setExecute(bool $_status = true, $_context = 'all')
+    public function isDeleteAllowed()
     {
-
-        if ((int)$_status === false) {
-            // delete bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions & (~1024);
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions & (~32);
-                } else {
-                    $this->permissions = $this->permissions & (~1);
-                }
-            }
-        } else {
-            // set bits
-            if ($_context == 'user') {
-                $this->permissions = $this->permissions | 1024;
-            } else {
-                if ($_context == 'group') {
-                    $this->permissions = $this->permissions | 32;
-                } else {
-                    $this->permissions = $this->permissions | 1;
-                }
-            }
-        }
-
+        return $this->testPermissionBit(self::DELETE);
     }
 
     /**
-     * Calculate rights from userid, groupid and permission
+     * @return bool
      */
-    protected function calculateRights()
+    public function isExecuteAllowed()
     {
+        return $this->testPermissionBit(self::EXECUTE);
+    }
 
-        // start without any permission
-        $this->isCreate = false;
-        $this->isRead = false;
-        $this->isUpdate = false;
-        $this->isDelete = false;
-        $this->isExecute = false;
-
-        // calculate rights for all (bits 1-5)
-        if ($this->permissions & 16) {
-            $this->isCreate = true;
-        }
-        if ($this->permissions & 8) {
-            $this->isRead = true;
-        }
-        if ($this->permissions & 4) {
-            $this->isUpdate = true;
-        }
-        if ($this->permissions & 2) {
-            $this->isDelete = true;
-        }
-        if ($this->permissions & 1) {
-            $this->isExecute = true;
-        }
-
-        // calculate rights for group (bits 6-10)
-        if (isset($_SESSION['groups'])) {
-            if (in_array($this->groupId, array_keys($_SESSION['groups']))) {
-                if ($this->permissions & 512) {
-                    $this->isCreate = true;
-                }
-                if ($this->permissions & 256) {
-                    $this->isRead = true;
-                }
-                if ($this->permissions & 128) {
-                    $this->isUpdate = true;
-                }
-                if ($this->permissions & 64) {
-                    $this->isDelete = true;
-                }
-                if ($this->permissions & 32) {
-                    $this->isExecute = true;
-                }
+    /**
+     * @param $bitValue
+     * @return bool
+     */
+    private function testPermissionBit($bitValue)
+    {
+        $result = false;
+        if($this->userId == $this->ownerId) {
+            if($this->permissions & $bitValue) {
+                $result = true;
             }
         }
-
-        // calculate rights for user (bits 11-15)
-        if (isset($_SESSION['user_id'])) {
-            if ($this->userId == $_SESSION['user_id']) {
-                if ($this->permissions & 16384) {
-                    $this->isCreate = true;
-                }
-                if ($this->permissions & 8192) {
-                    $this->isRead = true;
-                }
-                if ($this->permissions & 4096) {
-                    $this->isUpdate = true;
-                }
-                if ($this->permissions & 2048) {
-                    $this->isDelete = true;
-                }
-                if ($this->permissions & 1024) {
-                    $this->isExecute = true;
-                }
+        if(in_array($this->groupId, $this->groupIds)) {
+            if($this->permissions & ($bitValue * self::MULTIPLY_GROUP)) {
+                $result = true;
             }
         }
+        if($this->permissions & ($bitValue * self::MULTIPLY_ALL)) {
+            $result = true;
+        }
+        return $result;
     }
 
 }

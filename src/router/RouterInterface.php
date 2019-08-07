@@ -18,17 +18,57 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dollmetzer\zzaplib;
+namespace dollmetzer\zzaplib\router;
 
 /**
- * Class Api
+ * Interface RouterInterface
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package dollmetzer\zzaplib
+ * @package dollmetzer\zzaplib\router
  */
-class Api
+interface RouterInterface
 {
+
+    public function resolve();
+
+    /**
+     * Build a complete URL from a query string
+     *
+     * @param string $path Query string like controller/action/param_1/param_n
+     * @param array $attributes Additional Attributes. Array of key=>value pairs
+     * @return string
+     */
+    public function buildURL(string $path, array $attributes = []);
+
+    /**
+     * Build a complete URL for media files
+     *
+     * @param string $path Path to media file
+     * @return string
+     */
+    public function buildMediaURL(string $path);
+
+    /**
+     * @return string
+     */
+    public function getModule() : string;
+
+    /**
+     * @return string
+     */
+    public function getController() : string;
+
+
+    /**
+     * @return string
+     */
+    public function getAction() : string;
+
+    /**
+     * @return array
+     */
+    public function getParams() : array;
 
 }

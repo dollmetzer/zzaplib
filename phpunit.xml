@@ -3,7 +3,7 @@
 <phpunit bootstrap="./autoload.php">
     <testsuites>
         <testsuite name="zzaplib">
-            <directory>tests</directory>
+            <directory>tests/unitTests</directory>
         </testsuite>
     </testsuites>
     <filter>
@@ -12,4 +12,7 @@
             <file>./coverage.txt</file>
         </whitelist>
     </filter>
+    <php>
+        <const name="UNIT_TEST" value='true' />
+    </php>
 </phpunit>

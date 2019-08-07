@@ -18,17 +18,19 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dollmetzer\zzaplib;
+namespace dollmetzer\zzaplib\logger;
 
 /**
- * Class Api
- *
- * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package dollmetzer\zzaplib
+ * Describes PSR-3 log levels.
  */
-class Api
+class LogLevel
 {
-
+    const EMERGENCY = 'emergency';
+    const ALERT = 'alert';
+    const CRITICAL = 'critical';
+    const ERROR = 'error';
+    const WARNING = 'warning';
+    const NOTICE = 'notice';
+    const INFO = 'info';
+    const DEBUG = 'debug';
 }

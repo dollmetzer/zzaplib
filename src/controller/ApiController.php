@@ -18,17 +18,17 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dollmetzer\zzaplib;
+namespace dollmetzer\zzaplib\controller;
 
 /**
- * Class Api
+ * Class ApiController
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package dollmetzer\zzaplib
+ * @package dollmetzer\zzaplib\controller
  */
-class Api
+class ApiController
 {
 
 }

@@ -18,17 +18,54 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dollmetzer\zzaplib;
+namespace dollmetzer\zzaplib\exception;
 
 /**
- * Class Api
+ * Class ValidationException
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package dollmetzer\zzaplib
+ * @package dollmetzer\zzaplib\exception
  */
-class Api
+class ValidationException extends \Exception
 {
+
+    /**
+     * @var string
+     */
+    protected $variableName;
+
+    /**
+     * @var string
+     */
+    protected $reason;
+
+    /**
+     * ValidationException constructor.
+     * @param string $variableName
+     * @param string $reason
+     */
+    public function __construct(string $variableName, string $reason)
+    {
+        $this->variableName = $variableName;
+        $this->reason = $reason;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVariableName() : string
+    {
+        return $this->variableName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReason() : string
+    {
+        return $this->reason;
+    }
 
 }

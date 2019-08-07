@@ -18,17 +18,26 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dollmetzer\zzaplib;
+namespace dollmetzer\zzaplib\response;
 
 /**
- * Class Api
+ * Interface ResponseInterface
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package dollmetzer\zzaplib
+ * @package dollmetzer\zzaplib\response
  */
-class Api
+interface ResponseInterface
 {
+
+    /**
+     * Redirect to another URL and optionally leave a flash message
+     *
+     * @param string $url
+     * @param string $message     optinal flash message
+     * @param string $messageType optional flash message type. Valid values are 'error' and 'notification'
+     */
+    public function redirect(string $url, string $message='', string $messageType='error');
 
 }

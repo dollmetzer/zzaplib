@@ -1,7 +1,7 @@
 <?php
 /**
- * z z a p l i b   m i n i   f r a m e w o r k
- * ===========================================
+ * z z a p l i b   3   m i n i   f r a m e w o r k
+ * ===============================================
  *
  * This library is a mini framework from php web applications
  *
@@ -20,169 +20,243 @@
 
 namespace dollmetzer\zzaplib;
 
+use dollmetzer\zzaplib\request\RequestInterface;
+use dollmetzer\zzaplib\response\ResponseInterface;
+use dollmetzer\zzaplib\router\RouterInterface;
+use dollmetzer\zzaplib\session\SessionInterface;
+use dollmetzer\zzaplib\logger\LoggerInterface;
+use dollmetzer\zzaplib\translator\TranslatorInterface;
+use dollmetzer\zzaplib\view\ViewInterface;
+
 /**
- * Main Application class as base for the web application
+ * Class Application
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package zzaplib
+ * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @package dollmetzer\zzaplib
  */
 class Application
 {
 
     /**
-     * @var array $config The configuration of the application
+     * @var Config
      */
-    public $config;
+    protected $config;
 
     /**
-     * @var \PDO $dbh Database handle
+     * @var SessionInterface
      */
-    public $dbh;
+    protected $session;
 
     /**
-     * @var Session $session Holds the instance of the session
+     * @var RouterInterface
      */
-    public $session;
+    protected $router;
 
     /**
-     * @var Request $request
+     * @var RequestInterface
      */
-    public $request;
+    protected $request;
 
     /**
-     * @var View Holds the instance of the view
+     * @var ResponseInterface
      */
-    public $view;
+    protected $response;
 
     /**
-     * Construct the application
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    /**
+     * @var ViewInterface
+     */
+    protected $view;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+
+    /**
+     * Application constructor.
      *
-     * @param array $config Configuration array
+     * @param $configFile
+     * @throws exception\ApplicationException
      */
-    public function __construct($config)
+    public function __construct($configFile)
     {
-
-        $this->config = $config;
-        $this->dbh = null;
-
-        // start session
-        $this->session = new Session($config);
-
+        $this->config = new Config($configFile);
+        $this->getSession();
+        $this->getRouter();
+        $this->getRequest();
+        $this->getResponse();
+        $this->getTranslator();
+        $this->getView();
+        $this->getLogger();
     }
 
     /**
-     * Run the application
+     * @return bool
+     * @throws exception\ApplicationException
+     * @throws exception\BagException
      */
     public function run()
     {
 
-        // construct request element
-        $this->request = new Request($this->config, $this->session);
-
-        // start view
-        $this->view = new View($this->session, $this->request);
-
-        // Routing (split query path into module, controller, action and params)
-        $this->request->routing();
-
         if (DEBUG_REQUEST) {
             echo "\n<!-- REQUEST\n";
-            echo 'Module     : ' . $this->request->moduleName . "\n";
-            echo 'Controller : ' . $this->request->controllerName . "\n";
-            echo 'Action     : ' . $this->request->actionName . "\n";
+            echo 'Module     : ' . $this->router->getModule() . "\n";
+            echo 'Controller : ' . $this->router->getController() . "\n";
+            echo 'Action     : ' . $this->router->getAction() . "\n";
             echo "Parameters : \n";
-            print_r($this->request->params);
+            print_r($this->router->getParams());
             echo "\n-->\n";
         }
 
         // load core language snippets
-        $this->view->getLangaugeCore($this->session->user_language);
+        $this->translator->importLanguage('de');
+        // ...
 
-        // check, if module is active
-        if (!$this->request->module->isActive($this->request->moduleName)) {
-            $this->request->forward($this->request->buildURL(''),
-                $this->view->lang('error_core_illegal_parameter', false), 'error');
+        // load controller
+        $controllerName = '\Application\modules\\' . $this->router->getModule() . '\controllers\\' . $this->router->getController() . 'Controller';
+
+        // exists controller class?
+        if (class_exists($controllerName)) {
+            $controller = new $controllerName($this->config, $this->router, $this->request, $this->response, $this->session, $this->translator, $this->view);
+        } else {
+            $this->logger->error('Controller class ' . $controllerName . ' not found');
+            $this->response->redirect($this->router->buildURL(''), $this->translator->translate('error_core_illegal_parameter'));
         }
 
-        // start controller
-        $controllerName = '\Application\modules\\' . $this->request->moduleName . '\controllers\\' . $this->request->controllerName . 'Controller';
+        // exists action method?
+        $actionName = $this->router->getAction() . 'Action';
+        if (method_exists($controller, $actionName) === false) {
+            $this->logger->error('Action method ' . $actionName . ' not found in controller ' . $controllerName);
+            $this->response->redirect('', $this->translator->translate('error_core_illegal_parameter'));
+        }
+
+        // is action allowed?
+        // ...
 
         try {
 
-            // exists controller class?
-            if (class_exists($controllerName)) {
-                $controller = new $controllerName(
-                    $this->config,
-                    $this->session,
-                    $this->request,
-                    $this->view
-                );
-            } else {
-                throw new \Exception('Controller class ' . $controllerName . ' not found');
+            if (method_exists($controller, 'before')) {
+                $controller->before();
             }
 
-            // exists action method?
-            $actionName = (string)$this->request->actionName . 'Action';
-            if (method_exists($controller, $actionName) === false) {
-                $this->request->log('Application::run() - method ' . $actionName . ' not found in ' . $this->request->moduleName . '\controllers\\' . $this->request->controllerName . 'Controller with query string ' . $this->request->queryString);
-                $this->request->forward($this->request->buildURL(''),
-                    $this->view->lang('error_core_illegal_parameter', false), 'error');
+            $controller->$actionName();
+
+            if (method_exists($controller, 'after')) {
+                $controller->after();
             }
-
-            // is access to action method allowed?
-            if (method_exists($controller, 'isAllowed')) {
-                $isAllowed = $controller->isAllowed($this->request->actionName);
-            } else {
-                $isAllowed = true;
-            }
-
-            if ($isAllowed) {
-
-                if (method_exists($controller, 'before')) {
-                    $controller->before();
-                }
-                $controller->$actionName();
-                if (method_exists($controller, 'after')) {
-                    $controller->after();
-                }
-            } else {
-                if ($this->session->user_id == 0) {
-
-                    // Not logged in
-                    // Remeber target page, try quicklogin or jump to login page
-                    if ($this->config['quicklogin'] === true) {
-                        if (method_exists($controller, 'quicklogin')) {
-                            $controller->quicklogin();
-                        }
-                    }
-                    $this->session->queryString = $this->request->queryString;
-                    $this->request->forward($this->request->buildURL('account/login'),
-                        $this->view->lang('error_core_not_logged_in', false), 'error');
-                } else {
-
-                    // logged in, but no access rights
-                    $this->request->forward($this->request->buildURL(''),
-                        $this->view->lang('error_core_access_denied', false), 'error');
-                }
-            }
-            $this->view->render();
-
-            $this->session->flasherror = '';
-            $this->session->flashmessage = '';
 
         } catch (\Exception $e) {
-
             $message = 'Application error in ';
             $message .= $e->getFile() . ' in Line ';
             $message .= $e->getLine() . ' : ';
             $message .= $e->getMessage();
-            $this->request->log($message);
-            $this->request->forward($this->request->buildURL(''),
-                $this->view->lang('error_core_application', false), 'error');
-
+            $this->logger->error($message);
         }
+
+        $this->view->render();
+
+        $this->session->set('flashMessage', '');
+        $this->session->set('flashMessageType', '');
+
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getSession()
+    {
+        if ($this->config->isSet('session', 'application')) {
+            $className = $this->config->get('session', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\session\Session';
+        }
+        $this->session = new $className($this->config);
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getRequest()
+    {
+        if ($this->config->isSet('request', 'application')) {
+            $className = $this->config->get('config')->get('request', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\request\Request';
+        }
+        $this->request = new $className($this->config, $this->router);
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getResponse()
+    {
+        if ($this->config->isSet('response', 'application')) {
+            $className = $this->config->get('response', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\response\Response';
+        }
+        $this->response = new $className($this->config, $this->session);
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getRouter()
+    {
+        if ($this->config->isSet('router', 'application')) {
+            $className = $this->config->get('router', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\router\Router';
+        }
+        $this->router = new $className($this->config);
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getTranslator()
+    {
+        if ($this->config->isSet('translator', 'application')) {
+            $className = $this->config->get('translator', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\translator\Translator';
+        }
+        $this->translator = new $className($this->config);
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getView()
+    {
+        if ($this->config->isSet('view', 'application')) {
+            $className = $this->config->get('view', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\view\View';
+        }
+        $this->view = new $className($this->config, $this->router, $this->request, $this->response, $this->session, $this->translator);
+    }
+
+    /**
+     * @throws exception\ApplicationException
+     */
+    private function getLogger()
+    {
+        if ($this->config->isSet('logger', 'application')) {
+            $className = $this->config->get('logger', 'application');
+        } else {
+            $className = 'dollmetzer\zzaplib\logger\Logger';
+        }
+        $this->logger = new $className($this->config);
     }
 
 }

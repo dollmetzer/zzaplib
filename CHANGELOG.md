@@ -1,82 +1,46 @@
 CHANGELOG
 =========
 
-2018-02-03 Form::getValues() fixed notice, if field had no value
+2019-08-02 Minor upgrade in class dependencies
 
-2018-01-28 API: request with null session working, added setStatus method, added response class
+2019-07-29 99 tests, 133 assertions, lines total="2935" comments="1513" code="1422" executable="423" executed="315" percent="74.47"
 
-2018-01-21 config accessible in DBModel
+2019-07-29 Moved buildURL and buildMediaURL from response to Router
 
-2018-01-11 Fixed codestyle issues
+2019-07-26 Added Permission and test
 
-2018-01-10 Fixed docblocks
+2019-07-26 Removed underscore from method parameters, various minor coding style issues. Updated doc blocks
 
-2018-01-10 DEBUG: Module::buildConfig now activates all protected modules
+2019-07-25 75 tests, 109 assertions, lines total="2699" comments="1412" code="1287" executable="381" executed="277" percent="72.70"
 
-2017-09-20 removed session from API to become REST compliant
+2019-07-25 Added Pagination class and tests
 
-2017-08-22 Reformatted PSR-1/PSR-2 Coding style
+2019-07-22 70 tests, 83 assertations, lines total="2512" comments="1340" code="1172" executable="345" executed="243" percent="70.43"
 
-2017-06-23 Console commands added
+2019-07-22 Started Table class and tests
 
-2017-06-20 Form: date validator added
+2019-07-21 64 tests, 77 assertations, lines total="2332" comments="1258" code="1074" executable="313" executed="211" percent="67.41"
 
-2017-06-19 View::textToShort Text shortener added
+2019-07-21 Built a viewhelper class an the tests
 
-2017-06-05 Api functionality updated (to be continued)
+2019-07-20 58 tests, 72 assertations, lines total="2280" comments="1242" code="1038" executable="305" executed="198" percent="64.92"
 
-2017-06-04 Application: Extended logging. Api: Construction of Controller changed
+2019-07-20 Finished translator and translator tests, test for response->redirect
 
-2017-05-27 View::buildMediaURL added for construction of media URLs
+2019-07-19 lines total="2228" comments="1202" code="1026" executable="300" executed="183" percent="61.00"
 
-2017-05-27 View::getNavigation now sorts navigation elements
+2019-07-19 added tests, added Exception on session->get with unknown attribute
 
-2017-05-25 Controller::isAllowed now supports strings and arrays in $accessGroups
+2019-07-18 added buildURL and buildMediaURL to response (no tests yet)
+ 
+2019-07-12 removed bag with pass-through
 
-2017-05-16 Application::run checks, if module is active
+2019-06-04 extended logger, refactored Translator and View
 
-2017-05-14 Deletion of language and navigation cache files moved to zzablib View class into ~/tmp folder
+2019-06-03 Added PSR-3 compact logger
 
-2017-05-13 Module Class support loading and saving configuartion, setting and getting values
+2019-05-28 Standard Router
 
-2017-05-11 Started Module Class for managing modules
+2019-05-28 Standard Request, Response and Session, changeable by configuration
 
-2017-03-15 View:userInGroup now also checks against arrays
-
-2017-01-20 added Mail Class for sending mails
-
-2017-01-19 added View::getLangaugeCore for collection of language core files from all modules
-
-2017-01-19 added View::getNavigation method for collection navigation items of all modules
-
-2017-01-13 Changed four textindizes
-
-2017-01-07 Form check minlength only, if value is given
-
-2017-01-07 Table added. Session::destroy also inits new session
-
-2017-01-06 Application: changed preAction() to before() and postAction() to after(), as they should not be direct accessible throught the URL
-
-2017-01-06 View: refactored getter and setter for JS and CSS files
-
-2017-01-05 Session::login added
-
-2017-01-03 Started refactoring DBModel
-
-2017-01-03 Started Refactoring of REST API
-
-2017-01-01 Fixed Controller::lang() output. Form constructor changed. Fixed language snippet in Application
-
-2016-12-31 Fixed Controller::lang()
-
-2016-12-28 Fixed tests
-
-2016-12-27 config accessible in view. Fixed some wrapper methods in Controller class.
-
-2016-12-26 Formatting, commenting
-
-2016-12-25 View theme switchable in controller
-
-2016-12-24 Refactoring in progress
-
-2016-12-21 started Version 2.0.0 as rewrite of 0.0.2 and zzaplib2016
+2019-02-27 Started structure of Version 3.0

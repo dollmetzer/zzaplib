@@ -20,15 +20,61 @@
 
 namespace dollmetzer\zzaplib;
 
+use dollmetzer\zzaplib\exception\BagException;
+
 /**
- * Class Api
+ * Class Bag
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @package dollmetzer\zzaplib
  */
-class Api
+class Bag
 {
 
+    const EXCEPTION_MESSAGE_NO_CLASS = '';
+    const EXCEPTION_MESSAGE_NOT_FOUND = '';
+
+    private $repository = [];
+
+
+    /**
+     * @param string $name
+     * @param object $object
+     * @throws BagException
+     */
+    public function set(string $name, $object)
+    {
+        if (!is_object($object)) {
+            throw new BagException(self::EXCEPTION_MESSAGE_NO_CLASS);
+        }
+        $this->repository[$name] = $object;
+    }
+
+    /**
+     * @param string $name
+     * @return object
+     * @throws BagException
+     */
+    public function get(string $name)
+    {
+        if (empty($this->repository[$name])) {
+            throw new BagException(self::EXCEPTION_MESSAGE_NOT_FOUND);
+        }
+
+        return $this->repository[$name];
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function has(string $name)
+    {
+        if (empty($this->repository[$name])) {
+            return false;
+        }
+        return true;
+    }
 }

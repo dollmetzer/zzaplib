@@ -14,7 +14,10 @@ function autoload_zzaplib($classname) {
     $tmp = explode("\\", $classname);
     if( ($tmp[0] == 'dollmetzer') && ($tmp[1] == 'zzaplib')) {
 
-        $filename = realpath(__DIR__.'/src/'.$tmp[2].'.php');
+        array_shift($tmp);
+        array_shift($tmp);
+
+        $filename = realpath(__DIR__.'/src/'.join('/', $tmp).'.php');
         if(!empty($filename)) {
             require_once($filename);
         }

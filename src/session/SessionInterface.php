@@ -18,17 +18,37 @@
  * this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace dollmetzer\zzaplib;
+namespace dollmetzer\zzaplib\session;
+
+use dollmetzer\zzaplib\Config;
 
 /**
- * Class Api
+ * Interface SessionInterface
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package dollmetzer\zzaplib
+ * @package dollmetzer\zzaplib\session
  */
-class Api
+interface SessionInterface
 {
+
+    /**
+     * SessionInterface constructor.
+     * @param Config $config
+     */
+    public function __construct(Config $config);
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function get(string $name);
+
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function set(string $name, $value);
 
 }

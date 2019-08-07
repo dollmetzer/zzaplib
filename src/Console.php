@@ -1,7 +1,7 @@
 <?php
 /**
- * z z a p l i b   m i n i   f r a m e w o r k
- * ===========================================
+ * z z a p l i b   3   m i n i   f r a m e w o r k
+ * ===============================================
  *
  * This library is a mini framework from php web applications
  *
@@ -21,131 +21,14 @@
 namespace dollmetzer\zzaplib;
 
 /**
- * Main Console class as base for console scripts
+ * Class Console
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
- * @copyright 2006 - 2017 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
- * @package zzaplib
+ * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
+ * @package dollmetzer\zzaplib
  */
 class Console
 {
-    /**
-     * @var string $scriptname Name of the script (usually 'console'
-     */
-    public $scriptname;
-
-    /**
-     * @var string $action Name of the action
-     */
-    public $action;
-
-    /**
-     * @var array $commands
-     */
-    protected $commands;
-
-    /**
-     * Construct the application
-     *
-     * @param array $config Configuration array
-     */
-    public function __construct($config)
-    {
-
-        $this->config = $config;
-        $this->dbh = null;
-        $this->module = new Module();
-        $this->commands = array();
-
-    }
-
-    /**
-     * Run the command
-     *
-     * @param array $argv
-     */
-    public function run($argv)
-    {
-
-        // only commandline execution allowed 
-        if (sizeof($argv) < 1) {
-            die("\nRemote call prohibited");
-        }
-
-        $this->scriptname = array_shift($argv);
-
-        $this->getCommands();
-        if (sizeof($argv) < 1) {
-            die("\nNo action given. Valid actions are : " . join(', ',
-                    array_keys($this->commands)) . "\n");
-        }
-        if (!in_array($argv[0], array_keys($this->commands))) {
-            die("\nNo valid action given. Valid actions are : " . join(', ',
-                    array_keys($this->commands)) . "\n");
-        }
-
-        $this->action = array_shift($argv);
-
-        $this->params = $argv;
-
-        //include $this->commands[$this->action];
-
-        $commandName = '\Application\modules\\' . $this->commands[$this->action] . '\commands\\' . $this->action . 'Command';
-        try {
-            $command = new $commandName($this->config);
-            $command->run();
-        } catch (\Exception $e) {
-            $message = 'Commandline error in ';
-            $message .= $e->getFile() . ' in Line ';
-            $message .= $e->getLine() . ' : ';
-            $message .= $e->getMessage();
-            $this->log($message);
-        }
-    }
-
-    /**
-     * Get a list of valid commands
-     */
-    public function getCommands()
-    {
-
-        $modules = $this->getModuleList();
-
-        foreach ($modules as $module) {
-            $modDir = PATH_APP . 'modules/' . $module . '/commands/';
-            if (is_dir($modDir)) {
-                $dir = opendir($modDir);
-                while ($file = readdir($dir)) {
-                    if (preg_match('/Command\.php$/', $file)) {
-                        $cname = preg_replace('/Command\.php$/',
-                            '', $file);
-                        //$this->commands[$cname] = $modDir.$file;
-                        $this->commands[$cname] = $module;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Get a list of installed modules. If modules are set in the configuration,
-     * get the list from the configuration.
-     * If modules are not in the configuration, read list from filesystem
-     * in app/modules.
-     *
-     * @param bool $_onlyNames if true, return only names. If false return complete module config
-     * @return array
-     */
-    public function getModuleList($_onlyNames = true)
-    {
-
-        if ($_onlyNames === true) {
-            return array_keys($this->module->getConfig());
-        } else {
-            return $this->module->getConfig();
-        }
-
-    }
 
 }
