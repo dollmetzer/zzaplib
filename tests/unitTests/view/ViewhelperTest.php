@@ -9,9 +9,8 @@
  */
 
 use dollmetzer\zzaplib\Config;
+use dollmetzer\zzaplib\logger\Logger;
 use dollmetzer\zzaplib\router\Router;
-use dollmetzer\zzaplib\response\Response;
-use dollmetzer\zzaplib\session\Session;
 use dollmetzer\zzaplib\translator\Translator;
 use dollmetzer\zzaplib\view\Viewhelper;
 use PHPUnit\Framework\TestCase;
@@ -50,10 +49,9 @@ class ViewhelperTest extends TestCase
     {
         $configFile = realpath('./tests/data/testConfig.php');
         $config = new Config($configFile);
+        $logger = new Logger($config);
         $router = new Router();
-        $session = new Session($config);
-        $response = new Response($config, $session);
-        $translate = new Translator($config);
+        $translate = new Translator($config, $logger);
         $this->viewhelper = new Viewhelper($config, $router, $translate);
     }
 

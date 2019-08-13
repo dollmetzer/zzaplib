@@ -89,13 +89,13 @@ class Application
     public function __construct($configFile)
     {
         $this->config = new Config($configFile);
+        $this->getLogger();
         $this->getSession();
         $this->getRouter();
         $this->getRequest();
         $this->getResponse();
         $this->getTranslator();
         $this->getView();
-        $this->getLogger();
     }
 
     /**
@@ -118,7 +118,6 @@ class Application
 
         // load core language snippets
         $this->translator->importLanguage('de');
-        // ...
 
         // load controller
         $controllerName = '\Application\modules\\' . $this->router->getModule() . '\controllers\\' . $this->router->getController() . 'Controller';
@@ -126,6 +125,7 @@ class Application
         // exists controller class?
         if (class_exists($controllerName)) {
             $controller = new $controllerName($this->config, $this->router, $this->request, $this->response, $this->session, $this->translator, $this->view);
+            $this->translator->importLanguage($this->session->get('userLanguage'), $this->router->getModule(), $this->router->getController());
         } else {
             $this->logger->error('Controller class ' . $controllerName . ' not found');
             $this->response->redirect($this->router->buildURL(''), $this->translator->translate('error_core_illegal_parameter'));
@@ -230,7 +230,7 @@ class Application
         } else {
             $className = 'dollmetzer\zzaplib\translator\Translator';
         }
-        $this->translator = new $className($this->config);
+        $this->translator = new $className($this->config, $this->logger);
     }
 
     /**

@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2019-08-13 Translator logs missing language files
+
+2019-08-13 Application loads core language file and controller language file
+ 
 2019-08-02 Minor upgrade in class dependencies
 
 2019-07-29 99 tests, 133 assertions, lines total="2935" comments="1513" code="1422" executable="423" executed="315" percent="74.47"

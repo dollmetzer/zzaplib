@@ -21,6 +21,8 @@
 namespace dollmetzer\zzaplib\translator;
 
 use dollmetzer\zzaplib\Config;
+use dollmetzer\zzaplib\logger\Logger;
+use dollmetzer\zzaplib\exception\ApplicationException;
 
 /**
  * Class Translator
@@ -39,6 +41,11 @@ class Translator implements TranslatorInterface
     protected $config;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @var array Language snippets
      */
     protected $snippets = [];
@@ -49,9 +56,10 @@ class Translator implements TranslatorInterface
      *
      * @param Config $config
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, Logger $logger)
     {
         $this->config = $config;
+        $this->logger = $logger;
     }
 
     /**
@@ -61,8 +69,9 @@ class Translator implements TranslatorInterface
      * @param string $module
      * @param string $controller
      * @return bool
+     * @throws ApplicationException
      */
-    public function importLanguage(string $language, string $module='index', string $controller='index') : bool
+    public function importLanguage(string $language, string $module='index', string $controller='core') : bool
     {
         $filename = PATH_APP .'modules/' . $module . '/data/lang_' . $controller .'_' . $language . '.ini';
 
@@ -71,6 +80,7 @@ class Translator implements TranslatorInterface
             $this->snippets = array_merge($this->snippets, $newSnippets);
             return true;
         } else {
+            $this->logger->warning('Translator could not import language file', ['file' => $filename]);
             return false;
         }
     }

@@ -15,6 +15,7 @@ use dollmetzer\zzaplib\response\Response;
 use dollmetzer\zzaplib\router\Router;
 use dollmetzer\zzaplib\session\Session;
 use dollmetzer\zzaplib\translator\Translator;
+use dollmetzer\zzaplib\logger\Logger;
 use PHPUnit\Framework\TestCase;
 
 class WebControllerTest extends TestCase
@@ -66,11 +67,12 @@ class WebControllerTest extends TestCase
     {
         $configFile = realpath('./tests/data/testConfig.php');
         $config = new Config($configFile);
+        $logger = new Logger($config);
         $session = new Session($config);
         $router = new Router($config);
         $request = new Request($config, $router);
         $response = new Response($config, $session);
-        $translate = new Translator($config);
+        $translate = new Translator($config, $logger);
         $view = new dollmetzer\zzaplib\view\View($config, $router, $request,$response, $session, $translate);
         $class = new WebController($config, $router, $request, $response, $session, $translate, $view);
         $this->assertInstanceOf(WebController::class, $class);

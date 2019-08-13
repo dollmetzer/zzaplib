@@ -9,6 +9,7 @@
  */
 
 use dollmetzer\zzaplib\Config;
+use dollmetzer\zzaplib\logger\Logger;
 use dollmetzer\zzaplib\router\Router;
 use dollmetzer\zzaplib\request\Request;
 use dollmetzer\zzaplib\response\Response;
@@ -60,11 +61,12 @@ class ViewTest extends TestCase
     {
         $configFile = realpath('./tests/data/testConfig.php');
         $config = new Config($configFile);
+        $logger = new Logger($config);
         $session = new Session($config);
         $router = new Router($config);
         $request = new Request($config, $router);
         $response = new Response($config, $session);
-        $translate = new Translator($config);
+        $translate = new Translator($config, $logger);
         $class = new View($config, $router, $request, $response, $session, $translate);
         $this->assertInstanceOf(View::class, $class);
 

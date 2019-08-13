@@ -10,6 +10,7 @@
 
 use dollmetzer\zzaplib\Config;
 use dollmetzer\zzaplib\translator\Translator;
+use dollmetzer\zzaplib\logger\Logger;
 use PHPUnit\Framework\TestCase;
 
 class TranslatorTest extends TestCase
@@ -53,14 +54,15 @@ class TranslatorTest extends TestCase
     public function testConstructorParameters()
     {
         $reflectionClass = new ReflectionClass('dollmetzer\zzaplib\translator\Translator');
-        $this->assertEquals(1, $reflectionClass->getConstructor()->getNumberOfParameters());
+        $this->assertEquals(2, $reflectionClass->getConstructor()->getNumberOfParameters());
     }
 
     public function testConstruct()
     {
         $configFile = realpath('./tests/data/testConfig.php');
         $config = new Config($configFile);
-        $class = new Translator($config);
+        $logger = new Logger($config);
+        $class = new Translator($config, $logger);
         $this->assertInstanceOf(Translator::class, $class);
     }
 
@@ -68,7 +70,8 @@ class TranslatorTest extends TestCase
     {
         $configFile = realpath('./tests/data/testConfig.php');
         $config = new Config($configFile);
-        $class = new Translator($config);
+        $logger = new Logger($config);
+        $class = new Translator($config, $logger);
         $this->assertFalse($class->importLanguage('de'));
     }
 
@@ -76,7 +79,8 @@ class TranslatorTest extends TestCase
     {
         $configFile = realpath('./tests/data/testConfig.php');
         $config = new Config($configFile);
-        $class = new Translator($config);
+        $logger = new Logger($config);
+        $class = new Translator($config, $logger);
         $this->assertTrue($class->importLanguage('en'));
         $this->assertEquals('Homepage', $class->translate('link_home'));
         $this->assertEquals('###_UNDEFINED_SNIPPET_###', $class->translate('undefined_snippet'));
