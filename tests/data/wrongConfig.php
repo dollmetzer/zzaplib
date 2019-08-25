@@ -1,2 +1,7 @@
-<-- invalid config file -->
-This is not a valid config file.
+<?php
+
+return [
+    'application' => [
+        'logTo' => 'null'
+    ]
+];

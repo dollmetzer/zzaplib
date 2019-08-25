@@ -21,6 +21,7 @@
 namespace dollmetzer\zzaplib\controller;
 
 use dollmetzer\zzaplib\Config;
+use dollmetzer\zzaplib\logger\LoggerInterface;
 use dollmetzer\zzaplib\router\RouterInterface;
 use dollmetzer\zzaplib\request\RequestInterface;
 use dollmetzer\zzaplib\response\ResponseInterface;
@@ -41,6 +42,8 @@ class WebController
 
     protected $config;
 
+    protected $logger;
+
     protected $router;
 
     protected $request;
@@ -55,6 +58,7 @@ class WebController
 
     public function __construct(
         Config $config,
+        LoggerInterface $logger,
         RouterInterface $router,
         RequestInterface $request,
         ResponseInterface $response,
@@ -64,6 +68,7 @@ class WebController
     )
     {
         $this->config = $config;
+        $this->logger = $logger;
         $this->router = $router;
         $this->request = $request;
         $this->response = $response;

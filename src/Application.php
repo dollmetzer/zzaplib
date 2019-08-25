@@ -120,11 +120,13 @@ class Application
         $this->translator->importLanguage('de');
 
         // load controller
-        $controllerName = '\Application\modules\\' . $this->router->getModule() . '\controllers\\' . $this->router->getController() . 'Controller';
+        $controllerName = '\Application\modules\\' . $this->router->getModule() . '\controllers\\';
+        $controllerName .= ucfirst(strtolower($this->router->getController()));
+        $controllerName .= 'Controller';
 
         // exists controller class?
         if (class_exists($controllerName)) {
-            $controller = new $controllerName($this->config, $this->router, $this->request, $this->response, $this->session, $this->translator, $this->view);
+            $controller = new $controllerName($this->config, $this->logger, $this->router, $this->request, $this->response, $this->session, $this->translator, $this->view);
             $this->translator->importLanguage($this->session->get('userLanguage'), $this->router->getModule(), $this->router->getController());
         } else {
             $this->logger->error('Controller class ' . $controllerName . ' not found');

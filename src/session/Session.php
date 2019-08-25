@@ -85,14 +85,13 @@ class Session implements SessionInterface
     /**
      * Initialize session and user data
      */
-    protected function init()
+    public function init()
     {
         $this->set('sessionId', session_id());
         $this->set('sessionStart', time());
         $this->set('sessionHits', 1);
         $this->set('userId', 0);
         $this->set('userHandle', 'guest');
-        $this->set('userGroups', ['guest']);
         if($this->config->isSet('languages')) {
             $languages = $this->config->get('languages');
             $this->set('userLanguage', array_shift($languages));
@@ -101,5 +100,11 @@ class Session implements SessionInterface
             $countries = $this->config->get('countries');
             $this->set('userCountry', array_shift($countries));
         }
+        $this->set('userGroups', ['guest']);
+    }
+
+    public function destroy()
+    {
+        session_destroy();
     }
 }

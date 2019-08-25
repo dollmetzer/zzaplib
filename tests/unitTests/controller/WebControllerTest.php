@@ -60,7 +60,7 @@ class WebControllerTest extends TestCase
     public function testConstructorParameters()
     {
         $reflectionClass = new ReflectionClass('dollmetzer\zzaplib\controller\WebController');
-        $this->assertEquals(7, $reflectionClass->getConstructor()->getNumberOfParameters());
+        $this->assertEquals(8, $reflectionClass->getConstructor()->getNumberOfParameters());
     }
 
     public function testConstruct()
@@ -74,7 +74,7 @@ class WebControllerTest extends TestCase
         $response = new Response($config, $session);
         $translate = new Translator($config, $logger);
         $view = new dollmetzer\zzaplib\view\View($config, $router, $request,$response, $session, $translate);
-        $class = new WebController($config, $router, $request, $response, $session, $translate, $view);
+        $class = new WebController($config, $logger, $router, $request, $response, $session, $translate, $view);
         $this->assertInstanceOf(WebController::class, $class);
     }
 }

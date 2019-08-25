@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+2019-08-25 Tweaks on Webcontroller and Session 
+
+2019-08-21 Added DbModel
+
 2019-08-13 Translator logs missing language files
 
 2019-08-13 Application loads core language file and controller language file

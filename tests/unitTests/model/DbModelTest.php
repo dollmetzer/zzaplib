@@ -8,7 +8,10 @@
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  */
 
+use dollmetzer\zzaplib\Config;
+use dollmetzer\zzaplib\logger\Logger;
 use dollmetzer\zzaplib\model\DbModel;
+use dollmetzer\zzaplib\exception\ApplicationException;
 use PHPUnit\Framework\TestCase;
 
 class DbModelTest extends TestCase
@@ -39,7 +42,6 @@ class DbModelTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -50,11 +52,31 @@ class DbModelTest extends TestCase
 
     }
 
-    public function testConstruct()
+    public function testConstructorParameters()
     {
+        $reflectionClass = new ReflectionClass('dollmetzer\zzaplib\model\DbModel');
+        $this->assertEquals(2, $reflectionClass->getConstructor()->getNumberOfParameters());
+    }
 
-        $class = new DbModel();
-        $this->assertInstanceOf(DbModel::class, $class);
+    public function testConstructFailedDsn()
+    {
+        $configFile = realpath('./tests/data/wrongConfig.php');
+        $config = new Config($configFile);
+        $logger = new Logger($config);
 
+        $this->expectException(ApplicationException::class);
+        $this->expectExceptionMessage(DbModel::ERROR_CONFIG_MISSING_DSN);
+        $class = new DbModel($config, $logger);
+    }
+
+    public function testConstructFailedTablename()
+    {
+        $configFile = realpath('./tests/data/wrongConfig.php');
+        $config = new Config($configFile);
+        $logger = new Logger($config);
+
+        $this->expectException(ApplicationException::class);
+        $this->expectExceptionMessage(DbModel::ERROR_CONFIG_MISSING_TABLENAME);
+        $class = new DbModel($config, $logger);
     }
 }

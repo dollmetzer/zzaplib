@@ -21,7 +21,7 @@
 namespace dollmetzer\zzaplib\translator;
 
 use dollmetzer\zzaplib\Config;
-use dollmetzer\zzaplib\logger\Logger;
+use dollmetzer\zzaplib\logger\LoggerInterface;
 use dollmetzer\zzaplib\exception\ApplicationException;
 
 /**
@@ -41,7 +41,7 @@ class Translator implements TranslatorInterface
     protected $config;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $logger;
 
@@ -55,8 +55,9 @@ class Translator implements TranslatorInterface
      * Translator constructor.
      *
      * @param Config $config
+     * @param LoggerInterface $logger
      */
-    public function __construct(Config $config, Logger $logger)
+    public function __construct(Config $config, LoggerInterface $logger)
     {
         $this->config = $config;
         $this->logger = $logger;

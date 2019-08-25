@@ -46,6 +46,11 @@ class Form
     protected $action;
 
     /**
+     * @var string Error message for the whole form
+     */
+    protected $error;
+
+    /**
      * @var boolean $hasErrors Indicates, if an error occured during the processing
      */
     protected $hasErrors;
@@ -61,6 +66,7 @@ class Form
         $this->name = '';
         $this->title = '';
         $this->action = '';
+        $this->error = '';
         $this->hasErrors = false;
         $this->fields = [];
     }
@@ -99,6 +105,7 @@ class Form
             'name' => $this->name,
             'title' => $this->title,
             'action' => $this->action,
+            'error' => $this->error,
             'hasErrors' => $this->hasErrors,
             'fields' => $this->fields
         ];
@@ -235,6 +242,28 @@ class Form
     public function setAction(string $action)
     {
         $this->action = $action;
+    }
+
+    /**
+     * @return string
+     */
+    public function getError() : string
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param string $message
+     * @param string $field (optional)
+     */
+    public function setError(string $message, string $field='')
+    {
+        if(empty($field)) {
+            $this->error = $message;
+        } else {
+            $this->fields[$field] = $message;
+        }
+        $this->hasErrors = true;
     }
 
     /**
