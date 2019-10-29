@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2019-10-29 Added bitfield Form element
+
 2019-04-02 Form: getValues now uses strip_tags instead of htmlentities, to minimize trouble withe stringlength and encoding in the DB
  
 2019-01-27 API: added methods lang, buildURL and buildMediaURL

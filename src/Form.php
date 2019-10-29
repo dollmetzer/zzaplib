@@ -142,6 +142,15 @@ class Form
 
                     // check mimetype
                     // check filesize
+
+                } elseif($field['type'] == 'bitfield') {
+                    $value = 0;
+                    for($i=0; $i<16; $i++) {
+                        if(!empty($_POST[$name][$i])) {
+                            $value += pow(2, $i);
+                        }
+                    }
+
                 } else {
                     if (isset($_POST[$name])) {
                         $value = $_POST[$name];
