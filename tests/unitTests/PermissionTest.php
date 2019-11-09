@@ -14,15 +14,12 @@ use PHPUnit\Framework\TestCase;
 
 class PermissionTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
         echo "\nStart " . __CLASS__ . "\n";
-
     }
 
     /**
@@ -30,9 +27,7 @@ class PermissionTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -40,7 +35,6 @@ class PermissionTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -48,7 +42,6 @@ class PermissionTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()
@@ -57,169 +50,77 @@ class PermissionTest extends TestCase
         $this->assertEquals(3, $reflectionClass->getConstructor()->getNumberOfParameters());
     }
 
-    public function testConstruct()
-    {
-
-        $class = new Permission();
-        $this->assertInstanceOf(Permission::class, $class);
-
-    }
-
     public function testConstructorValidation1()
     {
         $this->expectException(ValidationException::class);
-        $class = new Permission(-1, 0,31);
+        $class = new Permission(-1, 0, 31);
     }
-
 
     public function testConstructorValidation2()
     {
         $this->expectException(ValidationException::class);
-        $class = new Permission(0, -1,31);
+        $class = new Permission(0, -1, 31);
     }
 
     public function testConstructorValidation3()
     {
         $this->expectException(ValidationException::class);
-        $class = new Permission(0, 0,64536);
+        $class = new Permission(0, 0, 64536);
     }
 
-    public function testStandardPermissionCreate()
+    public function testStandardPermissions()
     {
         $class = new Permission();
-        $this->assertTrue($class->isCreateAllowed());
+        $this->assertFalse($class->canRead());
+        $this->assertFalse($class->canWrite());
+        $this->assertFalse($class->canExecute());
     }
 
-    public function testStandardPermissionRead()
+    public function testOwnerPermission()
     {
-        $class = new Permission();
-        $this->assertTrue($class->isReadAllowed());
+        $class = new Permission(12, 0, 0b111000000);
+        $this->assertEquals(448, $class->getPermissions());
+
+        $this->assertFalse($class->canRead());
+        $this->assertFalse($class->canRead(999));
+        $this->assertTrue($class->canRead(12));
+        $this->assertFalse($class->canWrite());
+        $this->assertFalse($class->canWrite(999));
+        $this->assertTrue($class->canWrite(12));
+        $this->assertFalse($class->canExecute());
+        $this->assertFalse($class->canExecute(999));
+        $this->assertTrue($class->canExecute(12));
     }
 
-    public function testStandardPermissionUpdate()
+    public function testGroupPermission()
     {
-        $class = new Permission();
-        $this->assertTrue($class->isUpdateAllowed());
+        $class = new Permission(0, 35, 0b000111000);
+        $this->assertEquals(56, $class->getPermissions());
+
+        $this->assertFalse($class->canRead());
+        $this->assertFalse($class->canRead(0, [999]));
+        $this->assertTrue($class->canRead(0, [35]));
+        $this->assertFalse($class->canWrite());
+        $this->assertFalse($class->canWrite(0, [999]));
+        $this->assertTrue($class->canWrite(0, [35]));
+        $this->assertFalse($class->canExecute());
+        $this->assertFalse($class->canExecute(0, [999]));
+        $this->assertTrue($class->canExecute(0, [35]));
     }
 
-    public function testStandardPermissionDelete()
+    public function testAllPermission()
     {
-        $class = new Permission();
-        $this->assertTrue($class->isDeleteAllowed());
+        $class = new Permission(0, 0, 0b000000111);
+        $this->assertEquals(7, $class->getPermissions());
+
+        $this->assertTrue($class->canRead());
+        $this->assertTrue($class->canRead(0, [999]));
+        $this->assertTrue($class->canRead(22, [35]));
+        $this->assertTrue($class->canWrite());
+        $this->assertTrue($class->canWrite(0, [999]));
+        $this->assertTrue($class->canWrite(22, [35]));
+        $this->assertTrue($class->canExecute());
+        $this->assertTrue($class->canExecute(0, [999]));
+        $this->assertTrue($class->canExecute(22, [35]));
     }
-
-    public function testStandardPermissionExecute()
-    {
-        $class = new Permission();
-        $this->assertTrue($class->isExecuteAllowed());
-    }
-
-
-    public function testGroupPermissionCreate()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [2,4,17]);
-        $this->assertTrue($class->isCreateAllowed());
-    }
-
-    public function testGroupPermissionRead()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [2,4,17]);
-        $this->assertTrue($class->isReadAllowed());
-    }
-
-    public function testGroupPermissionUpdate()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [2,4,17]);
-        $this->assertTrue($class->isUpdateAllowed());
-    }
-
-    public function testGroupPermissionDelete()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [2,4,17]);
-        $this->assertTrue($class->isDeleteAllowed());
-    }
-
-    public function testGroupPermissionExecute()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [2,4,17]);
-        $this->assertTrue($class->isExecuteAllowed());
-    }
-
-
-    public function testGroupPermissionCreateFail()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [3,9,27]);
-        $this->assertFalse($class->isCreateAllowed());
-    }
-
-    public function testGroupPermissionReadFail()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [3,9,27]);
-        $this->assertFalse($class->isReadAllowed());
-    }
-
-    public function testGroupPermissionUpdateFail()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [3,9,27]);
-        $this->assertFalse($class->isUpdateAllowed());
-    }
-
-    public function testGroupPermissionDeleteFail()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [3,9,27]);
-        $this->assertFalse($class->isDeleteAllowed());
-    }
-
-    public function testGroupPermissionExecuteFail()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_GROUP);
-        $class->setUser(54, [3,9,27]);
-        $this->assertFalse($class->isExecuteAllowed());
-    }
-
-
-    public function testAllPermissionCreate()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_ALL);
-        $class->setUser(54, [999]);
-        $this->assertTrue($class->isCreateAllowed());
-    }
-
-    public function testAllPermissionRead()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_ALL);
-        $class->setUser(54, [999]);
-        $this->assertTrue($class->isReadAllowed());
-    }
-
-    public function testAllPermissionUpdate()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_ALL);
-        $class->setUser(54, [999]);
-        $this->assertTrue($class->isUpdateAllowed());
-    }
-
-    public function testAllPermissionDelete()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_ALL);
-        $class->setUser(54, [999]);
-        $this->assertTrue($class->isDeleteAllowed());
-    }
-
-    public function testAllPermissionExecute()
-    {
-        $class = new Permission(999, 2, 31*Permission::MULTIPLY_ALL);
-        $class->setUser(54, [999]);
-        $this->assertTrue($class->isExecuteAllowed());
-    }
-
 }

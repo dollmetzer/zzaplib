@@ -24,6 +24,7 @@ use dollmetzer\zzaplib\exception\ValidationException;
 
 /**
  * Class Permission
+ * For a Unix like Permission system
  *
  * @author Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
@@ -32,13 +33,12 @@ use dollmetzer\zzaplib\exception\ValidationException;
  */
 class Permission
 {
-    const CREATE = 1;
-    const READ = 2;
-    const UPDATE = 4;
-    const DELETE = 8;
-    const EXECUTE = 16;
-    const MULTIPLY_GROUP = 32;
-    const MULTIPLY_ALL = 1024;
+    const READ = 1;
+    const WRITE = 2;
+    const EXECUTE = 4;
+    const MULTIPLY_ALL = 1;
+    const MULTIPLY_GROUP = 8;
+    const MULTIPLY_OWNER = 64;
 
     /**
      * @var int
@@ -56,17 +56,6 @@ class Permission
     protected $permissions;
 
     /**
-     * @var int
-     */
-    protected $userId;
-
-    /**
-     * @var array
-     */
-    protected $groupIds;
-
-
-    /**
      * Permission constructor.
      *
      * @param int $ownerId
@@ -74,11 +63,9 @@ class Permission
      * @param int $permissions
      * @throws ValidationException
      */
-    public function __construct(int $ownerId=0, int $groupId=0, int $permissions=31)
+    public function __construct(int $ownerId = 0, int $groupId = 0, int $permissions = 0)
     {
         $this->setObject($ownerId, $groupId, $permissions);
-        $this->userId = 0;
-        $this->groupIds = [];
     }
 
     /**
@@ -89,99 +76,121 @@ class Permission
      */
     public function setObject(int $ownerId, int $groupId, int $permissions)
     {
-        if($ownerId < 0) {
+        $this->setOwnerId($ownerId);
+        $this->setGroupId($groupId);
+        $this->setPermissions($permissions);
+    }
+
+    /**
+     * @return int
+     */
+    public function getOwnerId(): int
+    {
+        return $this->ownerId;
+    }
+
+    /**
+     * @param int $ownerId
+     * @throws ValidationException
+     */
+    public function setOwnerId(int $ownerId)
+    {
+        if ($ownerId < 0) {
             throw new ValidationException('ownerId', 'value is less than 0');
         }
         $this->ownerId = $ownerId;
+    }
 
-        if($groupId < 0) {
+    /**
+     * @return int
+     */
+    public function getGroupId(): int
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * @param int $groupId
+     * @throws ValidationException
+     */
+    public function setGroupId(int $groupId)
+    {
+        if ($groupId < 0) {
             throw new ValidationException('groupId', 'value is less than 0');
         }
         $this->groupId = $groupId;
-
-        if(($permissions < 0) or ($permissions >32767))
-        {
-            throw new ValidationException('permissions', 'value is less than 0 or greater than 32767');
-        }
-        $this->permissions = $permissions; // muss < 2 ^ 15 32768
     }
 
     /**
-     * @param int $userId
-     * @param array $groupIds
+     * @return int
+     */
+    public function getPermissions(): int
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * @param int $permissions
      * @throws ValidationException
      */
-    public function setUser(int $userId, array $groupIds)
+    public function setPermissions(int $permissions)
     {
-        if($userId < 0) {
-            throw new ValidationException('userId', 'value is less than 0');
+        if (($permissions < 0) or ($permissions > 511)) {
+            throw new ValidationException('permissions', 'value is less than 0 or greater than 511');
         }
-        $this->userId = $userId;
-
-        if(!is_array($groupIds)) {
-            throw new ValidationException('groupIds', 'value is no array of int');
-        }
-        $this->groupIds = $groupIds;
+        $this->permissions = $permissions;
     }
 
     /**
+     * @param int $ownerId
+     * @param array $groupIds
      * @return bool
      */
-    public function isCreateAllowed()
+    public function canRead(int $ownerId = 0, array $groupIds = [])
     {
-        return $this->testPermissionBit(self::CREATE);
+        return $this->testPermissionBit(self::READ, $ownerId, $groupIds);
     }
 
     /**
+     * @param int $ownerId
+     * @param array $groupIds
      * @return bool
      */
-    public function isReadAllowed()
+    public function canWrite(int $ownerId = 0, array $groupIds = [])
     {
-        return $this->testPermissionBit(self::READ);
+        return $this->testPermissionBit(self::WRITE, $ownerId, $groupIds);
     }
 
     /**
+     * @param int $ownerId
+     * @param array $groupIds
      * @return bool
      */
-    public function isUpdateAllowed()
+    public function canExecute(int $ownerId = 0, array $groupIds = [])
     {
-        return $this->testPermissionBit(self::UPDATE);
+        return $this->testPermissionBit(self::EXECUTE, $ownerId, $groupIds);
     }
 
     /**
+     * @param int $bitValue
+     * @param int $ownerId
+     * @param array $groupIds
      * @return bool
      */
-    public function isDeleteAllowed()
-    {
-        return $this->testPermissionBit(self::DELETE);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isExecuteAllowed()
-    {
-        return $this->testPermissionBit(self::EXECUTE);
-    }
-
-    /**
-     * @param $bitValue
-     * @return bool
-     */
-    private function testPermissionBit($bitValue)
+    private function testPermissionBit(int $bitValue, int $ownerId, array $groupIds): bool
     {
         $result = false;
-        if($this->userId == $this->ownerId) {
-            if($this->permissions & $bitValue) {
+        if ($ownerId == $this->ownerId) {
+            if ($this->permissions & ($bitValue * self::MULTIPLY_OWNER)) {
                 $result = true;
             }
         }
-        if(in_array($this->groupId, $this->groupIds)) {
-            if($this->permissions & ($bitValue * self::MULTIPLY_GROUP)) {
+        if (in_array($this->groupId, $groupIds)) {
+            if ($this->permissions & ($bitValue * self::MULTIPLY_GROUP)) {
                 $result = true;
             }
         }
-        if($this->permissions & ($bitValue * self::MULTIPLY_ALL)) {
+        if ($this->permissions & ($bitValue * self::MULTIPLY_ALL)) {
             $result = true;
         }
         return $result;
