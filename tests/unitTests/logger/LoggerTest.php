@@ -25,9 +25,7 @@ class LoggerTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -35,9 +33,7 @@ class LoggerTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -56,7 +52,6 @@ class LoggerTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()

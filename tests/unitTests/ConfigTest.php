@@ -14,15 +14,12 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -30,9 +27,7 @@ class ConfigTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -40,7 +35,6 @@ class ConfigTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -48,44 +42,33 @@ class ConfigTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructSuccess()
     {
-
         $configFile = realpath('./tests/data/testConfig.php');
         $class = new Config($configFile);
         $this->assertInstanceOf(Config::class, $class);
-
     }
 
     public function testConstructFailNoConfig()
     {
-
         $this->expectException(ApplicationException::class);
         $class = new Config('noConfig.txt');
-
     }
 
     public function testGetSubValueSuccess()
     {
-
         $configFile = realpath('./tests/data/testConfig.php');
         $class = new Config($configFile);
         $this->assertEquals('value', $class->get('key', 'domain'));
-
     }
 
     public function testGetSubValueFail()
     {
-
         $this->expectException(ApplicationException::class);
         $configFile = realpath('./tests/data/testConfig.php');
         $class = new Config($configFile);
         $this->assertEquals('value', $class->get('nonExist','domain'));
-
     }
-
-
 }

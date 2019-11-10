@@ -20,15 +20,12 @@ use PHPUnit\Framework\TestCase;
 
 class WebControllerTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -36,9 +33,7 @@ class WebControllerTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -46,7 +41,6 @@ class WebControllerTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -54,7 +48,6 @@ class WebControllerTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()

@@ -216,9 +216,86 @@ class Form
 
     protected function validate($name)
     {
+        // required
+        if (!empty($this->fields[$name]['required'])) {
+            if (empty($this->fields[$name]['value'])) {
+                $this->fields[$name]['error'] = 'form_error_required';
+                $this->hasErrors = true;
+                return;
+            }
+        }
 
+        // minlength check, if value is not empty
+        if (!empty($this->fields[$name]['minlength'])) {
+            $length = strlen($this->fields[$name]['value']);
+            if (($length > 0) && ($length < $this->fields[$name]['minlength'])) {
+                $this->fields[$name]['error'] = 'form_error_minlength';
+                $this->fields[$name]['errorValue'] = $this->fields[$name]['minlength'];
+                $this->hasErrors = true;
+                return;
+            }
+        }
+        // maxlength
+        if (!empty($this->fields[$name]['maxlength'])) {
+            if (strlen($this->fields[$name]['value']) > $this->fields[$name]['maxlength']) {
+                $this->fields[$name]['error'] = 'form_error_maxlength';
+                $this->fields[$name]['errorValue'] = $this->fields[$name]['maxlength'];
+                $this->hasErrors = true;
+                return;
+            }
+        }
+
+        // min
+        if (!empty($this->fields[$name]['min'])) {
+            if ($this->fields[$name]['value'] < $this->fields[$name]['min']) {
+                $this->fields[$name]['error'] = 'form_error_min';
+                $this->fields[$name]['errorValue'] = $this->fields[$name]['min'];
+                $this->hasErrors = true;
+                return;
+            }
+        }
+        // max
+        if (!empty($this->fields[$name]['max'])) {
+            if ($this->fields[$name]['value'] > $this->fields[$name]['max']) {
+                $this->fields[$name]['error'] = 'form_error_max';
+                $this->fields[$name]['errorValue'] = $this->fields[$name]['max'];
+                $this->hasErrors = true;
+                return;
+            }
+        }
+
+        // type integer
+        if ($this->fields[$name]['type'] == 'integer') {
+            $value = (int)$this->fields[$name]['value'];
+            if ((string)$value != $this->fields[$name]['value']) {
+                $this->fields[$name]['error'] = 'form_error_integer';
+                $this->hasErrors = true;
+                return;
+            }
+        }
+
+        // type date
+        if ($this->fields[$name]['type'] == 'date') {
+            $value = $this->fields[$name]['value'];
+            if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value)) {
+                $this->fields[$name]['error'] = 'form_error_date';
+                $this->hasErrors = true;
+                return;
+            }
+        }
+
+        // type datetime
+        if ($this->fields[$name]['type'] == 'datetime') {
+            $value = $this->fields[$name]['value'];
+            if($value != null) {
+                if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/', $value)) {
+                    $this->fields[$name]['error'] = 'form_error_datetime';
+                    $this->hasErrors = true;
+                    return;
+                }
+            }
+        }
     }
-
 
     /**
      * @param string $name

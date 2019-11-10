@@ -16,15 +16,12 @@ use PHPUnit\Framework\TestCase;
 
 class DbModelTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -32,9 +29,7 @@ class DbModelTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -49,7 +44,6 @@ class DbModelTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()
@@ -76,7 +70,7 @@ class DbModelTest extends TestCase
         $logger = new Logger($config);
 
         $this->expectException(ApplicationException::class);
-        $this->expectExceptionMessage(DbModel::ERROR_CONFIG_MISSING_TABLENAME);
+        $this->expectExceptionMessage(DbModel::ERROR_CONFIG_MISSING_DSN);
         $class = new DbModel($config, $logger);
     }
 }

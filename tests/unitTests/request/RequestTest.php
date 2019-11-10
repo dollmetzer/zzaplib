@@ -15,7 +15,6 @@ use PHPUnit\Framework\TestCase;
 
 class RequestTest extends TestCase
 {
-
     /**
      * @var Config
      */
@@ -31,9 +30,7 @@ class RequestTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -41,9 +38,7 @@ class RequestTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -61,7 +56,6 @@ class RequestTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()

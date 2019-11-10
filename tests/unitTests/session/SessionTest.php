@@ -15,15 +15,12 @@ use PHPUnit\Framework\TestCase;
 
 class SessionTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -31,9 +28,7 @@ class SessionTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -49,7 +44,6 @@ class SessionTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()
@@ -111,5 +105,4 @@ class SessionTest extends TestCase
         $this->expectExceptionMessage(Session::UNDEFINED_EXCEPTION_MESSAGE);
         $this->assertEquals('moo', $class->get('myattribute'));
     }
-
 }

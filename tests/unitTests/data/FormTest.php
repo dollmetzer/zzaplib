@@ -25,9 +25,7 @@ class FormTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -35,9 +33,7 @@ class FormTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -45,7 +41,6 @@ class FormTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -53,7 +48,6 @@ class FormTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()
@@ -64,10 +58,8 @@ class FormTest extends TestCase
 
     public function testConstruct()
     {
-
         $class = new Form();
         $this->assertInstanceOf(Form::class, $class);
-
     }
 
     public function testSetters()

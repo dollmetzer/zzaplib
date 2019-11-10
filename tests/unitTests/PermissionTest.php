@@ -19,7 +19,7 @@ class PermissionTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-        echo "\nStart " . __CLASS__ . "\n";
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**

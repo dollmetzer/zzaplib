@@ -34,8 +34,8 @@ use dollmetzer\zzaplib\exception\ApplicationException;
  */
 class DbModel
 {
-
     const ERROR_CONFIG_MISSING_DSN = 'Found no DSN for DB connection in the config';
+
     const ERROR_CONFIG_MISSING_USER = 'Found no user for DB connection in the config';
     const ERROR_CONFIG_MISSING_PASSWORD = 'Found no password for DB connection in the config';
     const ERROR_CONFIG_MISSING_TABLENAME = 'Missing tablename for DB connection in the model';

@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2019-11-10 Added validaton to Form class
+
 2019-11-09 Changed Permission to Unix style permission system
 
 2019-08-25 Tweaks on Webcontroller and Session 

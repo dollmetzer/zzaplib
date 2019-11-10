@@ -14,15 +14,12 @@ use dollmetzer\zzaplib\exception\BagException;
 
 class BagTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -30,9 +27,7 @@ class BagTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -40,7 +35,6 @@ class BagTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -48,24 +42,19 @@ class BagTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstruct()
     {
-
         $class = new Bag();
         $this->assertInstanceOf(Bag::class, $class);
-
     }
 
     public function testSetNoObject()
     {
-
         $this->expectException(BagException::class);
         $class = new Bag();
         $class->set('testObject', 'invalidType');
-
     }
 
     public function testSetSuccess()
@@ -79,28 +68,21 @@ class BagTest extends TestCase
 
     public function testGetFailed()
     {
-
         $this->expectException(BagException::class);
         $class = new Bag();
         $this->assertEquals(false, $class->get('unknownObject'));
-
     }
 
     public function testHasNot()
     {
-
         $class = new Bag();
         $this->assertEquals(false, $class->has('unknownObject'));
-
     }
 
     public function testHas()
     {
-
         $class = new Bag();
         $class->set('testObject', new Bag());
         $this->assertEquals(true, $class->has('testObject'));
-
     }
-
 }

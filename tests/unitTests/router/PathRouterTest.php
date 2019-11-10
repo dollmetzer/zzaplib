@@ -13,15 +13,12 @@ use PHPUnit\Framework\TestCase;
 
 class PathRouterTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -29,9 +26,7 @@ class PathRouterTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -39,7 +34,6 @@ class PathRouterTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -47,7 +41,6 @@ class PathRouterTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()
@@ -58,10 +51,8 @@ class PathRouterTest extends TestCase
 
     public function testConstruct()
     {
-
         $class = new Router();
         $this->assertInstanceOf(Router::class, $class);
-
     }
 
     public function testResolve()
@@ -88,5 +79,4 @@ class PathRouterTest extends TestCase
         $class = new Router();
         $this->assertEquals('http://testserver/img/profile/2265d_128.jpg', $class->buildMediaURL('img/profile/2265d_128.jpg'));
     }
-
 }

@@ -25,9 +25,7 @@ class ResponseTest extends TestCase
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -35,9 +33,7 @@ class ResponseTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -49,7 +45,6 @@ class ResponseTest extends TestCase
         $config = new Config($configFile);
         $this->session = new Session($config);
         $this->response = new Response($config, $this->session);
-
     }
 
     /**
@@ -57,7 +52,6 @@ class ResponseTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()

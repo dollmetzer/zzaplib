@@ -13,15 +13,12 @@ use PHPUnit\Framework\TestCase;
 
 class ApplicationTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -29,9 +26,7 @@ class ApplicationTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -39,7 +34,6 @@ class ApplicationTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -47,15 +41,12 @@ class ApplicationTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstruct()
     {
-
         $configFile = realpath('./tests/data/testConfig.php');
         $class = new Application($configFile);
         $this->assertInstanceOf(Application::class, $class);
-
     }
 }

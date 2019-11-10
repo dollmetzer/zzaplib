@@ -13,15 +13,12 @@ use PHPUnit\Framework\TestCase;
 
 class TableTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -29,9 +26,7 @@ class TableTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -39,7 +34,6 @@ class TableTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -47,7 +41,6 @@ class TableTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstructorParameters()
@@ -129,7 +122,6 @@ class TableTest extends TestCase
         $class->setRows($rows);
         $this->assertNull($class->getRows());
     }
-
 
     public function testRows() {
         $columns = $this->getColumns();

@@ -13,15 +13,12 @@ use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
 {
-
     /**
      * Execute once on class test start
      */
     public static function setUpBeforeClass()
     {
-
-        echo "\nStart " . __CLASS__ . "\n";
-
+        echo "Start " . __CLASS__ . "\n";
     }
 
     /**
@@ -29,9 +26,7 @@ class ApiTest extends TestCase
      */
     public static function tearDownAfterClass()
     {
-
         echo "\n";
-
     }
 
     /**
@@ -39,7 +34,6 @@ class ApiTest extends TestCase
      */
     public function setUp()
     {
-
     }
 
     /**
@@ -47,14 +41,11 @@ class ApiTest extends TestCase
      */
     public function tearDown()
     {
-
     }
 
     public function testConstruct()
     {
-
         $class = new Api();
         $this->assertInstanceOf(Api::class, $class);
-
     }
 }
