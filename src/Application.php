@@ -117,7 +117,7 @@ class Application
         }
 
         // load core language snippets
-        $this->translator->importLanguage('de');
+        $this->translator->importLanguage($this->session->get('userLanguage'));
 
         // load controller
         $controllerName = '\Application\modules\\' . $this->router->getModule() . '\controllers\\';

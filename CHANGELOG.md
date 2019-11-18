@@ -1,6 +1,8 @@
 CHANGELOG
 =========
 
+2019-11-18 Application now uses the language from the user session
+
 2019-11-10 Added validaton to Form class
 
 2019-11-09 Changed Permission to Unix style permission system
