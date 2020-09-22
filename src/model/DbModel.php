@@ -23,6 +23,7 @@ namespace dollmetzer\zzaplib\model;
 use dollmetzer\zzaplib\Config;
 use dollmetzer\zzaplib\logger\LoggerInterface;
 use dollmetzer\zzaplib\exception\ApplicationException;
+use PDO;
 
 /**
  * Class DbModel
@@ -42,7 +43,7 @@ class DbModel
     const ERROR_CONFIG_EMPTY_DATA = 'Data array is empty';
 
     /**
-     * @var \PDO Database handle
+     * @var PDO Database handle
      */
     protected $dbh;
 
@@ -95,22 +96,22 @@ class DbModel
         }
         $pass = $this->config->get('password', 'database');
 
-        if (empty($this->tablename)) {
+        if (empty($this->tableName)) {
             $this->logger->critical(self::ERROR_CONFIG_MISSING_TABLENAME);
             throw new ApplicationException(self::ERROR_CONFIG_MISSING_TABLENAME);
         }
 
         $options = array(
-            \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         );
         try {
-            $this->dbh = new \PDO($dsn, $user, $pass, $options);
+            $this->dbh = new PDO($dsn, $user, $pass, $options);
         } catch (PDOException $e) {
             $message = 'DB Error: ' . $e->getMessage();
             $this->logger->critical($message);
             throw new ApplicationException($message);
         }
-        $this->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
     /**
@@ -129,7 +130,7 @@ class DbModel
         $names = '`' . join('`, `', array_keys($data)) . '`';
         $questionmarks = join(', ', array_fill(0, sizeof(array_keys($data)), '?'));
         $values = array_values($data);
-        $sql = "INSERT INTO `" . $this->tablename . '` (' . $names . ') VALUES (' . $questionmarks . ')';
+        $sql = "INSERT INTO `" . $this->tableName . '` (' . $names . ') VALUES (' . $questionmarks . ')';
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute($values);
         return $this->dbh->lastInsertId();
@@ -143,10 +144,10 @@ class DbModel
      */
     public function read(int $id)
     {
-        $sql = "SELECT * FROM `" . $this->tablename . "` WHERE id=" . $id;
+        $sql = "SELECT * FROM `" . $this->tableName . "` WHERE id=" . $id;
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -168,7 +169,7 @@ class DbModel
         }
         $values = array_values($data);
         $values[] = $id;
-        $sql = "UPDATE `" . $this->tablename . "` SET " . join(', ', $names) . " WHERE id=?";
+        $sql = "UPDATE `" . $this->tableName . "` SET " . join(', ', $names) . " WHERE id=?";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute($values);
     }
@@ -180,7 +181,7 @@ class DbModel
      */
     public function delete(int $id)
     {
-        $sql = "DELETE FROM `" . $this->tablename . "` WHERE id=" . $id;
+        $sql = "DELETE FROM `" . $this->tableName . "` WHERE id=" . $id;
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
     }
@@ -196,7 +197,7 @@ class DbModel
      */
     public function getList($first = null, $length = null, $sortColumn = null, $sortDirection = 'asc')
     {
-        $sql = "SELECT * FROM `" . $this->tablename . "`";
+        $sql = "SELECT * FROM `" . $this->tableName . "`";
         if ($sortColumn) {
             if ($sortDirection != 'desc') {
                 $sortDirection = 'asc';
@@ -208,7 +209,7 @@ class DbModel
         }
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
-        $list = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $list;
     }
 
@@ -219,33 +220,33 @@ class DbModel
      */
     public function getListEntries()
     {
-        $sql = "SELECT COUNT(*) as entries FROM `" . $this->tablename . "`";
+        $sql = "SELECT COUNT(*) as entries FROM `" . $this->tableName . "`";
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['entries'];
     }
 
     /**
      * Search for an entry
      *
-     * @param string $searchterm
+     * @param string $searchTerm
      * @param int $first
      * @param int $length
      * @param string $sortColumn
      * @param string $sortDirection (default is 'asc')
-     * @param string $searchcolumn (default is 'name')
+     * @param string $searchColumn (default is 'name')
      * @return array
      */
     public function search(
-        $searchterm,
+        $searchTerm,
         $first = null,
         $length = null,
         $sortColumn = null,
         $sortDirection = 'asc',
-        $searchcolumn = 'name'
+        $searchColumn = 'name'
     ) {
-        $sql = "SELECT * FROM `" . $this->tablename . "` WHERE " . $searchcolumn . " LIKE " . $this->dbh->quote($searchterm);
+        $sql = "SELECT * FROM `" . $this->tableName . "` WHERE " . $searchColumn . " LIKE " . $this->dbh->quote($searchTerm);
         if ($sortColumn) {
             if ($sortDirection != 'desc') {
                 $sortDirection = 'asc';
@@ -257,23 +258,23 @@ class DbModel
         }
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
-        $list = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $list;
     }
 
     /**
      * Get the number of results for a search
      *
-     * @param string $searchterm
-     * @param string $searchcolumn
+     * @param string $searchTerm
+     * @param string $searchColumn
      * @return array
      */
-    public function getSearchEntries($searchterm, $searchcolumn = 'name')
+    public function getSearchEntries($searchTerm, $searchColumn = 'name')
     {
-        $sql = "SELECT COUNT(*) as entries FROM `" . $this->tablename . "` WHERE " . $searchcolumn . " LIKE " . $this->dbh->quote($searchterm);
+        $sql = "SELECT COUNT(*) as entries FROM `" . $this->tableName . "` WHERE " . $searchColumn . " LIKE " . $this->dbh->quote($searchTerm);
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['entries'];
     }
 

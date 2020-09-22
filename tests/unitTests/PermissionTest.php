@@ -68,6 +68,18 @@ class PermissionTest extends TestCase
         $class = new Permission(0, 0, 64536);
     }
 
+    public function testGetOwnerId()
+    {
+        $class = new Permission();
+        $this->assertEquals(0, $class->getOwnerId());
+    }
+
+    public function testGetGroupId()
+    {
+        $class = new Permission();
+        $this->assertEquals(0, $class->getGroupId());
+    }
+
     public function testStandardPermissions()
     {
         $class = new Permission();
