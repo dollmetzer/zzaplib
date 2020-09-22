@@ -40,10 +40,10 @@ class Session implements SessionInterface
     public function __construct(Config $config)
     {
         $this->config = $config;
-        if(!defined('UNIT_TEST')) {
+        if (!defined('UNIT_TEST')) {
             session_start();
         }
-        if(empty($_SESSION['sessionHits'])) {
+        if (empty($_SESSION['sessionHits'])) {
             $this->init();
         } else {
             $_SESSION['sessionHits']++;
@@ -57,7 +57,7 @@ class Session implements SessionInterface
      */
     public function get(string $name)
     {
-        if(isset($_SESSION[$name])) {
+        if (isset($_SESSION[$name])) {
             return $_SESSION[$name];
         }
         throw new ApplicationException(self::UNDEFINED_EXCEPTION_MESSAGE);
@@ -77,7 +77,7 @@ class Session implements SessionInterface
      */
     public function delete(string $name)
     {
-        if(isset($_SESSION[$name])) {
+        if (isset($_SESSION[$name])) {
             unset($_SESSION[$name]);
         }
     }
@@ -92,11 +92,11 @@ class Session implements SessionInterface
         $this->set('sessionHits', 1);
         $this->set('userId', 0);
         $this->set('userHandle', 'guest');
-        if($this->config->isSet('languages')) {
+        if ($this->config->isSet('languages')) {
             $languages = $this->config->get('languages');
             $this->set('userLanguage', array_shift($languages));
         }
-        if($this->config->isSet('countries')) {
+        if ($this->config->isSet('countries')) {
             $countries = $this->config->get('countries');
             $this->set('userCountry', array_shift($countries));
         }

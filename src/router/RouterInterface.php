@@ -70,5 +70,4 @@ interface RouterInterface
      * @return array
      */
     public function getParams() : array;
-
 }

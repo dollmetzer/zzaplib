@@ -72,11 +72,11 @@ class Translator implements TranslatorInterface
      * @return bool
      * @throws ApplicationException
      */
-    public function importLanguage(string $language, string $module='index', string $controller='core') : bool
+    public function importLanguage(string $language, string $module = 'index', string $controller = 'core'): bool
     {
-        $filename = PATH_APP .'modules/' . $module . '/data/lang_' . $controller .'_' . $language . '.ini';
+        $filename = PATH_APP . 'modules/' . $module . '/data/lang_' . $controller . '_' . $language . '.ini';
 
-        if(file_exists($filename)) {
+        if (file_exists($filename)) {
             $newSnippets = parse_ini_file($filename, true);
             $this->snippets = array_merge($this->snippets, $newSnippets);
             return true;
@@ -92,13 +92,12 @@ class Translator implements TranslatorInterface
      * @param string $key
      * @return string Snippet or marker, that indicates a missing translation
      */
-    public function translate(string $key) : string
+    public function translate(string $key): string
     {
-        if(key_exists($key, $this->snippets)) {
+        if (key_exists($key, $this->snippets)) {
             return $this->snippets[$key];
         } else {
-            return '###_'.strtoupper($key).'_###';
+            return '###_' . strtoupper($key) . '_###';
         }
     }
-
 }

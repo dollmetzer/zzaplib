@@ -126,11 +126,27 @@ class Application
 
         // exists controller class?
         if (class_exists($controllerName)) {
-            $controller = new $controllerName($this->config, $this->logger, $this->router, $this->request, $this->response, $this->session, $this->translator, $this->view);
-            $this->translator->importLanguage($this->session->get('userLanguage'), $this->router->getModule(), $this->router->getController());
+            $controller = new $controllerName(
+                $this->config,
+                $this->logger,
+                $this->router,
+                $this->request,
+                $this->response,
+                $this->session,
+                $this->translator,
+                $this->view
+            );
+            $this->translator->importLanguage(
+                $this->session->get('userLanguage'),
+                $this->router->getModule(),
+                $this->router->getController()
+            );
         } else {
             $this->logger->error('Controller class ' . $controllerName . ' not found');
-            $this->response->redirect($this->router->buildURL(''), $this->translator->translate('error_core_illegal_parameter'));
+            $this->response->redirect(
+                $this->router->buildURL(''),
+                $this->translator->translate('error_core_illegal_parameter')
+            );
         }
 
         // exists action method?
@@ -140,11 +156,7 @@ class Application
             $this->response->redirect('', $this->translator->translate('error_core_illegal_parameter'));
         }
 
-        // is action allowed?
-        // ...
-
         try {
-
             if (method_exists($controller, 'before')) {
                 $controller->before();
             }
@@ -154,7 +166,6 @@ class Application
             if (method_exists($controller, 'after')) {
                 $controller->after();
             }
-
         } catch (\Exception $e) {
             $message = 'Application error in ';
             $message .= $e->getFile() . ' in Line ';
@@ -167,7 +178,6 @@ class Application
 
         $this->session->set('flashMessage', '');
         $this->session->set('flashMessageType', '');
-
     }
 
     /**
@@ -245,7 +255,14 @@ class Application
         } else {
             $className = 'dollmetzer\zzaplib\view\View';
         }
-        $this->view = new $className($this->config, $this->router, $this->request, $this->response, $this->session, $this->translator);
+        $this->view = new $className(
+            $this->config,
+            $this->router,
+            $this->request,
+            $this->response,
+            $this->session,
+            $this->translator
+        );
     }
 
     /**
@@ -260,5 +277,4 @@ class Application
         }
         $this->logger = new $className($this->config);
     }
-
 }

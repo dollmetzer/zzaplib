@@ -50,5 +50,4 @@ interface SessionInterface
      * @param $value
      */
     public function set(string $name, $value);
-
 }

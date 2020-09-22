@@ -44,7 +44,6 @@ class Router implements RouterInterface
 
     public function __construct()
     {
-
     }
 
     public function resolve()
@@ -72,7 +71,6 @@ class Router implements RouterInterface
         if (sizeof($query) > 0) {
             $this->params = $query;
         }
-
     }
 
     /**
@@ -115,7 +113,6 @@ class Router implements RouterInterface
         return $this->queryString;
     }
 
-
     /**
      * @param string $path
      * @return array
@@ -131,7 +128,6 @@ class Router implements RouterInterface
             }
         }
         return $query;
-
     }
 
     /**
@@ -182,5 +178,4 @@ class Router implements RouterInterface
         $url = $protocol . URL_MEDIA . '/' . $path;
         return $url;
     }
-
 }

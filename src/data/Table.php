@@ -62,11 +62,9 @@ class Table
      */
     public function __construct()
     {
-
         $this->title = '';
         $this->description = '';
         $this->pagination = new Pagination();
-
     }
 
     /**
@@ -108,9 +106,7 @@ class Table
      */
     public function getColumns()
     {
-
         return $this->columns;
-
     }
 
     /**
@@ -120,10 +116,8 @@ class Table
      */
     public function setColumns(array $columns)
     {
-
         $this->columns = [];
         foreach ($columns as $key => $attrib) {
-
             if (!empty($attrib['type'])) {
                 $this->columns[$key]['type'] = $attrib['type'];
             } else {
@@ -141,9 +135,7 @@ class Table
             } else {
                 $this->columns[$key]['sortable'] = false;
             }
-
         }
-
     }
 
     /**
@@ -153,9 +145,7 @@ class Table
      */
     public function getRows()
     {
-
         return $this->rows;
-
     }
 
     /**
@@ -166,7 +156,6 @@ class Table
      */
     public function setRows(array $rows)
     {
-
         if (empty($this->columns)) {
             return false;
         }
@@ -181,7 +170,6 @@ class Table
             $this->rows[] = $newRow;
         }
         return true;
-
     }
 
     /**

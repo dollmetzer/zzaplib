@@ -1,0 +1,7 @@
+#/usr/bin/env bash
+
+printf "\nCode Style Check\n----------------\n"
+vendor/bin/phpcs --standard=PSR2 src/
+
+printf "\nPHPUnit Tests\n-------------\n"
+vendor/phpunit/phpunit/phpunit

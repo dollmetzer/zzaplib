@@ -1,13 +1,11 @@
 <?php
 
-
 namespace dollmetzer\zzaplib\translator;
 
-
-Interface TranslatorInterface
+interface TranslatorInterface
 {
 
-    public function importLanguage(string $language, string $module='index', string $controller='index') : bool;
+    public function importLanguage(string $language, string $module = 'index', string $controller = 'index'): bool;
 
-    public function translate(string $key) : string;
+    public function translate(string $key): string;
 }

@@ -65,8 +65,7 @@ class WebController
         SessionInterface $session,
         TranslatorInterface $translator,
         View $view
-    )
-    {
+    ) {
         $this->config = $config;
         $this->logger = $logger;
         $this->router = $router;
@@ -76,5 +75,4 @@ class WebController
         $this->translator = $translator;
         $this->view = $view;
     }
-
 }

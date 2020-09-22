@@ -191,5 +191,4 @@ class View implements ViewInterface
         return $result;
         */
     }
-
 }

@@ -183,17 +183,17 @@ class Logger implements LoggerInterface
     {
         $this->message = strftime('%Y-%m-%d %H:%M:%S', time()) . ' [' . strtoupper($level) . '] ' . $message;
 
-        if(!empty($context)) {
+        if (!empty($context)) {
             $this->message .= ' ' . str_replace("\n", ' ', print_r($context, true));
         }
 
-        if($this->config->isSet('logTo', 'application')) {
+        if ($this->config->isSet('logTo', 'application')) {
             $logTo = $this->config->get('logTo', 'application');
         } else {
             $logTo = 'file';
         }
 
-        switch($logTo) {
+        switch ($logTo) {
             case 'null':
                 break;
 

@@ -74,26 +74,24 @@ class Response implements ResponseInterface
      * Redirect to another URL and optionally leave a flash message
      *
      * @param string $url
-     * @param string $message     optinal flash message
+     * @param string $message optinal flash message
      * @param string $messageType optional flash message type. Valid values are 'error' and 'notification'
      */
-    public function redirect(string $url, string $message='', string $messageType='error')
+    public function redirect(string $url, string $message = '', string $messageType = 'error')
     {
 
-        if(!in_array($messageType, $this->messageTypes)) {
+        if (!in_array($messageType, $this->messageTypes)) {
             $messageType = self::MESSAGE_TYPE_ERROR;
         }
 
-        if(!empty($message)) {
+        if (!empty($message)) {
             $this->session->set('flashMessage', $message);
             $this->session->set('flashMessageType', $messageType);
         }
 
-        if(!defined('UNIT_TEST')) {
+        if (!defined('UNIT_TEST')) {
             header('Location: ' . $url);
             exit;
         }
-
     }
-
 }

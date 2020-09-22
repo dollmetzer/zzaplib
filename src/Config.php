@@ -58,9 +58,9 @@ class Config
      * @param string $domain
      * @return bool
      */
-    public function isSet(string $key, string $domain='')
+    public function isSet(string $key, string $domain = '')
     {
-        if(!empty($domain)) {
+        if (!empty($domain)) {
             return isset($this->configData[$domain][$key]);
         } else {
             return isset($this->configData[$key]);
@@ -72,14 +72,13 @@ class Config
      * @return mixed
      * @throws ApplicationException
      */
-    public function get(string $key, string $domain='')
+    public function get(string $key, string $domain = '')
     {
-        if(!empty($domain)) {
+        if (!empty($domain)) {
             if (!isset($this->configData[$domain][$key])) {
-                throw new ApplicationException(self::ERROR_CONFIG_VALUE_NOT_SET . ' ' . $domain. ' ' . $key);
+                throw new ApplicationException(self::ERROR_CONFIG_VALUE_NOT_SET . ' ' . $domain . ' ' . $key);
             }
             $value = $this->configData[$domain][$key];
-
         } else {
             if (!isset($this->configData[$key])) {
                 throw new ApplicationException(self::ERROR_CONFIG_VALUE_NOT_SET . ' ' . $key);
@@ -106,7 +105,5 @@ class Config
         if ($this->configData === false) {
             throw new ApplicationException(self::ERROR_CONFIG_PARSING);
         }
-
     }
-
 }

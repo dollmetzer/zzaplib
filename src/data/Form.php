@@ -60,7 +60,6 @@ class Form
      */
     protected $fields;
 
-
     public function __construct()
     {
         $this->name = '';
@@ -74,7 +73,7 @@ class Form
     /**
      * @return bool
      */
-    public function process() : bool
+    public function process(): bool
     {
         // set default values
         $this->hasErrors = false;
@@ -87,7 +86,7 @@ class Form
         $this->fetchInput();
 
         $success = true;
-        if($this->hasErrors === true) {
+        if ($this->hasErrors === true) {
             $success = false;
         }
 
@@ -99,7 +98,7 @@ class Form
      *
      * @return array
      */
-    public function getViewdata() : array
+    public function getViewdata(): array
     {
         return [
             'name' => $this->name,
@@ -116,11 +115,13 @@ class Form
      *
      * @return array
      */
-    public function getValues() : array
+    public function getValues(): array
     {
         $result = [];
         foreach ($this->fields as $name => $field) {
-            if (empty($field['value'])) continue;
+            if (empty($field['value'])) {
+                continue;
+            }
             if ($field['type'] == 'code') {
                 $result[$name] = $field['value'];
             } else {
@@ -130,11 +131,13 @@ class Form
         return $result;
     }
 
-    protected function fetchInput() {
+    protected function fetchInput()
+    {
         foreach ($this->fields as $name => $field) {
-
             // skip special types
-            if(in_array($field['type'], ['static', 'divider', 'submit'])) continue;
+            if (in_array($field['type'], ['static', 'divider', 'submit'])) {
+                continue;
+            }
 
             if ($field['type'] == 'checkbox') {
                 $value = $this->fetchCheckbox($name);
@@ -156,7 +159,7 @@ class Form
      * @param string $name
      * @return bool
      */
-    protected function fetchCheckbox(string $name) : bool
+    protected function fetchCheckbox(string $name): bool
     {
         if (empty($_POST[$name])) {
             $value = false;
@@ -173,14 +176,14 @@ class Form
     protected function fetchDatetime(string $name)
     {
         // Assemble field from two separate fields
-        $day = $_POST[$name.'_day'];
-        $time = $_POST[$name.'_time'];
-        if(!empty($day) || !empty($time)) {
+        $day = $_POST[$name . '_day'];
+        $time = $_POST[$name . '_time'];
+        if (!empty($day) || !empty($time)) {
             $tmp = explode(':', $time);
-            if(sizeof($tmp) == 2) {
-                $time = $time.':00';
+            if (sizeof($tmp) == 2) {
+                $time = $time . ':00';
             }
-            $value = $day.' '.$time;
+            $value = $day . ' ' . $time;
         } else {
             $value = null;
         }
@@ -287,7 +290,7 @@ class Form
         // type datetime
         if ($this->fields[$name]['type'] == 'datetime') {
             $value = $this->fields[$name]['value'];
-            if($value != null) {
+            if ($value != null) {
                 if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/', $value)) {
                     $this->fields[$name]['error'] = 'form_error_datetime';
                     $this->hasErrors = true;
@@ -324,7 +327,7 @@ class Form
     /**
      * @return string
      */
-    public function getError() : string
+    public function getError(): string
     {
         return $this->error;
     }
@@ -333,9 +336,9 @@ class Form
      * @param string $message
      * @param string $field (optional)
      */
-    public function setError(string $message, string $field='')
+    public function setError(string $message, string $field = '')
     {
-        if(empty($field)) {
+        if (empty($field)) {
             $this->error = $message;
         } else {
             $this->fields[$field] = $message;
@@ -358,5 +361,4 @@ class Form
     {
         $this->fields = $fields;
     }
-
 }

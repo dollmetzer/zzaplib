@@ -20,7 +20,6 @@
 
 namespace dollmetzer\zzaplib\view;
 
-
 use dollmetzer\zzaplib\Config;
 use dollmetzer\zzaplib\router\Router;
 use dollmetzer\zzaplib\translator\Translator;
@@ -115,5 +114,4 @@ class Viewhelper
         }
         return $text;
     }
-
 }

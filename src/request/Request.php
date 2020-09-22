@@ -45,7 +45,6 @@ class Request implements RequestInterface
         $this->config = $config;
         $this->router = $router;
         $this->router->resolve();
-
     }
 
     /**
@@ -87,5 +86,4 @@ class Request implements RequestInterface
     {
         return $this->router->getQueryString();
     }
-
 }

@@ -246,7 +246,8 @@ class DbModel
         $sortDirection = 'asc',
         $searchColumn = 'name'
     ) {
-        $sql = "SELECT * FROM `" . $this->tableName . "` WHERE " . $searchColumn . " LIKE " . $this->dbh->quote($searchTerm);
+        $sql = "SELECT * FROM `" . $this->tableName
+            . "` WHERE " . $searchColumn . " LIKE " . $this->dbh->quote($searchTerm);
         if ($sortColumn) {
             if ($sortDirection != 'desc') {
                 $sortDirection = 'asc';
@@ -271,11 +272,11 @@ class DbModel
      */
     public function getSearchEntries($searchTerm, $searchColumn = 'name')
     {
-        $sql = "SELECT COUNT(*) as entries FROM `" . $this->tableName . "` WHERE " . $searchColumn . " LIKE " . $this->dbh->quote($searchTerm);
+        $sql = "SELECT COUNT(*) as entries FROM `" . $this->tableName
+            . "` WHERE " . $searchColumn . " LIKE " . $this->dbh->quote($searchTerm);
         $stmt = $this->dbh->prepare($sql);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['entries'];
     }
-
 }

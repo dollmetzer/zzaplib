@@ -1,8 +1,6 @@
 <?php
 
-
 namespace dollmetzer\zzaplib\data;
-
 
 class Pagination
 {
@@ -54,7 +52,7 @@ class Pagination
      * @param int $pageLength Max number of entries per Page
      * @param int $displayWidth Number of page indices to display left and right from the current page index
      */
-    public function __construct(int $page=0, int $pageLength=10, int $displayWidth=4)
+    public function __construct(int $page = 0, int $pageLength = 10, int $displayWidth = 4)
     {
         $this->page = $page;
         $this->pageLength = $pageLength;
@@ -75,18 +73,17 @@ class Pagination
         $this->pageMax = ceil($entryLength / $this->pageLength);
 
         $this->displayFirst = $this->page - $this->displayWidth;
-        if($this->displayFirst < 0) {
+        if ($this->displayFirst < 0) {
             $this->displayFirst = 0;
         }
         $this->displayLast = $this->page + $this->displayWidth;
-        if($this->displayLast > $this->pageMax) {
-            $this->displayLast = $this->pageMax -1;
+        if ($this->displayLast > $this->pageMax) {
+            $this->displayLast = $this->pageMax - 1;
         }
-        if($this->displayLast < 0) {
+        if ($this->displayLast < 0) {
             $this->displayLast = 0;
         }
         $this->entryFirst = $this->page * $this->pageLength;
-
     }
 
     /**
@@ -171,5 +168,4 @@ class Pagination
     {
         return $this->entryFirst;
     }
-
 }
