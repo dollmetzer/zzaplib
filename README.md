@@ -21,13 +21,13 @@ insert the following code:
     {
         "name": "zzapapp",
         "require-dev": {
-            "dollmetzer/zzaplib": "2.0.0.x-dev"
+            "dollmetzer/zzaplib": "3.0.x-dev"
         },
         "repositories": [
             {
                 "type": "vcs",
                 "url": "git://github.com/dollmetzer/zzaplib",
-                "reference": "2.0.0"
+                "reference": "3.0"
             }
         ],
         "autoload": {

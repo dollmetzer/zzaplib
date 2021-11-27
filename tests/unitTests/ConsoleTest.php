@@ -8,6 +8,8 @@
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  */
 
+namespace unitTests;
+
 use dollmetzer\zzaplib\Console;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +18,7 @@ class ConsoleTest extends TestCase
     /**
      * Execute once on class test start
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         echo "Start " . __CLASS__ . "\n";
     }
@@ -24,7 +26,7 @@ class ConsoleTest extends TestCase
     /**
      * Execute once after class test finish
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         echo "\n";
     }
@@ -32,14 +34,14 @@ class ConsoleTest extends TestCase
     /**
      * Execute before test method start
      */
-    public function setUp()
+    public function setUp(): void
     {
     }
 
     /**
      * Execute after test method finish
      */
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 

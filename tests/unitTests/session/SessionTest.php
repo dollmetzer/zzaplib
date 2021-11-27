@@ -8,17 +8,20 @@
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  */
 
+namespace unitTests\session;
+
 use dollmetzer\zzaplib\Config;
 use dollmetzer\zzaplib\exception\ApplicationException;
 use dollmetzer\zzaplib\session\Session;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class SessionTest extends TestCase
 {
     /**
      * Execute once on class test start
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         echo "Start " . __CLASS__ . "\n";
     }
@@ -26,7 +29,7 @@ class SessionTest extends TestCase
     /**
      * Execute once after class test finish
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         echo "\n";
     }
@@ -34,7 +37,7 @@ class SessionTest extends TestCase
     /**
      * Execute before test method start
      */
-    public function setUp()
+    public function setUp(): void
     {
         $_SESSION = [];
     }
@@ -42,7 +45,7 @@ class SessionTest extends TestCase
     /**
      * Execute after test method finish
      */
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 

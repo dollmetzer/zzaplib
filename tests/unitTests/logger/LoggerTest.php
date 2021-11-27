@@ -8,10 +8,13 @@
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  */
 
+namespace unitTests\logger;
+
 use dollmetzer\zzaplib\Config;
 use dollmetzer\zzaplib\logger\Logger;
 use dollmetzer\zzaplib\Bag;
 use \PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class LoggerTest extends TestCase
 {
@@ -23,7 +26,7 @@ class LoggerTest extends TestCase
     /**
      * Execute once on class test start
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         echo "Start " . __CLASS__ . "\n";
     }
@@ -31,7 +34,7 @@ class LoggerTest extends TestCase
     /**
      * Execute once after class test finish
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         echo "\n";
     }
@@ -39,7 +42,7 @@ class LoggerTest extends TestCase
     /**
      * Execute before test method start
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->bag = new Bag();
         $configFile = realpath('./tests/data/testConfig.php');
@@ -50,7 +53,7 @@ class LoggerTest extends TestCase
     /**
      * Execute after test method finish
      */
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 

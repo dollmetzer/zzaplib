@@ -8,6 +8,8 @@
  * @copyright 2006 - 2019 Dirk Ollmetzer (dirk.ollmetzer@ollmetzer.com)
  */
 
+namespace unitTests\controller;
+
 use dollmetzer\zzaplib\Config;
 use dollmetzer\zzaplib\controller\WebController;
 use dollmetzer\zzaplib\request\Request;
@@ -16,14 +18,16 @@ use dollmetzer\zzaplib\router\Router;
 use dollmetzer\zzaplib\session\Session;
 use dollmetzer\zzaplib\translator\Translator;
 use dollmetzer\zzaplib\logger\Logger;
+use dollmetzer\zzaplib\view\View;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 class WebControllerTest extends TestCase
 {
     /**
      * Execute once on class test start
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         echo "Start " . __CLASS__ . "\n";
     }
@@ -31,7 +35,7 @@ class WebControllerTest extends TestCase
     /**
      * Execute once after class test finish
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         echo "\n";
     }
@@ -39,14 +43,14 @@ class WebControllerTest extends TestCase
     /**
      * Execute before test method start
      */
-    public function setUp()
+    public function setUp(): void
     {
     }
 
     /**
      * Execute after test method finish
      */
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 
@@ -66,7 +70,7 @@ class WebControllerTest extends TestCase
         $request = new Request($config, $router);
         $response = new Response($config, $session);
         $translate = new Translator($config, $logger);
-        $view = new dollmetzer\zzaplib\view\View($config, $router, $request,$response, $session, $translate);
+        $view = new View($config, $router, $request,$response, $session, $translate);
         $class = new WebController($config, $logger, $router, $request, $response, $session, $translate, $view);
         $this->assertInstanceOf(WebController::class, $class);
     }
